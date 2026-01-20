@@ -27,6 +27,7 @@
             border: 2px solid #ddd;
             border-radius: 5px;
             font-size: 16px;
+            text-transform: uppercase;
         }
         button {
             background: #FFB81C;
@@ -38,6 +39,9 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
+        }
+        button:hover {
+            background: #e6a500;
         }
         .result {
             background: #e8f5e9;
@@ -54,39 +58,80 @@
             margin-top: 20px;
             display: none;
         }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .in-progress { background: #fff3cd; color: #856404; }
+        .ready { background: #d4edda; color: #155724; }
+        .completed { background: #d1ecf1; color: #0c5460; }
+        .pending { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
     <div class="box">
         <h1>Track Your Job</h1>
-        <p>Enter your job number to check status:</p>
+        <p>Enter your job number (like j1234):</p>
         
-        <input type="text" id="jobNumber" placeholder="e.g. JOB-001">
+        <input type="text" id="jobNumber" placeholder="e.g. j1234 or j5678" oninput="this.value = this.value.toLowerCase()">
         <button onclick="checkJob()">CHECK STATUS</button>
         
         <div class="result" id="result">
             <h3>Job Status:</h3>
-            <p><strong>Job Number:</strong> <span id="resultNumber"></span></p>
-            <p><strong>Status:</strong> <span id="resultStatus"></span></p>
+            <p><strong>Job Number:</strong> <span id="resultNumber" style="font-weight: bold; color: #007749;"></span></p>
+            <p><strong>Status:</strong> 
+                <span id="resultStatus"></span>
+                <span class="status-badge" id="statusBadge"></span>
+            </p>
             <p><strong>Last Updated:</strong> <span id="resultDate"></span></p>
+            <p><strong>Notes:</strong> <span id="resultNotes"></span></p>
         </div>
         
         <div class="error" id="error">
             Job not found. Please check your number.
         </div>
+        
+        <div style="margin-top: 20px; font-size: 14px; color: #666; text-align: center;">
+            <p>Example job numbers: j1001, j1002, j1003</p>
+        </div>
     </div>
 
     <script>
-        // SIMPLE DATABASE - You can edit this list
+        // YOUR JOB DATABASE - Edit this list with your real jobs
         const jobs = {
-            "JOB-001": { status: "In Progress", date: "15 March 2024" },
-            "JOB-002": { status: "Ready for Collection", date: "14 March 2024" },
-            "JOB-003": { status: "Completed", date: "10 March 2024" },
-            "JOB-004": { status: "Awaiting Parts", date: "16 March 2024" }
+            "j1001": { 
+                status: "In Progress", 
+                date: "18 March 2024",
+                notes: "Awaiting customer approval"
+            },
+            "j1002": { 
+                status: "Ready for Collection", 
+                date: "17 March 2024",
+                notes: "Balance payment due"
+            },
+            "j1003": { 
+                status: "Completed", 
+                date: "15 March 2024",
+                notes: "Delivered to client"
+            },
+            "j1004": { 
+                status: "In Progress", 
+                date: "18 March 2024",
+                notes: "Quality check stage"
+            },
+            "j1005": { 
+                status: "Pending", 
+                date: "16 March 2024",
+                notes: "Awaiting materials"
+            }
         };
         
         function checkJob() {
-            const jobNumber = document.getElementById('jobNumber').value.trim().toUpperCase();
+            const input = document.getElementById('jobNumber');
+            const jobNumber = input.value.trim().toLowerCase();
             const resultDiv = document.getElementById('result');
             const errorDiv = document.getElementById('error');
             
@@ -100,15 +145,39 @@
                 return;
             }
             
+            // Check if job exists
             if (jobs[jobNumber]) {
+                const job = jobs[jobNumber];
+                
                 // Show job details
-                document.getElementById('resultNumber').innerText = jobNumber;
-                document.getElementById('resultStatus').innerText = jobs[jobNumber].status;
-                document.getElementById('resultDate').innerText = jobs[jobNumber].date;
+                document.getElementById('resultNumber').innerText = jobNumber.toUpperCase();
+                document.getElementById('resultStatus').innerText = job.status;
+                document.getElementById('resultDate').innerText = job.date;
+                document.getElementById('resultNotes').innerText = job.notes || "No notes available";
+                
+                // Set status badge color
+                const badge = document.getElementById('statusBadge');
+                badge.innerText = job.status;
+                badge.className = "status-badge " + getStatusClass(job.status);
+                
                 resultDiv.style.display = 'block';
+                
+                // Clear input
+                input.value = "";
+                input.focus();
             } else {
+                errorDiv.innerText = `Job "${jobNumber.toUpperCase()}" not found. Please check your number.`;
                 errorDiv.style.display = 'block';
             }
+        }
+        
+        function getStatusClass(status) {
+            status = status.toLowerCase();
+            if (status.includes('progress')) return 'in-progress';
+            if (status.includes('ready')) return 'ready';
+            if (status.includes('complete')) return 'completed';
+            if (status.includes('pending')) return 'pending';
+            return 'in-progress';
         }
         
         // Press Enter to search
@@ -116,6 +185,11 @@
             if (e.key === 'Enter') {
                 checkJob();
             }
+        });
+        
+        // Auto-focus on input when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('jobNumber').focus();
         });
     </script>
 </body>
