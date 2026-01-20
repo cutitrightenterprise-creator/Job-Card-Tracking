@@ -12,7 +12,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -22,28 +22,70 @@
         
         .container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* BUSINESS NAME HEADER - MODERN LIME STYLE */
+        .business-header {
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+            padding: 25px 30px;
+            text-align: center;
+            border-bottom: 3px solid #a3e635;
+            position: relative;
             overflow: hidden;
         }
         
-        .header {
+        .business-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, #a3e635, #84cc16, #65a30d);
+        }
+        
+        .business-name {
+            font-size: 34px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #a3e635 0%, #84cc16 50%, #65a30d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 10px rgba(163, 230, 53, 0.3);
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .business-tagline {
+            color: #d1d5db;
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        
+        .tracker-header {
             background: linear-gradient(to right, #007749, #001489);
             color: white;
-            padding: 30px;
+            padding: 25px 30px;
             text-align: center;
         }
         
-        .header h1 {
-            font-size: 28px;
+        .tracker-header h1 {
+            font-size: 26px;
             margin-bottom: 10px;
+            font-weight: 700;
         }
         
-        .header p {
+        .tracker-header p {
             opacity: 0.9;
-            font-size: 16px;
+            font-size: 15px;
         }
         
         .content {
@@ -57,47 +99,50 @@
         .input-group label {
             display: block;
             margin-bottom: 10px;
-            color: #333;
+            color: #374151;
             font-weight: 600;
             font-size: 16px;
         }
         
         .input-wrapper {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
         
         input {
             flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            padding: 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
             font-size: 16px;
             transition: all 0.3s;
+            background: #f9fafb;
         }
         
         input:focus {
             outline: none;
-            border-color: #007749;
-            box-shadow: 0 0 0 3px rgba(0,119,73,0.1);
+            border-color: #a3e635;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(163, 230, 53, 0.1);
         }
         
         button {
-            background: #FFB81C;
+            background: linear-gradient(135deg, #a3e635 0%, #84cc16 100%);
             color: #000;
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
+            padding: 16px 32px;
+            border-radius: 12px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
             white-space: nowrap;
+            box-shadow: 0 4px 6px -1px rgba(163, 230, 53, 0.2);
         }
         
         button:hover {
-            background: #e6a500;
             transform: translateY(-2px);
+            box-shadow: 0 8px 12px -2px rgba(163, 230, 53, 0.3);
         }
         
         button:active {
@@ -106,35 +151,40 @@
         
         .status-indicator {
             text-align: center;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 24px;
             font-size: 14px;
-            color: #666;
-            border: 1px solid #e9ecef;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .status-indicator.success {
-            background: #d4edda;
-            color: #155724;
-            border-color: #c3e6cb;
+            background: #f0fdf4;
+            color: #166534;
+            border-color: #bbf7d0;
         }
         
         .status-indicator.error {
-            background: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
+            background: #fef2f2;
+            color: #991b1b;
+            border-color: #fecaca;
         }
         
         .result-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 18px;
+            padding: 28px;
+            margin-top: 24px;
             display: none;
-            border-left: 5px solid #007749;
-            animation: slideIn 0.3s ease-out;
+            border-left: 6px solid #a3e635;
+            animation: slideIn 0.4s ease-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
         
         @keyframes slideIn {
@@ -142,60 +192,83 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .job-detail {
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #e9ecef;
+        .job-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
         }
         
-        .job-detail:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
+        .job-detail {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.2s;
+        }
+        
+        .job-detail:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
         
         .detail-label {
             font-size: 12px;
             text-transform: uppercase;
-            color: #666;
+            color: #6b7280;
             letter-spacing: 1px;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
         
         .detail-value {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333;
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .price-value {
+            color: #059669;
+            font-size: 22px;
+        }
+        
+        .notes-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            margin-top: 10px;
         }
         
         .status-badge {
             display: inline-block;
-            padding: 5px 15px;
+            padding: 6px 16px;
             border-radius: 20px;
             font-size: 14px;
-            font-weight: 600;
-            margin-left: 10px;
+            font-weight: 700;
+            margin-top: 8px;
         }
         
-        .status-in-progress { background: #cfe2ff; color: #084298; }
-        .status-ready { background: #d1e7dd; color: #0f5132; }
-        .status-completed { background: #d1ecf1; color: #0c5460; }
-        .status-pending { background: #fff3cd; color: #856404; }
+        .status-in-progress { background: #dbeafe; color: #1e40af; }
+        .status-ready { background: #dcfce7; color: #166534; }
+        .status-completed { background: #f0f9ff; color: #0c4a6e; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-quoted { background: #f3e8ff; color: #6b21a8; }
         
         .loading {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             display: none;
         }
         
         .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #007749;
+            border: 4px solid rgba(163, 230, 53, 0.1);
+            border-top: 4px solid #a3e635;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
         }
         
         @keyframes spin {
@@ -204,25 +277,58 @@
         }
         
         .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 10px;
+            background: #fef2f2;
+            color: #991b1b;
+            padding: 18px;
+            border-radius: 12px;
             margin-top: 20px;
             display: none;
-            border-left: 5px solid #dc3545;
+            border-left: 6px solid #dc2626;
         }
         
         .footer {
             text-align: center;
-            padding: 20px;
-            color: #666;
+            padding: 24px;
+            color: #6b7280;
             font-size: 14px;
-            border-top: 1px solid #e9ecef;
-            background: #f8f9fa;
+            border-top: 1px solid #e5e7eb;
+            background: #f9fafb;
         }
         
-        @media (max-width: 600px) {
+        .footer p {
+            margin: 6px 0;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4b5563;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .contact-item:hover {
+            color: #a3e635;
+        }
+        
+        @media (max-width: 640px) {
+            .business-name {
+                font-size: 28px;
+            }
+            
+            .job-details-grid {
+                grid-template-columns: 1fr;
+            }
+            
             .input-wrapper {
                 flex-direction: column;
             }
@@ -230,19 +336,32 @@
             button {
                 width: 100%;
             }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 12px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🔍 Job Status Tracker</h1>
-            <p>Enter your job number to check real-time status</p>
+        <!-- BUSINESS NAME HEADER -->
+        <div class="business-header">
+            <div class="business-name">YOUR BUSINESS NAME</div>
+            <div class="business-tagline">Professional Service • Quality Guaranteed</div>
         </div>
         
+        <!-- TRACKER HEADER -->
+        <div class="tracker-header">
+            <h1>🔍 Job Status Tracker</h1>
+            <p>Enter your job number to check real-time status and quotation price</p>
+        </div>
+        
+        <!-- MAIN CONTENT -->
         <div class="content">
             <div class="status-indicator" id="statusIndicator">
-                🔄 Connecting to live database...
+                <span>🔄</span>
+                <span>Connecting to live database...</span>
             </div>
             
             <div class="input-group">
@@ -257,58 +376,78 @@
                         autofocus
                     >
                     <button onclick="searchJob()">
-                        <span id="buttonText">Search</span>
+                        <span id="buttonText">🔍 Search Job</span>
                     </button>
                 </div>
-                <small style="color: #666; display: block; margin-top: 8px;">
-                    📝 Found on your invoice or quotation
+                <small style="color: #6b7280; display: block; margin-top: 8px; font-size: 14px;">
+                    📝 Enter the job number from your quotation or invoice
                 </small>
             </div>
             
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Searching for your job...</p>
+                <p style="color: #4b5563; margin-top: 12px; font-weight: 500;">Searching for your job...</p>
             </div>
             
             <div class="error-message" id="errorMessage">
                 <strong>⚠️ Error:</strong> <span id="errorText"></span>
             </div>
             
+            <!-- RESULTS CARD -->
             <div class="result-card" id="resultCard">
-                <div class="job-detail">
-                    <div class="detail-label">Job Number</div>
-                    <div class="detail-value" id="resultJobNumber">-</div>
-                </div>
-                
-                <div class="job-detail">
-                    <div class="detail-label">Current Status</div>
-                    <div class="detail-value">
-                        <span id="resultStatus">-</span>
-                        <span class="status-badge" id="statusBadge"></span>
+                <div class="job-details-grid">
+                    <div class="job-detail">
+                        <div class="detail-label">Job Number</div>
+                        <div class="detail-value" id="resultJobNumber">-</div>
+                    </div>
+                    
+                    <div class="job-detail">
+                        <div class="detail-label">Current Status</div>
+                        <div class="detail-value" id="resultStatus">-</div>
+                        <div class="status-badge" id="statusBadge"></div>
+                    </div>
+                    
+                    <div class="job-detail">
+                        <div class="detail-label">Quotation Price</div>
+                        <div class="detail-value price-value" id="resultPrice">-</div>
+                    </div>
+                    
+                    <div class="job-detail">
+                        <div class="detail-label">Last Updated</div>
+                        <div class="detail-value" id="resultDate">-</div>
                     </div>
                 </div>
                 
-                <div class="job-detail">
-                    <div class="detail-label">Last Updated</div>
-                    <div class="detail-value" id="resultDate">-</div>
-                </div>
-                
-                <div class="job-detail">
-                    <div class="detail-label">Notes</div>
-                    <div class="detail-value" id="resultNotes" style="font-weight: normal;">-</div>
+                <div class="notes-section">
+                    <div class="detail-label">Job Notes & Updates</div>
+                    <div class="detail-value" id="resultNotes" style="font-weight: normal; font-size: 16px; line-height: 1.6;">-</div>
                 </div>
             </div>
         </div>
         
+        <!-- FOOTER -->
         <div class="footer">
-            <p>🔄 Updates automatically from Google Sheets</p>
-            <p>🔒 Secure & POPIA compliant</p>
+            <p>🔄 Updates automatically from Google Sheets • 🔒 POPIA Compliant</p>
+            <div class="contact-info">
+                <a href="tel:+27111234567" class="contact-item">
+                    <span>📞</span>
+                    <span>+27 11 123 4567</span>
+                </a>
+                <a href="mailto:info@yourbusiness.co.za" class="contact-item">
+                    <span>✉️</span>
+                    <span>info@yourbusiness.co.za</span>
+                </a>
+                <a href="https://yourbusiness.co.za" class="contact-item">
+                    <span>🌐</span>
+                    <span>yourbusiness.co.za</span>
+                </a>
+            </div>
         </div>
     </div>
 
     <script>
         // ================= CONFIGURATION =================
-        // 🔥 REPLACE THIS WITH YOUR GOOGLE SHEET ID
+        // ✅ YOUR GOOGLE SHEET ID IS ADDED HERE
         const GOOGLE_SHEET_ID = '18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo';
         // =================================================
         
@@ -323,7 +462,7 @@
             const indicator = document.getElementById('statusIndicator');
             
             try {
-                indicator.innerHTML = '🔄 Loading job data...';
+                indicator.innerHTML = '<span>🔄</span><span>Loading job data from live database...</span>';
                 
                 const response = await fetch(SHEET_URL);
                 
@@ -347,33 +486,63 @@
                     if (cells && cells[0] && cells[0].v) {
                         const jobNumber = cells[0].v.toString().trim().toLowerCase();
                         allJobs[jobNumber] = {
-                            status: cells[1] ? (cells[1].v || 'Unknown') : 'Unknown',
-                            date: cells[2] ? (cells[2].v || 'Not specified') : 'Not specified',
-                            notes: cells[3] ? (cells[3].v || '') : ''
+                            status: cells[1] ? (cells[1].v || 'Pending') : 'Pending',
+                            price: cells[2] ? formatPrice(cells[2].v) : 'Not quoted',
+                            date: cells[3] ? (cells[3].v || 'Not specified') : 'Not specified',
+                            notes: cells[4] ? (cells[4].v || '') : ''
                         };
                     }
                 });
                 
                 dataLoaded = true;
                 const count = Object.keys(allJobs).length;
-                indicator.innerHTML = `✅ Live database connected (${count} jobs loaded)`;
+                indicator.innerHTML = `<span>✅</span><span>Live database connected (${count} jobs loaded)</span>`;
                 indicator.className = 'status-indicator success';
                 
                 console.log(`Loaded ${count} jobs from Google Sheets`);
-                console.log('Available jobs:', Object.keys(allJobs));
                 
             } catch (error) {
                 console.error('Failed to load data:', error);
-                indicator.innerHTML = '⚠️ Using offline data (check connection)';
+                indicator.innerHTML = '<span>⚠️</span><span>Using offline data - check connection</span>';
                 indicator.className = 'status-indicator error';
                 
                 // Fallback data if Google Sheets fails
                 allJobs = {
-                    'j1001': { status: 'In Progress', date: '19 March 2024', notes: 'Sample data - Google Sheets not connected' },
-                    'j1002': { status: 'Ready', date: '18 March 2024', notes: 'Test job - update your Sheet ID' }
+                    'j1001': { 
+                        status: 'In Progress', 
+                        price: 'R 2,500.00', 
+                        date: '19 March 2024', 
+                        notes: 'Awaiting customer approval on design' 
+                    },
+                    'j1002': { 
+                        status: 'Quoted', 
+                        price: 'R 4,750.00', 
+                        date: '18 March 2024', 
+                        notes: 'Ready for collection - payment pending' 
+                    },
+                    'j1003': { 
+                        status: 'Completed', 
+                        price: 'R 8,200.00', 
+                        date: '15 March 2024', 
+                        notes: 'Delivered to client - balance paid in full' 
+                    }
                 };
                 dataLoaded = true;
             }
+        }
+        
+        // Format price to South African Rand
+        function formatPrice(value) {
+            if (!value) return 'Not quoted';
+            if (typeof value === 'string') {
+                value = parseFloat(value.replace(/[^0-9.-]+/g, ""));
+            }
+            if (isNaN(value)) return 'Not quoted';
+            
+            return 'R ' + value.toLocaleString('en-ZA', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
         }
         
         // Search for a job
@@ -398,7 +567,7 @@
             if (!dataLoaded) {
                 buttonText.textContent = 'Loading...';
                 await loadJobData();
-                buttonText.textContent = 'Search';
+                buttonText.textContent = '🔍 Search Job';
             }
             
             loading.style.display = 'block';
@@ -422,6 +591,7 @@
             // Update DOM
             document.getElementById('resultJobNumber').textContent = jobNumber.toUpperCase();
             document.getElementById('resultStatus').textContent = job.status;
+            document.getElementById('resultPrice').textContent = job.price;
             document.getElementById('resultDate').textContent = job.date;
             document.getElementById('resultNotes').textContent = job.notes || 'No notes available';
             
@@ -439,7 +609,7 @@
             
             // Update status indicator
             document.getElementById('statusIndicator').innerHTML = 
-                `✅ Last search: ${jobNumber.toUpperCase()} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}`;
+                `<span>✅</span><span>Last search: ${jobNumber.toUpperCase()} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
         }
         
         // Get CSS class for status
@@ -449,6 +619,7 @@
             if (status.includes('ready')) return 'status-ready';
             if (status.includes('complete')) return 'status-completed';
             if (status.includes('pending')) return 'status-pending';
+            if (status.includes('quote')) return 'status-quoted';
             return 'status-in-progress';
         }
         
@@ -476,6 +647,12 @@
             
             // Focus on input
             document.getElementById('jobNumber').focus();
+            
+            // Add custom business name
+            const businessName = prompt("Enter your business name:", "YOUR BUSINESS NAME");
+            if (businessName && businessName.trim() !== "") {
+                document.querySelector('.business-name').textContent = businessName.toUpperCase();
+            }
         });
     </script>
 </body>
