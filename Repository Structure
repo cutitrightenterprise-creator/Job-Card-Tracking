@@ -1,0 +1,11 @@
+job-tracker/
+├── index.html
+├── data/
+│   └── jobs.json      # Your job database
+├── js/
+│   └── tracker.js     # JavaScript logic
+├── css/
+│   └── style.css      # Styles
+└── .github/
+    └── workflows/
+        └── update-jobs.yml  # Auto-update workflow
