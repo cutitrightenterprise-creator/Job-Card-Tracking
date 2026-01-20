@@ -1,196 +1,138 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Track Your Job</title>
+    <title>Job Tracker - Live from Google Sheets</title>
     <style>
-        body {
-            font-family: Arial;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-        .box {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            max-width: 500px;
-            margin: 50px auto;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #007749;
-            text-align: center;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            text-transform: uppercase;
-        }
-        button {
-            background: #FFB81C;
-            color: black;
-            border: none;
-            padding: 12px;
-            width: 100%;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover {
-            background: #e6a500;
-        }
-        .result {
-            background: #e8f5e9;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 20px;
-            display: none;
-        }
-        .error {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 20px;
-            display: none;
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-        .in-progress { background: #fff3cd; color: #856404; }
-        .ready { background: #d4edda; color: #155724; }
-        .completed { background: #d1ecf1; color: #0c5460; }
-        .pending { background: #f8d7da; color: #721c24; }
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        .box { background: white; padding: 30px; max-width: 500px; margin: auto; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        h1 { color: #007749; text-align: center; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; }
+        button { background: #FFB81C; color: black; border: none; padding: 12px; width: 100%; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .result { background: #e8f5e9; padding: 15px; border-radius: 5px; margin-top: 20px; display: none; }
+        .error { background: #ffebee; color: #c62828; padding: 15px; border-radius: 5px; margin-top: 20px; display: none; }
+        .update { font-size: 12px; color: #666; text-align: center; margin-top: 10px; }
     </style>
+    <!-- Load Tabletop.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.6.2/tabletop.min.js"></script>
 </head>
 <body>
     <div class="box">
         <h1>Track Your Job</h1>
-        <p>Enter your job number (like j1234):</p>
+        <p>Enter job number (e.g. j1234):</p>
         
-        <input type="text" id="jobNumber" placeholder="e.g. j1234 or j5678" oninput="this.value = this.value.toLowerCase()">
-        <button onclick="checkJob()">CHECK STATUS</button>
+        <input type="text" id="jobNumber" placeholder="j1234" oninput="this.value = this.value.toLowerCase()">
+        <button onclick="findJob()">CHECK STATUS</button>
+        
+        <div class="update" id="lastUpdate">
+            Loading job data...
+        </div>
         
         <div class="result" id="result">
             <h3>Job Status:</h3>
-            <p><strong>Job Number:</strong> <span id="resultNumber" style="font-weight: bold; color: #007749;"></span></p>
-            <p><strong>Status:</strong> 
-                <span id="resultStatus"></span>
-                <span class="status-badge" id="statusBadge"></span>
-            </p>
-            <p><strong>Last Updated:</strong> <span id="resultDate"></span></p>
+            <p><strong>Job:</strong> <span id="resultNumber"></span></p>
+            <p><strong>Status:</strong> <span id="resultStatus"></span></p>
+            <p><strong>Updated:</strong> <span id="resultDate"></span></p>
             <p><strong>Notes:</strong> <span id="resultNotes"></span></p>
         </div>
         
         <div class="error" id="error">
-            Job not found. Please check your number.
-        </div>
-        
-        <div style="margin-top: 20px; font-size: 14px; color: #666; text-align: center;">
-            <p>Example job numbers: j1001, j1002, j1003</p>
+            Job not found.
         </div>
     </div>
 
     <script>
-        // YOUR JOB DATABASE - Edit this list with your real jobs
-        const jobs = {
-            "j1001": { 
-                status: "In Progress", 
-                date: "18 March 2024",
-                notes: "Awaiting customer approval"
-            },
-            "j1002": { 
-                status: "Ready for Collection", 
-                date: "17 March 2024",
-                notes: "Balance payment due"
-            },
-            "j1003": { 
-                status: "Completed", 
-                date: "15 March 2024",
-                notes: "Delivered to client"
-            },
-            "j1004": { 
-                status: "In Progress", 
-                date: "18 March 2024",
-                notes: "Quality check stage"
-            },
-            "j1005": { 
-                status: "Pending", 
-                date: "16 March 2024",
-                notes: "Awaiting materials"
-            }
-        };
+        // 🔥 REPLACE THIS WITH YOUR GOOGLE SHEET ID
+        const SHEET_ID = 18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo/edit?usp=sharing
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/`;
         
-        function checkJob() {
-            const input = document.getElementById('jobNumber');
-            const jobNumber = input.value.trim().toLowerCase();
+        let jobData = {}; // This stores all jobs
+        let lastUpdated = '';
+        
+        // Load data from Google Sheets
+        async function loadSheetData() {
+            try {
+                const response = await fetch(SHEET_URL);
+                const text = await response.text();
+                
+                // Parse the JSON (Google Sheets adds some wrapper text)
+                const json = JSON.parse(text.substr(47).slice(0, -2));
+                
+                // Convert to simple object
+                jobData = {};
+                json.table.rows.forEach(row => {
+                    const jobNumber = row.c[0]?.v?.toString().toLowerCase() || '';
+                    if (jobNumber) {
+                        jobData[jobNumber] = {
+                            status: row.c[1]?.v || 'Unknown',
+                            date: row.c[2]?.v || 'Not specified',
+                            notes: row.c[3]?.v || ''
+                        };
+                    }
+                });
+                
+                lastUpdated = new Date().toLocaleTimeString('en-ZA');
+                document.getElementById('lastUpdate').innerHTML = 
+                    `✅ Live data loaded at ${lastUpdated} <br><small>(${Object.keys(jobData).length} jobs in system)</small>`;
+                    
+                console.log('Data loaded:', Object.keys(jobData).length, 'jobs');
+                
+            } catch (error) {
+                console.error('Error loading sheet:', error);
+                document.getElementById('lastUpdate').innerHTML = 
+                    '⚠️ Could not load data. Using last saved version.';
+            }
+        }
+        
+        // Find a job
+        function findJob() {
+            const jobNumber = document.getElementById('jobNumber').value.trim().toLowerCase();
             const resultDiv = document.getElementById('result');
             const errorDiv = document.getElementById('error');
             
-            // Hide both first
             resultDiv.style.display = 'none';
             errorDiv.style.display = 'none';
             
             if (!jobNumber) {
-                errorDiv.innerText = "Please enter a job number";
-                errorDiv.style.display = 'block';
+                showError('Please enter a job number');
                 return;
             }
             
-            // Check if job exists
-            if (jobs[jobNumber]) {
-                const job = jobs[jobNumber];
+            if (jobData[jobNumber]) {
+                const job = jobData[jobNumber];
                 
-                // Show job details
                 document.getElementById('resultNumber').innerText = jobNumber.toUpperCase();
                 document.getElementById('resultStatus').innerText = job.status;
                 document.getElementById('resultDate').innerText = job.date;
-                document.getElementById('resultNotes').innerText = job.notes || "No notes available";
-                
-                // Set status badge color
-                const badge = document.getElementById('statusBadge');
-                badge.innerText = job.status;
-                badge.className = "status-badge " + getStatusClass(job.status);
+                document.getElementById('resultNotes').innerText = job.notes || 'No notes';
                 
                 resultDiv.style.display = 'block';
                 
                 // Clear input
-                input.value = "";
-                input.focus();
+                document.getElementById('jobNumber').value = '';
             } else {
-                errorDiv.innerText = `Job "${jobNumber.toUpperCase()}" not found. Please check your number.`;
-                errorDiv.style.display = 'block';
+                showError(`Job "${jobNumber.toUpperCase()}" not found.`);
             }
         }
         
-        function getStatusClass(status) {
-            status = status.toLowerCase();
-            if (status.includes('progress')) return 'in-progress';
-            if (status.includes('ready')) return 'ready';
-            if (status.includes('complete')) return 'completed';
-            if (status.includes('pending')) return 'pending';
-            return 'in-progress';
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerText = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        // Auto-refresh data every 5 minutes
+        function startAutoRefresh() {
+            loadSheetData(); // Load immediately
+            setInterval(loadSheetData, 5 * 60 * 1000); // Refresh every 5 minutes
         }
         
         // Press Enter to search
         document.getElementById('jobNumber').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkJob();
-            }
+            if (e.key === 'Enter') findJob();
         });
         
-        // Auto-focus on input when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('jobNumber').focus();
-        });
+        // Load data when page opens
+        window.addEventListener('DOMContentLoaded', startAutoRefresh);
     </script>
 </body>
 </html>
