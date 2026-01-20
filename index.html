@@ -232,28 +232,179 @@
             font-size: 22px;
         }
         
+        /* UPDATED NOTES SECTION - MORE VISIBLE */
         .notes-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            padding: 24px;
+            border-radius: 12px;
+            border: 3px solid #3b82f6;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .notes-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
+        }
+        
+        .notes-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .notes-icon {
+            background: #3b82f6;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .notes-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e40af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .notes-content {
             background: white;
             padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            margin-top: 10px;
+            border-radius: 10px;
+            border: 2px solid #dbeafe;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #1f2937;
+            white-space: pre-line;
+            min-height: 80px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            overflow-wrap: break-word;
+        }
+        
+        /* COLORED NOTES BASED ON STATUS */
+        .notes-awaiting-deposit {
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        }
+        
+        .notes-awaiting-deposit .notes-content {
+            border-color: #fbbf24;
+            background: #fffbeb;
+            color: #92400e;
+        }
+        
+        .notes-awaiting-deposit .notes-icon {
+            background: #f59e0b;
+        }
+        
+        .notes-awaiting-deposit .notes-label {
+            color: #b45309;
+        }
+        
+        .notes-in-progress {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        }
+        
+        .notes-in-progress .notes-content {
+            border-color: #93c5fd;
+            background: #eff6ff;
+            color: #1e40af;
+        }
+        
+        .notes-completed {
+            border-color: #10b981;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        }
+        
+        .notes-completed .notes-content {
+            border-color: #a7f3d0;
+            background: #ecfdf5;
+            color: #065f46;
+        }
+        
+        .notes-completed .notes-icon {
+            background: #10b981;
+        }
+        
+        .notes-completed .notes-label {
+            color: #047857;
+        }
+        
+        .notes-ready {
+            border-color: #8b5cf6;
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+        }
+        
+        .notes-ready .notes-content {
+            border-color: #c4b5fd;
+            background: #f5f3ff;
+            color: #5b21b6;
+        }
+        
+        .notes-ready .notes-icon {
+            background: #8b5cf6;
+        }
+        
+        .notes-ready .notes-label {
+            color: #6d28d9;
         }
         
         .deposit-notice {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 2px solid #f59e0b;
+            border: 3px solid #f59e0b;
             border-radius: 12px;
-            padding: 18px;
+            padding: 20px;
             margin-top: 20px;
             text-align: center;
             color: #92400e;
             font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .deposit-notice::before {
+            content: '⚠️';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 24px;
         }
         
         .deposit-notice strong {
             color: #b45309;
             font-size: 18px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .deposit-amount {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px dashed #f59e0b;
+            margin: 10px 0;
+            font-size: 20px;
+            font-weight: 700;
+            color: #b45309;
+            display: inline-block;
         }
         
         .status-badge {
@@ -270,7 +421,12 @@
         .status-completed { background: #f0f9ff; color: #0c4a6e; }
         .status-pending { background: #fef3c7; color: #92400e; }
         .status-quoted { background: #f3e8ff; color: #6b21a8; }
-        .status-awaiting-deposit { background: #fef3c7; color: #92400e; border: 2px dashed #f59e0b; }
+        .status-awaiting-deposit { 
+            background: linear-gradient(135deg, #fef3c7, #fde68a); 
+            color: #92400e; 
+            border: 2px solid #f59e0b;
+            font-weight: 800;
+        }
         
         .loading {
             text-align: center;
@@ -358,6 +514,10 @@
                 flex-direction: column;
                 gap: 12px;
             }
+            
+            .deposit-notice {
+                padding: 15px 15px 15px 60px;
+            }
         }
     </style>
 </head>
@@ -438,13 +598,21 @@
                 
                 <!-- DEPOSIT NOTICE - ALWAYS SHOWN -->
                 <div class="deposit-notice">
-                    <strong>⚠️ IMPORTANT: 50% DEPOSIT REQUIRED</strong><br>
+                    <strong>⚠️ IMPORTANT: 50% DEPOSIT REQUIRED</strong>
                     A 50% deposit is required for us to proceed with your job.
+                    <div id="depositAmount" class="deposit-amount">-</div>
+                    Deposit payable to: Cut It Right | Email: cutitright.info@gmail.com
                 </div>
                 
-                <div class="notes-section">
-                    <div class="detail-label">Job Notes & Updates</div>
-                    <div class="detail-value" id="resultNotes" style="font-weight: normal; font-size: 16px; line-height: 1.6;">-</div>
+                <!-- UPDATED NOTES SECTION - HIGHLY VISIBLE -->
+                <div class="notes-section" id="notesSection">
+                    <div class="notes-header">
+                        <div class="notes-icon">📋</div>
+                        <div class="notes-label">Job Updates & Important Information</div>
+                    </div>
+                    <div class="notes-content" id="resultNotes">
+                        No updates available
+                    </div>
                 </div>
             </div>
         </div>
@@ -463,24 +631,21 @@
                 </a>
             </div>
             <p style="margin-top: 16px; font-size: 13px; color: #9ca3af;">
-                <strong>Payment Terms:</strong> 50% deposit required to start work
+                <strong>Payment Terms:</strong> 50% deposit required to start work • Balance on completion
             </p>
         </div>
     </div>
 
     <script>
         // ================= CONFIGURATION =================
-        // ✅ YOUR GOOGLE SHEET ID IS ADDED HERE
         const GOOGLE_SHEET_ID = '18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo';
         // =================================================
         
-        // Sheet URL - DON'T CHANGE THIS
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`;
         
         let allJobs = {};
         let dataLoaded = false;
         
-        // Load data from Google Sheets
         async function loadJobData() {
             const indicator = document.getElementById('statusIndicator');
             
@@ -494,15 +659,11 @@
                 }
                 
                 const text = await response.text();
-                
-                // Parse Google Sheets JSON
                 const json = JSON.parse(text.substring(47).slice(0, -2));
                 const rows = json.table.rows;
                 
-                // Convert to object
                 allJobs = {};
                 rows.forEach((row, index) => {
-                    // Skip header row (index 0)
                     if (index === 0) return;
                     
                     const cells = row.c;
@@ -522,39 +683,36 @@
                 indicator.innerHTML = `<span>✅</span><span>Live database connected (${count} jobs loaded)</span>`;
                 indicator.className = 'status-indicator success';
                 
-                console.log(`Loaded ${count} jobs from Google Sheets`);
-                
             } catch (error) {
                 console.error('Failed to load data:', error);
                 indicator.innerHTML = '<span>⚠️</span><span>Using offline data - check connection</span>';
                 indicator.className = 'status-indicator error';
                 
-                // Fallback data if Google Sheets fails
+                // Fallback data
                 allJobs = {
                     'j1001': { 
                         status: 'Awaiting Deposit', 
                         price: 'R 2,500.00', 
                         date: '19 March 2024', 
-                        notes: '50% deposit of R 1,250.00 required to proceed' 
+                        notes: '✅ QUOTATION READY\n📅 Submitted: 19 March 2024\n💳 50% Deposit Required: R 1,250.00\n📞 Please contact us to make payment\n🚀 We can start immediately after deposit' 
                     },
                     'j1002': { 
                         status: 'In Progress', 
                         price: 'R 4,750.00', 
                         date: '18 March 2024', 
-                        notes: 'Deposit received - work in progress' 
+                        notes: '✅ DEPOSIT RECEIVED\n💰 Amount: R 2,375.00\n📅 Started: 18 March 2024\n⏳ Estimated Completion: 22 March 2024\n🔧 Current Stage: Precision Cutting\n📞 We will contact you with updates' 
                     },
                     'j1003': { 
-                        status: 'Completed', 
+                        status: 'Ready for Collection', 
                         price: 'R 8,200.00', 
-                        date: '15 March 2024', 
-                        notes: 'Job completed - balance paid in full' 
+                        date: 'Today', 
+                        notes: '🎉 JOB COMPLETED\n✅ Quality check passed\n📦 Ready for collection\n💰 Balance due: R 4,100.00\n📍 Collection: Our workshop\n⏰ Hours: Mon-Fri 8am-5pm\n📞 Please call before collecting' 
                     }
                 };
                 dataLoaded = true;
             }
         }
         
-        // Format price to South African Rand
         function formatPrice(value) {
             if (!value) return 'Not quoted';
             if (typeof value === 'string') {
@@ -568,7 +726,6 @@
             });
         }
         
-        // Calculate deposit amount
         function calculateDeposit(priceStr) {
             if (!priceStr || priceStr === 'Not quoted') return 'N/A';
             
@@ -582,7 +739,6 @@
             });
         }
         
-        // Search for a job
         async function searchJob() {
             const jobNumber = document.getElementById('jobNumber').value.trim().toLowerCase();
             const loading = document.getElementById('loading');
@@ -590,7 +746,6 @@
             const result = document.getElementById('resultCard');
             const buttonText = document.getElementById('buttonText');
             
-            // Hide everything
             loading.style.display = 'none';
             error.style.display = 'none';
             result.style.display = 'none';
@@ -600,7 +755,6 @@
                 return;
             }
             
-            // Make sure data is loaded
             if (!dataLoaded) {
                 buttonText.textContent = 'Loading...';
                 await loadJobData();
@@ -609,7 +763,6 @@
             
             loading.style.display = 'block';
             
-            // Simulate search delay
             setTimeout(() => {
                 loading.style.display = 'none';
                 
@@ -621,30 +774,36 @@
             }, 500);
         }
         
-        // Display job details
         function displayJob(jobNumber, job) {
             const result = document.getElementById('resultCard');
+            const notesSection = document.getElementById('notesSection');
+            const depositAmountDiv = document.getElementById('depositAmount');
             
-            // Update DOM
+            // Update basic info
             document.getElementById('resultJobNumber').textContent = jobNumber.toUpperCase();
             document.getElementById('resultStatus').textContent = job.status;
             document.getElementById('resultPrice').textContent = job.price;
             document.getElementById('resultDate').textContent = job.date;
             
-            // Update notes with deposit info if applicable
-            let notes = job.notes || 'No notes available';
-            if (job.status.toLowerCase().includes('awaiting') || job.status.toLowerCase().includes('deposit')) {
-                const depositAmount = calculateDeposit(job.price);
-                if (depositAmount !== 'N/A') {
-                    notes = `📋 ${notes}\n\n💳 Required Deposit: ${depositAmount} (50% of ${job.price})`;
-                }
+            // Update notes with formatting
+            let notes = job.notes || 'No updates available. Please contact us for information.';
+            document.getElementById('resultNotes').innerHTML = formatNotes(notes);
+            
+            // Update deposit amount
+            const depositAmount = calculateDeposit(job.price);
+            if (depositAmount !== 'N/A') {
+                depositAmountDiv.textContent = `Required Deposit: ${depositAmount}`;
+            } else {
+                depositAmountDiv.textContent = 'Deposit amount will be calculated after quoting';
             }
-            document.getElementById('resultNotes').textContent = notes;
             
             // Set status badge
             const badge = document.getElementById('statusBadge');
             badge.textContent = job.status;
             badge.className = 'status-badge ' + getStatusClass(job.status);
+            
+            // Set notes section color based on status
+            setNotesColor(job.status);
             
             // Show result
             result.style.display = 'block';
@@ -658,7 +817,47 @@
                 `<span>✅</span><span>Last search: ${jobNumber.toUpperCase()} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
         }
         
-        // Get CSS class for status
+        function formatNotes(notes) {
+            // Replace line breaks with HTML breaks and add emoji formatting
+            let formattedNotes = notes
+                .replace(/\n/g, '<br>')
+                .replace(/✅/g, '<span style="color: #10b981;">✅</span>')
+                .replace(/📅/g, '<span style="color: #3b82f6;">📅</span>')
+                .replace(/💳/g, '<span style="color: #8b5cf6;">💳</span>')
+                .replace(/💰/g, '<span style="color: #059669;">💰</span>')
+                .replace(/📞/g, '<span style="color: #ef4444;">📞</span>')
+                .replace(/🚀/g, '<span style="color: #f59e0b;">🚀</span>')
+                .replace(/🔧/g, '<span style="color: #6366f1;">🔧</span>')
+                .replace(/⏳/g, '<span style="color: #f97316;">⏳</span>')
+                .replace(/🎉/g, '<span style="color: #ec4899;">🎉</span>')
+                .replace(/📦/g, '<span style="color: #14b8a6;">📦</span>')
+                .replace(/📍/g, '<span style="color: #8b5cf6;">📍</span>')
+                .replace(/⏰/g, '<span style="color: #0ea5e9;">⏰</span>');
+            
+            return formattedNotes;
+        }
+        
+        function setNotesColor(status) {
+            const notesSection = document.getElementById('notesSection');
+            
+            // Remove all color classes
+            notesSection.className = 'notes-section';
+            
+            // Add appropriate color class
+            status = status.toLowerCase();
+            if (status.includes('awaiting deposit') || status.includes('deposit')) {
+                notesSection.classList.add('notes-awaiting-deposit');
+            } else if (status.includes('progress')) {
+                notesSection.classList.add('notes-in-progress');
+            } else if (status.includes('complete')) {
+                notesSection.classList.add('notes-completed');
+            } else if (status.includes('ready')) {
+                notesSection.classList.add('notes-ready');
+            } else {
+                notesSection.classList.add('notes-in-progress');
+            }
+        }
+        
         function getStatusClass(status) {
             status = status.toLowerCase();
             if (status.includes('awaiting deposit')) return 'status-awaiting-deposit';
@@ -671,7 +870,6 @@
             return 'status-awaiting-deposit';
         }
         
-        // Show error message
         function showError(message) {
             const error = document.getElementById('errorMessage');
             document.getElementById('errorText').textContent = message;
@@ -680,20 +878,15 @@
         
         // Initialize
         window.addEventListener('DOMContentLoaded', function() {
-            // Load data immediately
             loadJobData();
-            
-            // Auto-refresh every 2 minutes
             setInterval(loadJobData, 2 * 60 * 1000);
             
-            // Enter key support
             document.getElementById('jobNumber').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     searchJob();
                 }
             });
             
-            // Focus on input
             document.getElementById('jobNumber').focus();
         });
     </script>
