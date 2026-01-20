@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Job - [Your Business Name]</title>
+    <style>
+        /* South African themed colors */
+        :root {
+            --primary-green: #007749; /* SA green */
+            --gold: #FFB81C; /* SA gold */
+            --blue: #001489; /* SA blue */
+            --red: #E03C31; /* SA red */
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--light-gray) 0%, #ffffff 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 2px solid var(--primary-green);
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary-green), var(--blue));
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .sa-flag {
+            display: inline-block;
+            width: 30px;
+            height: 20px;
+            background: linear-gradient(to right, 
+                var(--primary-green) 33%, 
+                white 33%, white 66%, 
+                var(--blue) 66%);
+            position: relative;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        .sa-flag:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, 
+                transparent 33%, 
+                var(--gold) 33%, var(--gold) 66%, 
+                transparent 66%),
+                linear-gradient(to bottom, 
+                transparent 33%, 
+                black 33%, black 66%, 
+                transparent 66%);
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .tracker-form {
+            margin-bottom: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark-gray);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(0, 119, 73, 0.1);
+        }
+        
+        button {
+            background: var(--gold);
+            color: var(--dark-gray);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        button:hover {
+            background: #e6a500;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 184, 28, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result-container {
+            display: none;
+            background: var(--light-gray);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 20px;
+            border-left: 5px solid var(--primary-green);
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .job-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .detail-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .status-in-progress {
+            background-color: #FFF3CD;
+            color: #856404;
+            border: 1px solid #FFEAA7;
+        }
+        
+        .status-ready {
+            background-color: #D4EDDA;
+            color: #155724;
+            border: 1px solid #C3E6CB;
+        }
+        
+        .status-pending {
+            background-color: #F8D7DA;
+            color: #721C24;
+            border: 1px solid #F5C6CB;
+        }
+        
+        .status-completed {
+            background-color: #D1ECF1;
+            color: #0C5460;
+            border: 1px solid #BEE5EB;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: var(--primary-green);
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-green);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background-color: #F8D7DA;
+            color: #721C24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            border-left: 5px solid var(--red);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--light-gray);
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #ddd;
+        }
+        
+        .footer a {
+            color: var(--primary-green);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Track Your Job <span class="sa-flag" title="South Africa"></span></h1>
+            <p>Enter your job number to check the current status</p>
+        </div>
+        
+        <div class="content">
+            <div class="tracker-form">
+                <div class="form-group">
+                    <label for="jobNumber">Your Job Number:</label>
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="jobNumber" 
+                            placeholder="e.g., JOB-001 or 2024-003"
+                            autocomplete="off"
+                            autocapitalize="characters"
+                        >
+                        <button onclick="trackJob()">Track Job</button>
+                    </div>
+                    <small style="color: #666; margin-top: 5px; display: block;">
+                        Find your job number on your quotation or invoice
+                    </small>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Searching for your job...</p>
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+                
+                <div class="result-container" id="resultContainer">
+                    <h2 style="color: var(--primary-green); margin-bottom: 20px;">
+                        Job Status Details
+                    </h2>
+                    <div class="job-details" id="jobDetails">
+                        <!-- Dynamic content will go here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 [Your Business Name]. All rights reserved.</p>
+            <p>Need help? <a href="mailto:[your-email@example.com]">Contact our support team</a></p>
+            <p style="font-size: 0.8rem; margin-top: 10px;">
+                <em>Your privacy is protected. Only job status is displayed.</em>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // IMPORTANT: REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT URL
+        const API_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+        
+        // Status color mapping
+        const statusColors = {
+            'In Progress': 'status-in-progress',
+            'Ready for Collection': 'status-ready',
+            'Pending': 'status-pending',
+            'Completed': 'status-completed',
+            'Awaiting Parts': 'status-pending',
+            'Quality Check': 'status-in-progress',
+            'Delivered': 'status-completed'
+        };
+        
+        function getStatusClass(status) {
+            const statusKey = Object.keys(statusColors).find(key => 
+                status.toLowerCase().includes(key.toLowerCase())
+            );
+            return statusColors[statusKey] || 'status-in-progress';
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'Not specified';
+            
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString;
+                
+                return date.toLocaleDateString('en-ZA', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+        
+        async function trackJob() {
+            const jobNumber = document.getElementById('jobNumber').value.trim();
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('errorMessage');
+            const resultContainer = document.getElementById('resultContainer');
+            const jobDetails = document.getElementById('jobDetails');
+            
+            // Reset UI
+            errorMessage.style.display = 'none';
+            resultContainer.style.display = 'none';
+            
+            // Validate input
+            if (!jobNumber) {
+                showError('Please enter a job number');
+                return;
+            }
+            
+            // Show loading
+            loading.style.display = 'block';
+            
+            try {
+                // Call Google Apps Script API
+                const response = await fetch(`${API_URL}?jobNumber=${encodeURIComponent(jobNumber)}`);
+                const data = await response.json();
+                
+                // Hide loading
+                loading.style.display = 'none';
+                
+                if (data.success && data.data) {
+                    displayJobDetails(data.data);
+                } else {
+                    showError(data.message || 'Job not found. Please check your job number.');
+                }
+                
+            } catch (error) {
+                loading.style.display = 'none';
+                showError('Network error. Please check your connection and try again.');
+                console.error('Error:', error);
+            }
+        }
+        
+        function displayJobDetails(job) {
+            const jobDetails = document.getElementById('jobDetails');
+            const resultContainer = document.getElementById('resultContainer');
+            
+            // Generate HTML for job details
+            jobDetails.innerHTML = `
+                <div class="detail-box">
+                    <div class="detail-label">Job Number</div>
+                    <div class="detail-value">${escapeHtml(job.jobNumber)}</div>
+                </div>
+                
+                <div class="detail-box">
+                    <div class="detail-label">Current Status</div>
+                    <div class="detail-value">
+                        ${escapeHtml(job.status)}
+                        <div class="status-badge ${getStatusClass(job.status)}">
+                            ${escapeHtml(job.status)}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-box">
+                    <div class="detail-label">Last Updated</div>
+                    <div class="detail-value">${formatDate(job.lastUpdated)}</div>
+                </div>
+                
+                <div class="detail-box">
+                    <div class="detail-label">Estimated Completion</div>
+                    <div class="detail-value">${formatDate(job.estimatedCompletion)}</div>
+                </div>
+                
+                ${job.notes ? `
+                <div class="detail-box" style="grid-column: 1 / -1;">
+                    <div class="detail-label">Notes</div>
+                    <div class="detail-value" style="font-weight: normal; font-size: 1.1rem;">
+                        ${escapeHtml(job.notes)}
+                    </div>
+                </div>
+                ` : ''}
+            `;
+            
+            // Show results
+            resultContainer.style.display = 'block';
+            
+            // Scroll to results
+            resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            
+            // Scroll to error
+            errorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        // Security: Prevent XSS attacks
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Allow pressing Enter to submit
+        document.getElementById('jobNumber').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                trackJob();
+            }
+        });
+        
+        // Pre-fill with URL parameter if present (optional feature)
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const jobParam = urlParams.get('job');
+            if (jobParam) {
+                document.getElementById('jobNumber').value = jobParam;
+                // Auto-search if you want (uncomment next line):
+                // setTimeout(() => trackJob(), 500);
+            }
+        });
+    </script>
+</body>
+</html>
