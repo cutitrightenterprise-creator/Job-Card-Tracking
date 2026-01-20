@@ -44,7 +44,7 @@
             border: 2px solid var(--lime-light);
         }
         
-        /* Lime Green Header with Icon */
+        /* Lime Green Header with Garden Equipment Icons */
         .header {
             background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
             padding: 40px 24px;
@@ -103,7 +103,7 @@
             margin-top: 10px;
         }
         
-        /* Icon Decorations */
+        /* Garden Equipment Decorative Icons */
         .icon-decoration {
             position: absolute;
             opacity: 0.1;
@@ -205,7 +205,7 @@
             box-shadow: 0 0 0 4px rgba(163, 230, 53, 0.2);
         }
         
-        /* SEARCH BUTTON with Icon */
+        /* SEARCH BUTTON with Garden Icon */
         .search-btn {
             width: 100%;
             background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
@@ -243,7 +243,7 @@
             margin-top: 16px;
         }
         
-        /* Centered Deposit Notice with Icon */
+        /* IMPORTANT: 50% Deposit Notice - UNCHANGED */
         .deposit-notice {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
             border: 3px solid #f59e0b;
@@ -279,7 +279,7 @@
             margin: 0 auto;
         }
         
-        /* Centered Notes Section with Icon */
+        /* Centered Notes Section with Repair Icon */
         .notes-section {
             background: linear-gradient(135deg, var(--lime-light) 0%, var(--lime-bg) 100%);
             border: 3px solid var(--lime);
@@ -333,7 +333,7 @@
             justify-content: center;
         }
         
-        /* Results Card with Icons */
+        /* Results Card with Repair Icons */
         .results {
             display: none;
             animation: fadeIn 0.4s ease-out;
@@ -420,7 +420,7 @@
             font-size: 22px;
         }
         
-        /* Loading with Icon */
+        /* Loading with Garden Icon */
         .loading {
             display: none;
             text-align: center;
@@ -442,7 +442,7 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Error with Icon */
+        /* Error with Warning Icon */
         .error {
             background: #fef2f2;
             border: 2px solid #fecaca;
@@ -459,7 +459,7 @@
             gap: 10px;
         }
         
-        /* Footer with Icons */
+        /* Footer with Repair Shop Icons */
         .footer {
             background: var(--lime-bg);
             padding: 28px;
@@ -504,6 +504,17 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+        }
+        
+        /* Custom Lawnmower & Brushcutter Icons */
+        .mower-icon:before {
+            content: "✂️";
+            font-size: 1.2em;
+        }
+        
+        .brushcutter-icon:before {
+            content: "⚙️";
+            font-size: 1.2em;
         }
         
         /* Responsive */
@@ -556,17 +567,17 @@
 </head>
 <body>
     <div class="container">
-        <!-- Lime Green Header with Icons -->
+        <!-- Lime Green Header with GARDEN EQUIPMENT Icons -->
         <div class="header">
-            <!-- Decorative Icons -->
+            <!-- Decorative Garden Equipment Icons -->
             <div class="icon-decoration icon-1">
-                <i class="fas fa-tools"></i>
+                <i class="fas fa-leaf"></i>
             </div>
             <div class="icon-decoration icon-2">
-                <i class="fas fa-car"></i>
+                <i class="fas fa-tools"></i>
             </div>
             <div class="icon-decoration icon-3">
-                <i class="fas fa-wrench"></i>
+                <i class="fas fa-seedling"></i>
             </div>
             <div class="icon-decoration icon-4">
                 <i class="fas fa-cogs"></i>
@@ -574,11 +585,11 @@
             
             <div class="logo-container">
                 <div class="logo-icon">
-                    <i class="fas fa-car-crash"></i>
+                    <i class="fas fa-tools"></i>
                 </div>
                 <div class="logo-text">CUT IT RIGHT</div>
             </div>
-            <div class="tagline">AUTOMOTIVE REPAIR & SALES SHOP</div>
+            <div class="tagline">LAWNMOWER & BRUSHCUTTER REPAIR SHOP</div>
         </div>
         
         <!-- Main Content -->
@@ -588,48 +599,48 @@
                 <span>Connecting to live database...</span>
             </div>
             
-            <!-- Search Section with Icons -->
+            <!-- Search Section with Garden Icons -->
             <div class="search-section">
                 <div class="search-title">
                     <i class="fas fa-search"></i>
-                    TRACK YOUR JOB
+                    TRACK YOUR REPAIR
                 </div>
                 
-                <!-- Input Bar with Icon -->
+                <!-- Input Bar with Repair Icon -->
                 <div class="input-container">
                     <div class="input-icon">
-                        <i class="fas fa-hashtag"></i>
+                        <i class="fas fa-wrench"></i>
                     </div>
                     <input 
                         type="text" 
                         class="input-bar"
                         id="jobNumber" 
-                        placeholder="Enter job number (e.g. j1001)"
+                        placeholder="Enter repair job number (e.g. j1001)"
                         autocomplete="off"
                         oninput="this.value = this.value.toLowerCase()"
                         autofocus
                     >
                 </div>
                 
-                <!-- Search Button with Icon -->
+                <!-- Search Button with Lawnmower Icon -->
                 <button class="search-btn" onclick="searchJob()">
                     <i class="fas fa-search"></i>
-                    <span id="buttonText">SEARCH JOB STATUS</span>
+                    <span id="buttonText">SEARCH REPAIR STATUS</span>
                 </button>
                 
                 <div class="hint">
                     <i class="fas fa-info-circle"></i>
-                    <span>Enter the job number from your quotation</span>
+                    <span>Enter the job number from your repair quotation</span>
                 </div>
             </div>
             
             <!-- Loading -->
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p style="font-weight: 600; color: var(--gray);">Searching for your job...</p>
+                <p style="font-weight: 600; color: var(--gray);">Searching for your repair job...</p>
             </div>
             
-            <!-- Error with Icon -->
+            <!-- Error with Warning Icon -->
             <div class="error" id="error">
                 <i class="fas fa-exclamation-triangle"></i>
                 <span id="errorText"></span>
@@ -637,11 +648,11 @@
             
             <!-- Results -->
             <div class="results" id="results">
-                <!-- Job Card with Icons -->
+                <!-- Job Card with Repair Icons -->
                 <div class="job-card">
                     <div class="job-header">
                         <div class="job-id" id="resultJobNumber">
-                            <i class="fas fa-file-invoice"></i>
+                            <i class="fas fa-tools"></i>
                             -
                         </div>
                         <div class="job-status" id="statusBadge">
@@ -654,7 +665,7 @@
                         <div class="detail-item">
                             <div class="detail-label">
                                 <i class="fas fa-tasks"></i>
-                                Status
+                                Repair Status
                             </div>
                             <div class="detail-value" id="resultStatus">
                                 <i class="fas fa-spinner"></i>
@@ -697,25 +708,25 @@
                     </div>
                 </div>
                 
-                <!-- CENTERED Deposit Notice with Icon -->
+                <!-- ✅ 50% DEPOSIT NOTICE - UNCHANGED AND STILL PROMINENT -->
                 <div class="deposit-notice">
                     <div class="deposit-icon">
                         <i class="fas fa-exclamation-triangle"></i>
                     </div>
                     <div class="deposit-title">50% DEPOSIT REQUIRED</div>
                     <div class="deposit-message">
-                        A 50% deposit is required before we can start your job.<br>
+                        A 50% deposit is required before we can start your repair.<br>
                         Please contact us to arrange payment.
                     </div>
                 </div>
                 
-                <!-- CENTERED Notes Section with Icon -->
+                <!-- Centered Notes Section with Repair Icon -->
                 <div class="notes-section">
                     <div class="notes-header">
                         <div class="notes-icon">
                             <i class="fas fa-clipboard-list"></i>
                         </div>
-                        <div class="notes-title">Job Updates & Information</div>
+                        <div class="notes-title">Repair Updates & Information</div>
                     </div>
                     <div class="notes-content" id="resultNotes">
                         No updates available
@@ -724,7 +735,7 @@
             </div>
         </div>
         
-        <!-- Footer with Icons -->
+        <!-- Footer with Repair Shop Icons -->
         <div class="footer">
             <div class="contact-info">
                 <a href="tel:0430650097" class="contact-item">
@@ -738,7 +749,7 @@
             </div>
             <div class="footer-note">
                 <i class="fas fa-database"></i>
-                <span>Live updates from Google Sheets • 50% deposit required to start work</span>
+                <span>Live updates from Google Sheets • 50% deposit required to start repair</span>
             </div>
         </div>
     </div>
@@ -757,7 +768,7 @@
             const indicator = document.getElementById('statusIndicator');
             
             try {
-                indicator.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i><span>Loading job data...</span>';
+                indicator.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i><span>Loading repair data...</span>';
                 
                 const response = await fetch(SHEET_URL);
                 
@@ -787,31 +798,37 @@
                 
                 dataLoaded = true;
                 const count = Object.keys(allJobs).length;
-                indicator.innerHTML = `<i class="fas fa-check-circle"></i><span>Live data connected (${count} jobs)</span>`;
+                indicator.innerHTML = `<i class="fas fa-check-circle"></i><span>Live data connected (${count} repair jobs)</span>`;
                 
             } catch (error) {
                 console.error('Failed to load data:', error);
                 indicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Using offline data</span>';
                 
-                // Fallback data
+                // Fallback data for lawnmower/brushcutter repairs
                 allJobs = {
                     'j1001': { 
                         status: 'Awaiting Deposit', 
-                        price: 'R 2,500.00', 
+                        price: 'R 850.00', 
                         date: 'Today', 
-                        notes: '✅ Quotation ready for review\n📅 Submitted today\n💳 50% deposit required\n📞 Call to arrange payment' 
+                        notes: '✅ Lawnmower diagnosis complete\n📅 Quoted today\n🔧 Needs blade replacement\n💳 50% deposit required\n📞 Call to arrange payment' 
                     },
                     'j1002': { 
                         status: 'In Progress', 
-                        price: 'R 4,750.00', 
+                        price: 'R 1,250.00', 
                         date: 'Today', 
-                        notes: '✅ Deposit received\n💰 Work in progress\n⏳ Estimated completion: 3-5 days\n🔧 Automotive repair stage' 
+                        notes: '✅ Deposit received\n🔧 Repairing brushcutter carburetor\n⏳ Estimated completion: 2-3 days\n⚙️ Parts ordered\n🛠️ Quality check pending' 
                     },
                     'j1003': { 
                         status: 'Ready for Collection', 
-                        price: 'R 8,200.00', 
+                        price: 'R 2,200.00', 
                         date: 'Today', 
-                        notes: '🎉 Vehicle repair completed\n✅ Quality check passed\n📦 Ready for collection\n📍 Workshop collection' 
+                        notes: '🎉 Lawnmower repair completed\n✅ Full service and tune-up done\n💰 Balance due: R 1,100.00\n📦 Ready for collection\n📍 Workshop collection' 
+                    },
+                    'j1004': { 
+                        status: 'Awaiting Parts', 
+                        price: 'R 1,800.00', 
+                        date: 'Today', 
+                        notes: '🔧 Brushcutter stripped down\n⚙️ Awaiting replacement parts\n📅 Parts ETA: 3-5 days\n💳 Deposit not yet received\n📞 Please contact us' 
                     }
                 };
                 dataLoaded = true;
@@ -835,10 +852,11 @@
             status = status.toLowerCase();
             if (status.includes('awaiting deposit')) return '<i class="fas fa-money-check-alt"></i>';
             if (status.includes('deposit')) return '<i class="fas fa-money-check-alt"></i>';
-            if (status.includes('progress')) return '<i class="fas fa-spinner fa-spin"></i>';
+            if (status.includes('progress')) return '<i class="fas fa-tools"></i>';
             if (status.includes('ready')) return '<i class="fas fa-check-circle"></i>';
             if (status.includes('complete')) return '<i class="fas fa-check-double"></i>';
             if (status.includes('pending')) return '<i class="fas fa-clock"></i>';
+            if (status.includes('awaiting parts')) return '<i class="fas fa-box-open"></i>';
             if (status.includes('quote')) return '<i class="fas fa-file-invoice-dollar"></i>';
             return '<i class="fas fa-clock"></i>';
         }
@@ -855,14 +873,14 @@
             results.style.display = 'none';
             
             if (!jobNumber) {
-                showError('Please enter a job number');
+                showError('Please enter a repair job number');
                 return;
             }
             
             if (!dataLoaded) {
                 buttonText.textContent = 'LOADING...';
                 await loadJobData();
-                buttonText.textContent = 'SEARCH JOB STATUS';
+                buttonText.textContent = 'SEARCH REPAIR STATUS';
             }
             
             loading.style.display = 'block';
@@ -873,7 +891,7 @@
                 if (allJobs[jobNumber]) {
                     displayJob(jobNumber, allJobs[jobNumber]);
                 } else {
-                    showError(`Job "${jobNumber.toUpperCase()}" not found. Please check the number.`);
+                    showError(`Repair job "${jobNumber.toUpperCase()}" not found. Please check the number.`);
                 }
             }, 500);
         }
@@ -883,7 +901,7 @@
             
             // Update job info
             const jobNum = jobNumber.toUpperCase();
-            document.getElementById('resultJobNumber').innerHTML = `<i class="fas fa-file-invoice"></i> ${jobNum}`;
+            document.getElementById('resultJobNumber').innerHTML = `<i class="fas fa-tools"></i> ${jobNum}`;
             document.getElementById('resultJobNumber2').innerHTML = `<i class="fas fa-barcode"></i> ${jobNum}`;
             document.getElementById('resultStatus').innerHTML = `${getStatusIcon(job.status)} ${job.status}`;
             document.getElementById('resultPrice').innerHTML = `<i class="fas fa-rand-sign"></i> ${job.price}`;
@@ -894,7 +912,7 @@
             badge.innerHTML = `${getStatusIcon(job.status)} ${job.status}`;
             
             // Update notes
-            let notes = job.notes || 'No updates available. Please contact us for information.';
+            let notes = job.notes || 'No updates available. Please contact us for repair information.';
             document.getElementById('resultNotes').innerHTML = formatNotes(notes);
             
             // Show results
@@ -919,6 +937,8 @@
                 .replace(/💰/g, '<i class="fas fa-money-bill-wave" style="color: #84cc16; margin-right: 5px;"></i>')
                 .replace(/📞/g, '<i class="fas fa-phone-alt" style="color: #ef4444; margin-right: 5px;"></i>')
                 .replace(/🔧/g, '<i class="fas fa-tools" style="color: #6366f1; margin-right: 5px;"></i>')
+                .replace(/⚙️/g, '<i class="fas fa-cog" style="color: #6366f1; margin-right: 5px;"></i>')
+                .replace(/🛠️/g, '<i class="fas fa-screwdriver" style="color: #6366f1; margin-right: 5px;"></i>')
                 .replace(/⏳/g, '<i class="fas fa-hourglass-half" style="color: #f97316; margin-right: 5px;"></i>')
                 .replace(/🎉/g, '<i class="fas fa-party-horn" style="color: #ec4899; margin-right: 5px;"></i>')
                 .replace(/📦/g, '<i class="fas fa-box" style="color: #14b8a6; margin-right: 5px;"></i>')
