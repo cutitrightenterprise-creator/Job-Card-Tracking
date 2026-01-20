@@ -1,137 +1,482 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Job Tracker - Live from Google Sheets</title>
+    <title>Live Job Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
-        .box { background: white; padding: 30px; max-width: 500px; margin: auto; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h1 { color: #007749; text-align: center; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; }
-        button { background: #FFB81C; color: black; border: none; padding: 12px; width: 100%; font-size: 16px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .result { background: #e8f5e9; padding: 15px; border-radius: 5px; margin-top: 20px; display: none; }
-        .error { background: #ffebee; color: #c62828; padding: 15px; border-radius: 5px; margin-top: 20px; display: none; }
-        .update { font-size: 12px; color: #666; text-align: center; margin-top: 10px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #007749, #001489);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+        
+        input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #007749;
+            box-shadow: 0 0 0 3px rgba(0,119,73,0.1);
+        }
+        
+        button {
+            background: #FFB81C;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        
+        button:hover {
+            background: #e6a500;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .status-indicator {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+            border: 1px solid #e9ecef;
+        }
+        
+        .status-indicator.success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        
+        .status-indicator.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+        
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+            border-left: 5px solid #007749;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .job-detail {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .job-detail:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-in-progress { background: #cfe2ff; color: #084298; }
+        .status-ready { background: #d1e7dd; color: #0f5132; }
+        .status-completed { background: #d1ecf1; color: #0c5460; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007749;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            border-left: 5px solid #dc3545;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #e9ecef;
+            background: #f8f9fa;
+        }
+        
+        @media (max-width: 600px) {
+            .input-wrapper {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
     </style>
-    <!-- Load Tabletop.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.6.2/tabletop.min.js"></script>
 </head>
 <body>
-    <div class="box">
-        <h1>Track Your Job</h1>
-        <p>Enter job number (e.g. j1234):</p>
-        
-        <input type="text" id="jobNumber" placeholder="j1234" oninput="this.value = this.value.toLowerCase()">
-        <button onclick="findJob()">CHECK STATUS</button>
-        
-        <div class="update" id="lastUpdate">
-            Loading job data...
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Job Status Tracker</h1>
+            <p>Enter your job number to check real-time status</p>
         </div>
         
-        <div class="result" id="result">
-            <h3>Job Status:</h3>
-            <p><strong>Job:</strong> <span id="resultNumber"></span></p>
-            <p><strong>Status:</strong> <span id="resultStatus"></span></p>
-            <p><strong>Updated:</strong> <span id="resultDate"></span></p>
-            <p><strong>Notes:</strong> <span id="resultNotes"></span></p>
+        <div class="content">
+            <div class="status-indicator" id="statusIndicator">
+                🔄 Connecting to live database...
+            </div>
+            
+            <div class="input-group">
+                <label for="jobNumber">Your Job Number:</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="jobNumber" 
+                        placeholder="e.g. j1001, j1002, j1003"
+                        autocomplete="off"
+                        oninput="this.value = this.value.toLowerCase()"
+                        autofocus
+                    >
+                    <button onclick="searchJob()">
+                        <span id="buttonText">Search</span>
+                    </button>
+                </div>
+                <small style="color: #666; display: block; margin-top: 8px;">
+                    📝 Found on your invoice or quotation
+                </small>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Searching for your job...</p>
+            </div>
+            
+            <div class="error-message" id="errorMessage">
+                <strong>⚠️ Error:</strong> <span id="errorText"></span>
+            </div>
+            
+            <div class="result-card" id="resultCard">
+                <div class="job-detail">
+                    <div class="detail-label">Job Number</div>
+                    <div class="detail-value" id="resultJobNumber">-</div>
+                </div>
+                
+                <div class="job-detail">
+                    <div class="detail-label">Current Status</div>
+                    <div class="detail-value">
+                        <span id="resultStatus">-</span>
+                        <span class="status-badge" id="statusBadge"></span>
+                    </div>
+                </div>
+                
+                <div class="job-detail">
+                    <div class="detail-label">Last Updated</div>
+                    <div class="detail-value" id="resultDate">-</div>
+                </div>
+                
+                <div class="job-detail">
+                    <div class="detail-label">Notes</div>
+                    <div class="detail-value" id="resultNotes" style="font-weight: normal;">-</div>
+                </div>
+            </div>
         </div>
         
-        <div class="error" id="error">
-            Job not found.
+        <div class="footer">
+            <p>🔄 Updates automatically from Google Sheets</p>
+            <p>🔒 Secure & POPIA compliant</p>
         </div>
     </div>
 
     <script>
-        const SHEET_ID = 18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo
-        const SHEET_URL = `https://docs.google.com/spreadsheets/d/`;
+        // ================= CONFIGURATION =================
+        // 🔥 REPLACE THIS WITH YOUR GOOGLE SHEET ID
+        const GOOGLE_SHEET_ID = '18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo';
+        // =================================================
         
-        let jobData = {}; // This stores all jobs
-        let lastUpdated = '';
+        // Sheet URL - DON'T CHANGE THIS
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json&sheet=Sheet1`;
+        
+        let allJobs = {};
+        let dataLoaded = false;
         
         // Load data from Google Sheets
-        async function loadSheetData() {
+        async function loadJobData() {
+            const indicator = document.getElementById('statusIndicator');
+            
             try {
+                indicator.innerHTML = '🔄 Loading job data...';
+                
                 const response = await fetch(SHEET_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
                 const text = await response.text();
                 
-                // Parse the JSON (Google Sheets adds some wrapper text)
-                const json = JSON.parse(text.substr(47).slice(0, -2));
+                // Parse Google Sheets JSON
+                const json = JSON.parse(text.substring(47).slice(0, -2));
+                const rows = json.table.rows;
                 
-                // Convert to simple object
-                jobData = {};
-                json.table.rows.forEach(row => {
-                    const jobNumber = row.c[0]?.v?.toString().toLowerCase() || '';
-                    if (jobNumber) {
-                        jobData[jobNumber] = {
-                            status: row.c[1]?.v || 'Unknown',
-                            date: row.c[2]?.v || 'Not specified',
-                            notes: row.c[3]?.v || ''
+                // Convert to object
+                allJobs = {};
+                rows.forEach((row, index) => {
+                    // Skip header row (index 0)
+                    if (index === 0) return;
+                    
+                    const cells = row.c;
+                    if (cells && cells[0] && cells[0].v) {
+                        const jobNumber = cells[0].v.toString().trim().toLowerCase();
+                        allJobs[jobNumber] = {
+                            status: cells[1] ? (cells[1].v || 'Unknown') : 'Unknown',
+                            date: cells[2] ? (cells[2].v || 'Not specified') : 'Not specified',
+                            notes: cells[3] ? (cells[3].v || '') : ''
                         };
                     }
                 });
                 
-                lastUpdated = new Date().toLocaleTimeString('en-ZA');
-                document.getElementById('lastUpdate').innerHTML = 
-                    `✅ Live data loaded at ${lastUpdated} <br><small>(${Object.keys(jobData).length} jobs in system)</small>`;
-                    
-                console.log('Data loaded:', Object.keys(jobData).length, 'jobs');
+                dataLoaded = true;
+                const count = Object.keys(allJobs).length;
+                indicator.innerHTML = `✅ Live database connected (${count} jobs loaded)`;
+                indicator.className = 'status-indicator success';
+                
+                console.log(`Loaded ${count} jobs from Google Sheets`);
+                console.log('Available jobs:', Object.keys(allJobs));
                 
             } catch (error) {
-                console.error('Error loading sheet:', error);
-                document.getElementById('lastUpdate').innerHTML = 
-                    '⚠️ Could not load data. Using last saved version.';
+                console.error('Failed to load data:', error);
+                indicator.innerHTML = '⚠️ Using offline data (check connection)';
+                indicator.className = 'status-indicator error';
+                
+                // Fallback data if Google Sheets fails
+                allJobs = {
+                    'j1001': { status: 'In Progress', date: '19 March 2024', notes: 'Sample data - Google Sheets not connected' },
+                    'j1002': { status: 'Ready', date: '18 March 2024', notes: 'Test job - update your Sheet ID' }
+                };
+                dataLoaded = true;
             }
         }
         
-        // Find a job
-        function findJob() {
+        // Search for a job
+        async function searchJob() {
             const jobNumber = document.getElementById('jobNumber').value.trim().toLowerCase();
-            const resultDiv = document.getElementById('result');
-            const errorDiv = document.getElementById('error');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('errorMessage');
+            const result = document.getElementById('resultCard');
+            const buttonText = document.getElementById('buttonText');
             
-            resultDiv.style.display = 'none';
-            errorDiv.style.display = 'none';
+            // Hide everything
+            loading.style.display = 'none';
+            error.style.display = 'none';
+            result.style.display = 'none';
             
             if (!jobNumber) {
                 showError('Please enter a job number');
                 return;
             }
             
-            if (jobData[jobNumber]) {
-                const job = jobData[jobNumber];
-                
-                document.getElementById('resultNumber').innerText = jobNumber.toUpperCase();
-                document.getElementById('resultStatus').innerText = job.status;
-                document.getElementById('resultDate').innerText = job.date;
-                document.getElementById('resultNotes').innerText = job.notes || 'No notes';
-                
-                resultDiv.style.display = 'block';
-                
-                // Clear input
-                document.getElementById('jobNumber').value = '';
-            } else {
-                showError(`Job "${jobNumber.toUpperCase()}" not found.`);
+            // Make sure data is loaded
+            if (!dataLoaded) {
+                buttonText.textContent = 'Loading...';
+                await loadJobData();
+                buttonText.textContent = 'Search';
             }
+            
+            loading.style.display = 'block';
+            
+            // Simulate search delay (remove in production)
+            setTimeout(() => {
+                loading.style.display = 'none';
+                
+                if (allJobs[jobNumber]) {
+                    displayJob(jobNumber, allJobs[jobNumber]);
+                } else {
+                    showError(`Job "${jobNumber.toUpperCase()}" not found. Check the number and try again.`);
+                }
+            }, 500);
         }
         
+        // Display job details
+        function displayJob(jobNumber, job) {
+            const result = document.getElementById('resultCard');
+            
+            // Update DOM
+            document.getElementById('resultJobNumber').textContent = jobNumber.toUpperCase();
+            document.getElementById('resultStatus').textContent = job.status;
+            document.getElementById('resultDate').textContent = job.date;
+            document.getElementById('resultNotes').textContent = job.notes || 'No notes available';
+            
+            // Set status badge
+            const badge = document.getElementById('statusBadge');
+            badge.textContent = job.status;
+            badge.className = 'status-badge ' + getStatusClass(job.status);
+            
+            // Show result
+            result.style.display = 'block';
+            
+            // Clear input
+            document.getElementById('jobNumber').value = '';
+            document.getElementById('jobNumber').focus();
+            
+            // Update status indicator
+            document.getElementById('statusIndicator').innerHTML = 
+                `✅ Last search: ${jobNumber.toUpperCase()} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}`;
+        }
+        
+        // Get CSS class for status
+        function getStatusClass(status) {
+            status = status.toLowerCase();
+            if (status.includes('progress')) return 'status-in-progress';
+            if (status.includes('ready')) return 'status-ready';
+            if (status.includes('complete')) return 'status-completed';
+            if (status.includes('pending')) return 'status-pending';
+            return 'status-in-progress';
+        }
+        
+        // Show error message
         function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.innerText = message;
-            errorDiv.style.display = 'block';
+            const error = document.getElementById('errorMessage');
+            document.getElementById('errorText').textContent = message;
+            error.style.display = 'block';
         }
         
-        // Auto-refresh data every 5 minutes
-        function startAutoRefresh() {
-            loadSheetData(); // Load immediately
-            setInterval(loadSheetData, 5 * 60 * 1000); // Refresh every 5 minutes
-        }
-        
-        // Press Enter to search
-        document.getElementById('jobNumber').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') findJob();
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            // Load data immediately
+            loadJobData();
+            
+            // Auto-refresh every 2 minutes
+            setInterval(loadJobData, 2 * 60 * 1000);
+            
+            // Enter key support
+            document.getElementById('jobNumber').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchJob();
+                }
+            });
+            
+            // Focus on input
+            document.getElementById('jobNumber').focus();
         });
-        
-        // Load data when page opens
-        window.addEventListener('DOMContentLoaded', startAutoRefresh);
     </script>
 </body>
 </html>
