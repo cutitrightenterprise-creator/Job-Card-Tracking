@@ -3,6 +3,7 @@
 <head>
     <title>Job Status Tracker | Cut It Right</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --lime: #a3e635;
@@ -43,7 +44,7 @@
             border: 2px solid var(--lime-light);
         }
         
-        /* Lime Green Header */
+        /* Lime Green Header with Icon */
         .header {
             background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
             padding: 40px 24px;
@@ -63,11 +64,31 @@
             opacity: 0.3;
         }
         
-        .logo {
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 42px;
+            color: var(--dark);
+            background: rgba(255, 255, 255, 0.9);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .logo-text {
             font-size: 36px;
             font-weight: 900;
             color: var(--dark);
-            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 2px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -79,11 +100,27 @@
             font-weight: 700;
             letter-spacing: 1px;
             opacity: 0.9;
+            margin-top: 10px;
         }
+        
+        /* Icon Decorations */
+        .icon-decoration {
+            position: absolute;
+            opacity: 0.1;
+            font-size: 60px;
+            color: var(--dark);
+            z-index: 0;
+        }
+        
+        .icon-1 { top: 20px; left: 30px; }
+        .icon-2 { top: 40px; right: 40px; }
+        .icon-3 { bottom: 30px; left: 50px; }
+        .icon-4 { bottom: 20px; right: 30px; }
         
         /* Main Content */
         .content {
             padding: 32px;
+            position: relative;
         }
         
         /* Status Indicator */
@@ -103,7 +140,7 @@
             gap: 10px;
         }
         
-        /* Search Section - BUTTON BELOW INPUT */
+        /* Search Section with Icons */
         .search-section {
             background: var(--lime-bg);
             border-radius: 20px;
@@ -136,10 +173,23 @@
             gap: 12px;
         }
         
-        /* INPUT BAR (Full width) */
+        .input-container {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--lime-dark);
+            font-size: 20px;
+        }
+        
         .input-bar {
             width: 100%;
-            padding: 18px 22px;
+            padding: 18px 22px 18px 55px;
             border: 2px solid var(--lime);
             border-radius: 14px;
             font-size: 16px;
@@ -147,7 +197,6 @@
             background: var(--white);
             color: var(--dark);
             transition: all 0.3s;
-            margin-bottom: 16px;
         }
         
         .input-bar:focus {
@@ -156,7 +205,7 @@
             box-shadow: 0 0 0 4px rgba(163, 230, 53, 0.2);
         }
         
-        /* SEARCH BUTTON (Below input, full width) */
+        /* SEARCH BUTTON with Icon */
         .search-btn {
             width: 100%;
             background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
@@ -194,7 +243,7 @@
             margin-top: 16px;
         }
         
-        /* Centered Deposit Notice */
+        /* Centered Deposit Notice with Icon */
         .deposit-notice {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
             border: 3px solid #f59e0b;
@@ -206,14 +255,10 @@
             overflow: hidden;
         }
         
-        .deposit-notice::before {
-            content: '⚠️';
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 32px;
-            opacity: 0.2;
+        .deposit-icon {
+            font-size: 36px;
+            color: #b45309;
+            margin-bottom: 15px;
         }
         
         .deposit-title {
@@ -234,7 +279,7 @@
             margin: 0 auto;
         }
         
-        /* Centered Notes Section */
+        /* Centered Notes Section with Icon */
         .notes-section {
             background: linear-gradient(135deg, var(--lime-light) 0%, var(--lime-bg) 100%);
             border: 3px solid var(--lime);
@@ -288,7 +333,7 @@
             justify-content: center;
         }
         
-        /* Results Card */
+        /* Results Card with Icons */
         .results {
             display: none;
             animation: fadeIn 0.4s ease-out;
@@ -320,10 +365,15 @@
             font-size: 20px;
             font-weight: 900;
             color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .job-status {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             padding: 8px 20px;
             border-radius: 20px;
             font-size: 14px;
@@ -351,12 +401,18 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .detail-value {
             font-size: 18px;
             font-weight: 800;
             color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .price {
@@ -364,7 +420,7 @@
             font-size: 22px;
         }
         
-        /* Loading */
+        /* Loading with Icon */
         .loading {
             display: none;
             text-align: center;
@@ -386,7 +442,7 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Error */
+        /* Error with Icon */
         .error {
             background: #fef2f2;
             border: 2px solid #fecaca;
@@ -397,9 +453,13 @@
             color: #991b1b;
             font-weight: 600;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
-        /* Footer */
+        /* Footer with Icons */
         .footer {
             background: var(--lime-bg);
             padding: 28px;
@@ -418,13 +478,13 @@
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             color: var(--gray);
             text-decoration: none;
             font-weight: 700;
             font-size: 15px;
             transition: all 0.3s;
-            padding: 10px 20px;
+            padding: 12px 22px;
             background: var(--white);
             border-radius: 12px;
             border: 2px solid var(--lime-light);
@@ -440,6 +500,10 @@
             font-size: 14px;
             margin-top: 16px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         /* Responsive */
@@ -469,12 +533,22 @@
                 padding: 24px;
             }
             
-            .logo {
+            .logo-text {
                 font-size: 32px;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 36px;
             }
             
             .tagline {
                 font-size: 15px;
+            }
+            
+            .icon-decoration {
+                font-size: 40px;
             }
         }
     </style>
@@ -482,42 +556,69 @@
 </head>
 <body>
     <div class="container">
-        <!-- Lime Green Header -->
+        <!-- Lime Green Header with Icons -->
         <div class="header">
-            <div class="logo">CUT IT RIGHT</div>
+            <!-- Decorative Icons -->
+            <div class="icon-decoration icon-1">
+                <i class="fas fa-tools"></i>
+            </div>
+            <div class="icon-decoration icon-2">
+                <i class="fas fa-car"></i>
+            </div>
+            <div class="icon-decoration icon-3">
+                <i class="fas fa-wrench"></i>
+            </div>
+            <div class="icon-decoration icon-4">
+                <i class="fas fa-cogs"></i>
+            </div>
+            
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-car-crash"></i>
+                </div>
+                <div class="logo-text">CUT IT RIGHT</div>
+            </div>
             <div class="tagline">AUTOMOTIVE REPAIR & SALES SHOP</div>
         </div>
         
         <!-- Main Content -->
         <div class="content">
             <div class="status-indicator" id="statusIndicator">
-                <span>🔄</span>
+                <i class="fas fa-sync-alt"></i>
                 <span>Connecting to live database...</span>
             </div>
             
-            <!-- Search Section - BUTTON BELOW INPUT -->
+            <!-- Search Section with Icons -->
             <div class="search-section">
-                <div class="search-title">🔍 TRACK YOUR JOB</div>
+                <div class="search-title">
+                    <i class="fas fa-search"></i>
+                    TRACK YOUR JOB
+                </div>
                 
-                <!-- Input Bar -->
-                <input 
-                    type="text" 
-                    class="input-bar"
-                    id="jobNumber" 
-                    placeholder="Enter job number (e.g. j1001)"
-                    autocomplete="off"
-                    oninput="this.value = this.value.toLowerCase()"
-                    autofocus
-                >
+                <!-- Input Bar with Icon -->
+                <div class="input-container">
+                    <div class="input-icon">
+                        <i class="fas fa-hashtag"></i>
+                    </div>
+                    <input 
+                        type="text" 
+                        class="input-bar"
+                        id="jobNumber" 
+                        placeholder="Enter job number (e.g. j1001)"
+                        autocomplete="off"
+                        oninput="this.value = this.value.toLowerCase()"
+                        autofocus
+                    >
+                </div>
                 
-                <!-- Search Button (BELOW input) -->
+                <!-- Search Button with Icon -->
                 <button class="search-btn" onclick="searchJob()">
-                    <span>🔍</span>
+                    <i class="fas fa-search"></i>
                     <span id="buttonText">SEARCH JOB STATUS</span>
                 </button>
                 
                 <div class="hint">
-                    <span>📝</span>
+                    <i class="fas fa-info-circle"></i>
                     <span>Enter the job number from your quotation</span>
                 </div>
             </div>
@@ -528,45 +629,79 @@
                 <p style="font-weight: 600; color: var(--gray);">Searching for your job...</p>
             </div>
             
-            <!-- Error -->
+            <!-- Error with Icon -->
             <div class="error" id="error">
+                <i class="fas fa-exclamation-triangle"></i>
                 <span id="errorText"></span>
             </div>
             
             <!-- Results -->
             <div class="results" id="results">
-                <!-- Job Card -->
+                <!-- Job Card with Icons -->
                 <div class="job-card">
                     <div class="job-header">
-                        <div class="job-id" id="resultJobNumber">-</div>
-                        <div class="job-status" id="statusBadge">-</div>
+                        <div class="job-id" id="resultJobNumber">
+                            <i class="fas fa-file-invoice"></i>
+                            -
+                        </div>
+                        <div class="job-status" id="statusBadge">
+                            <i class="fas fa-clock"></i>
+                            -
+                        </div>
                     </div>
                     
                     <div class="job-details">
                         <div class="detail-item">
-                            <div class="detail-label">Status</div>
-                            <div class="detail-value" id="resultStatus">-</div>
+                            <div class="detail-label">
+                                <i class="fas fa-tasks"></i>
+                                Status
+                            </div>
+                            <div class="detail-value" id="resultStatus">
+                                <i class="fas fa-spinner"></i>
+                                -
+                            </div>
                         </div>
                         
                         <div class="detail-item">
-                            <div class="detail-label">Quotation</div>
-                            <div class="detail-value price" id="resultPrice">-</div>
+                            <div class="detail-label">
+                                <i class="fas fa-money-bill-wave"></i>
+                                Quotation
+                            </div>
+                            <div class="detail-value price" id="resultPrice">
+                                <i class="fas fa-rand-sign"></i>
+                                -
+                            </div>
                         </div>
                         
                         <div class="detail-item">
-                            <div class="detail-label">Last Updated</div>
-                            <div class="detail-value" id="resultDate">-</div>
+                            <div class="detail-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                Last Updated
+                            </div>
+                            <div class="detail-value" id="resultDate">
+                                <i class="fas fa-calendar-day"></i>
+                                -
+                            </div>
                         </div>
                         
                         <div class="detail-item">
-                            <div class="detail-label">Job Number</div>
-                            <div class="detail-value" id="resultJobNumber2">-</div>
+                            <div class="detail-label">
+                                <i class="fas fa-hashtag"></i>
+                                Job Number
+                            </div>
+                            <div class="detail-value" id="resultJobNumber2">
+                                <i class="fas fa-barcode"></i>
+                                -
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- CENTERED Deposit Notice -->
+                <!-- CENTERED Deposit Notice with Icon -->
                 <div class="deposit-notice">
+                    <div class="deposit-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
                     <div class="deposit-title">50% DEPOSIT REQUIRED</div>
                     <div class="deposit-message">
                         A 50% deposit is required before we can start your job.<br>
@@ -574,10 +709,12 @@
                     </div>
                 </div>
                 
-                <!-- CENTERED Notes Section -->
+                <!-- CENTERED Notes Section with Icon -->
                 <div class="notes-section">
                     <div class="notes-header">
-                        <div class="notes-icon">📋</div>
+                        <div class="notes-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
                         <div class="notes-title">Job Updates & Information</div>
                     </div>
                     <div class="notes-content" id="resultNotes">
@@ -587,20 +724,21 @@
             </div>
         </div>
         
-        <!-- Footer -->
+        <!-- Footer with Icons -->
         <div class="footer">
             <div class="contact-info">
                 <a href="tel:0430650097" class="contact-item">
-                    <span>📞</span>
+                    <i class="fas fa-phone-alt"></i>
                     <span>043 065 0097</span>
                 </a>
                 <a href="mailto:cutitright.info@gmail.com" class="contact-item">
-                    <span>✉️</span>
+                    <i class="fas fa-envelope"></i>
                     <span>cutitright.info@gmail.com</span>
                 </a>
             </div>
             <div class="footer-note">
-                Live updates from Google Sheets • 50% deposit required to start work
+                <i class="fas fa-database"></i>
+                <span>Live updates from Google Sheets • 50% deposit required to start work</span>
             </div>
         </div>
     </div>
@@ -619,7 +757,7 @@
             const indicator = document.getElementById('statusIndicator');
             
             try {
-                indicator.innerHTML = '<span>🔄</span><span>Loading job data...</span>';
+                indicator.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i><span>Loading job data...</span>';
                 
                 const response = await fetch(SHEET_URL);
                 
@@ -649,11 +787,11 @@
                 
                 dataLoaded = true;
                 const count = Object.keys(allJobs).length;
-                indicator.innerHTML = `<span>✅</span><span>Live data connected (${count} jobs)</span>`;
+                indicator.innerHTML = `<i class="fas fa-check-circle"></i><span>Live data connected (${count} jobs)</span>`;
                 
             } catch (error) {
                 console.error('Failed to load data:', error);
-                indicator.innerHTML = '<span>⚠️</span><span>Using offline data</span>';
+                indicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Using offline data</span>';
                 
                 // Fallback data
                 allJobs = {
@@ -691,6 +829,18 @@
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
+        }
+        
+        function getStatusIcon(status) {
+            status = status.toLowerCase();
+            if (status.includes('awaiting deposit')) return '<i class="fas fa-money-check-alt"></i>';
+            if (status.includes('deposit')) return '<i class="fas fa-money-check-alt"></i>';
+            if (status.includes('progress')) return '<i class="fas fa-spinner fa-spin"></i>';
+            if (status.includes('ready')) return '<i class="fas fa-check-circle"></i>';
+            if (status.includes('complete')) return '<i class="fas fa-check-double"></i>';
+            if (status.includes('pending')) return '<i class="fas fa-clock"></i>';
+            if (status.includes('quote')) return '<i class="fas fa-file-invoice-dollar"></i>';
+            return '<i class="fas fa-clock"></i>';
         }
         
         async function searchJob() {
@@ -733,15 +883,15 @@
             
             // Update job info
             const jobNum = jobNumber.toUpperCase();
-            document.getElementById('resultJobNumber').textContent = jobNum;
-            document.getElementById('resultJobNumber2').textContent = jobNum;
-            document.getElementById('resultStatus').textContent = job.status;
-            document.getElementById('resultPrice').textContent = job.price;
-            document.getElementById('resultDate').textContent = job.date;
+            document.getElementById('resultJobNumber').innerHTML = `<i class="fas fa-file-invoice"></i> ${jobNum}`;
+            document.getElementById('resultJobNumber2').innerHTML = `<i class="fas fa-barcode"></i> ${jobNum}`;
+            document.getElementById('resultStatus').innerHTML = `${getStatusIcon(job.status)} ${job.status}`;
+            document.getElementById('resultPrice').innerHTML = `<i class="fas fa-rand-sign"></i> ${job.price}`;
+            document.getElementById('resultDate').innerHTML = `<i class="fas fa-calendar-day"></i> ${job.date}`;
             
-            // Update status badge
+            // Update status badge with icon
             const badge = document.getElementById('statusBadge');
-            badge.textContent = job.status;
+            badge.innerHTML = `${getStatusIcon(job.status)} ${job.status}`;
             
             // Update notes
             let notes = job.notes || 'No updates available. Please contact us for information.';
@@ -756,29 +906,29 @@
             
             // Update status indicator
             document.getElementById('statusIndicator').innerHTML = 
-                `<span>✅</span><span>Last search: ${jobNum} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
+                `<i class="fas fa-check-circle"></i><span>Last search: ${jobNum} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
         }
         
         function formatNotes(notes) {
             // Replace line breaks with HTML breaks and add emoji styling
             return notes
                 .replace(/\n/g, '<br>')
-                .replace(/✅/g, '<span style="color: #84cc16; font-size: 18px;">✅</span>')
-                .replace(/📅/g, '<span style="color: #3b82f6; font-size: 18px;">📅</span>')
-                .replace(/💳/g, '<span style="color: #8b5cf6; font-size: 18px;">💳</span>')
-                .replace(/💰/g, '<span style="color: #84cc16; font-size: 18px;">💰</span>')
-                .replace(/📞/g, '<span style="color: #ef4444; font-size: 18px;">📞</span>')
-                .replace(/🔧/g, '<span style="color: #6366f1; font-size: 18px;">🔧</span>')
-                .replace(/⏳/g, '<span style="color: #f97316; font-size: 18px;">⏳</span>')
-                .replace(/🎉/g, '<span style="color: #ec4899; font-size: 18px;">🎉</span>')
-                .replace(/📦/g, '<span style="color: #14b8a6; font-size: 18px;">📦</span>')
-                .replace(/📍/g, '<span style="color: #8b5cf6; font-size: 18px;">📍</span>');
+                .replace(/✅/g, '<i class="fas fa-check-circle" style="color: #84cc16; margin-right: 5px;"></i>')
+                .replace(/📅/g, '<i class="fas fa-calendar-alt" style="color: #3b82f6; margin-right: 5px;"></i>')
+                .replace(/💳/g, '<i class="fas fa-credit-card" style="color: #8b5cf6; margin-right: 5px;"></i>')
+                .replace(/💰/g, '<i class="fas fa-money-bill-wave" style="color: #84cc16; margin-right: 5px;"></i>')
+                .replace(/📞/g, '<i class="fas fa-phone-alt" style="color: #ef4444; margin-right: 5px;"></i>')
+                .replace(/🔧/g, '<i class="fas fa-tools" style="color: #6366f1; margin-right: 5px;"></i>')
+                .replace(/⏳/g, '<i class="fas fa-hourglass-half" style="color: #f97316; margin-right: 5px;"></i>')
+                .replace(/🎉/g, '<i class="fas fa-party-horn" style="color: #ec4899; margin-right: 5px;"></i>')
+                .replace(/📦/g, '<i class="fas fa-box" style="color: #14b8a6; margin-right: 5px;"></i>')
+                .replace(/📍/g, '<i class="fas fa-map-marker-alt" style="color: #8b5cf6; margin-right: 5px;"></i>');
         }
         
         function showError(message) {
             const error = document.getElementById('error');
             document.getElementById('errorText').textContent = message;
-            error.style.display = 'block';
+            error.style.display = 'flex';
         }
         
         // Initialize
