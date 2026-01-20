@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --primary-light: #d1fae5;
-            --secondary: #3b82f6;
-            --dark: #1f2937;
-            --light: #f9fafb;
-            --gray: #6b7280;
-            --gray-light: #e5e7eb;
-            --warning: #f59e0b;
-            --warning-light: #fef3c7;
+            --lime: #a3e635;
+            --lime-dark: #84cc16;
+            --lime-light: #d9f99d;
+            --lime-bg: #f7fee7;
+            --dark: #1a2e05;
+            --gray: #4d7c0f;
+            --gray-light: #ecfccb;
+            --white: #ffffff;
         }
         
         * {
@@ -25,7 +23,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            background: linear-gradient(135deg, var(--lime-bg) 0%, #f0f9ff 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -35,19 +33,20 @@
         
         .container {
             width: 100%;
-            max-width: 480px;
-            background: white;
+            max-width: 500px;
+            background: var(--white);
             border-radius: 24px;
             box-shadow: 
-                0 10px 25px rgba(0, 0, 0, 0.05),
-                0 20px 48px rgba(16, 185, 129, 0.08);
+                0 10px 30px rgba(163, 230, 53, 0.15),
+                0 20px 50px rgba(163, 230, 53, 0.1);
             overflow: hidden;
+            border: 2px solid var(--lime-light);
         }
         
-        /* Modern Header */
+        /* Lime Green Header */
         .header {
-            background: linear-gradient(135deg, var(--dark) 0%, #111827 100%);
-            padding: 32px 24px;
+            background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
+            padding: 40px 24px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -59,25 +58,26 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
+            height: 6px;
+            background: linear-gradient(to right, #ffffff 0%, var(--lime-light) 50%, #ffffff 100%);
+            opacity: 0.3;
         }
         
         .logo {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--dark);
             margin-bottom: 8px;
-            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .tagline {
-            color: var(--gray-light);
-            font-size: 14px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
+            color: var(--dark);
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
             opacity: 0.9;
         }
         
@@ -86,86 +86,206 @@
             padding: 32px;
         }
         
-        .search-section {
-            background: var(--light);
+        /* Status Indicator */
+        .status-indicator {
+            background: var(--lime-bg);
+            border: 2px solid var(--lime-light);
             border-radius: 16px;
-            padding: 24px;
+            padding: 18px;
             margin-bottom: 24px;
-            border: 1px solid var(--gray-light);
-        }
-        
-        .search-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 16px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 600;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
         }
         
-        .search-title::before {
-            content: '🔍';
-            font-size: 20px;
+        /* Search Section */
+        .search-section {
+            background: var(--lime-bg);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 28px;
+            border: 2px solid var(--lime-light);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .search-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--lime), var(--lime-dark));
+        }
+        
+        .search-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
         
         .search-box {
             display: flex;
             gap: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
         
         input {
             flex: 1;
-            padding: 16px 20px;
-            border: 2px solid var(--gray-light);
-            border-radius: 12px;
+            padding: 18px 22px;
+            border: 2px solid var(--lime);
+            border-radius: 14px;
             font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: white;
+            font-weight: 600;
+            background: var(--white);
+            color: var(--dark);
+            transition: all 0.3s;
         }
         
         input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            border-color: var(--lime-dark);
+            box-shadow: 0 0 0 4px rgba(163, 230, 53, 0.2);
         }
         
         .search-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
+            color: var(--dark);
             border: none;
-            padding: 0 32px;
-            border-radius: 12px;
+            padding: 0 36px;
+            border-radius: 14px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            white-space: nowrap;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            white-space: nowrap;
         }
         
         .search-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
-        }
-        
-        .search-btn:active {
-            transform: translateY(0);
+            box-shadow: 0 8px 20px rgba(163, 230, 53, 0.4);
         }
         
         .hint {
             color: var(--gray);
-            font-size: 13px;
+            font-size: 14px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
         }
         
-        /* Results */
+        /* Centered Deposit Notice */
+        .deposit-notice {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 3px solid #f59e0b;
+            border-radius: 16px;
+            padding: 28px;
+            margin: 28px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .deposit-notice::before {
+            content: '⚠️';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 32px;
+            opacity: 0.2;
+        }
+        
+        .deposit-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #92400e;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        
+        .deposit-message {
+            font-size: 16px;
+            color: #b45309;
+            line-height: 1.6;
+            font-weight: 600;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        /* Centered Notes Section */
+        .notes-section {
+            background: linear-gradient(135deg, var(--lime-light) 0%, var(--lime-bg) 100%);
+            border: 3px solid var(--lime);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 28px 0;
+            text-align: center;
+        }
+        
+        .notes-header {
+            margin-bottom: 24px;
+        }
+        
+        .notes-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--lime);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 16px;
+        }
+        
+        .notes-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        
+        .notes-content {
+            background: var(--white);
+            padding: 24px;
+            border-radius: 12px;
+            border: 2px solid var(--lime-light);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.7;
+            color: var(--dark);
+            white-space: pre-line;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Results Card */
         .results {
             display: none;
             animation: fadeIn 0.4s ease-out;
@@ -177,40 +297,40 @@
         }
         
         .job-card {
-            background: white;
+            background: var(--white);
             border-radius: 16px;
-            border: 1px solid var(--gray-light);
-            overflow: hidden;
-            margin-bottom: 20px;
+            border: 2px solid var(--lime-light);
+            padding: 24px;
+            margin-bottom: 24px;
         }
         
         .job-header {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            padding: 20px;
-            border-bottom: 1px solid var(--gray-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--lime-bg);
         }
         
         .job-id {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 20px;
+            font-weight: 900;
             color: var(--dark);
         }
         
         .job-status {
             display: inline-block;
-            padding: 6px 16px;
+            padding: 8px 20px;
             border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            background: var(--primary-light);
-            color: var(--primary-dark);
+            font-size: 14px;
+            font-weight: 800;
+            background: var(--lime-light);
+            color: var(--dark);
+            border: 2px solid var(--lime);
         }
         
         .job-details {
-            padding: 24px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
@@ -219,144 +339,26 @@
         .detail-item {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 8px;
         }
         
         .detail-label {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--gray);
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         
         .detail-value {
             font-size: 18px;
-            font-weight: 700;
+            font-weight: 800;
             color: var(--dark);
         }
         
         .price {
-            color: var(--primary-dark);
-            font-size: 20px;
-        }
-        
-        /* Deposit Notice - Modern Style */
-        .deposit-notice {
-            background: linear-gradient(135deg, var(--warning-light) 0%, #fffbeb 100%);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .deposit-notice::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--warning);
-        }
-        
-        .deposit-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--warning);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-        
-        .deposit-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #92400e;
-            margin-bottom: 8px;
-        }
-        
-        .deposit-message {
-            font-size: 14px;
-            color: #b45309;
-            line-height: 1.5;
-            font-weight: 500;
-        }
-        
-        /* Notes Section - Green Modern Style */
-        .notes-section {
-            background: linear-gradient(135deg, #ecfdf5 0%, var(--primary-light) 100%);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 12px;
-            padding: 24px;
-            margin-top: 20px;
-        }
-        
-        .notes-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        
-        .notes-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-        }
-        
-        .notes-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--primary-dark);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .notes-content {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid rgba(16, 185, 129, 0.1);
-            font-size: 15px;
-            font-weight: 600;
-            line-height: 1.6;
-            color: var(--dark);
-            white-space: pre-line;
-        }
-        
-        /* Status Indicator */
-        .status-indicator {
-            background: var(--light);
-            border: 1px solid var(--gray-light);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .status-indicator.success {
-            background: var(--primary-light);
-            color: var(--primary-dark);
-            border-color: rgba(16, 185, 129, 0.2);
+            color: var(--lime-dark);
+            font-size: 22px;
         }
         
         /* Loading */
@@ -367,13 +369,13 @@
         }
         
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid var(--primary-light);
-            border-top: 3px solid var(--primary);
+            width: 44px;
+            height: 44px;
+            border: 4px solid var(--lime-light);
+            border-top: 4px solid var(--lime);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
+            margin: 0 auto 20px;
         }
         
         @keyframes spin {
@@ -384,50 +386,57 @@
         /* Error */
         .error {
             background: #fef2f2;
-            border: 1px solid #fecaca;
+            border: 2px solid #fecaca;
             border-radius: 12px;
             padding: 20px;
             margin: 20px 0;
             display: none;
             color: #991b1b;
-            font-weight: 500;
+            font-weight: 600;
+            text-align: center;
         }
         
         /* Footer */
         .footer {
-            background: var(--light);
-            padding: 24px;
-            border-top: 1px solid var(--gray-light);
+            background: var(--lime-bg);
+            padding: 28px;
+            border-top: 2px solid var(--lime-light);
             text-align: center;
         }
         
         .contact-info {
             display: flex;
             justify-content: center;
-            gap: 24px;
-            margin-bottom: 16px;
+            gap: 32px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
         }
         
         .contact-item {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             color: var(--gray);
             text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            transition: color 0.3s;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.3s;
+            padding: 10px 20px;
+            background: var(--white);
+            border-radius: 12px;
+            border: 2px solid var(--lime-light);
         }
         
         .contact-item:hover {
-            color: var(--primary);
+            background: var(--lime-light);
+            transform: translateY(-2px);
         }
         
         .footer-note {
             color: var(--gray);
-            font-size: 13px;
-            margin-top: 12px;
+            font-size: 14px;
+            margin-top: 16px;
+            font-weight: 600;
         }
         
         /* Responsive */
@@ -452,14 +461,26 @@
             .contact-info {
                 flex-direction: column;
                 gap: 12px;
+                align-items: center;
+            }
+            
+            .contact-item {
+                width: 100%;
+                max-width: 250px;
+                justify-content: center;
+            }
+            
+            .deposit-notice, .notes-section {
+                margin: 20px 0;
+                padding: 24px;
             }
         }
     </style>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
 </head>
 <body>
     <div class="container">
-        <!-- Modern Header -->
+        <!-- Lime Green Header -->
         <div class="header">
             <div class="logo">CUT IT RIGHT</div>
             <div class="tagline">PRECISION CUTTING SERVICES</div>
@@ -474,7 +495,7 @@
             
             <!-- Search Section -->
             <div class="search-section">
-                <div class="search-title">Track Your Job</div>
+                <div class="search-title">🔍 TRACK YOUR JOB</div>
                 <div class="search-box">
                     <input 
                         type="text" 
@@ -486,7 +507,7 @@
                     >
                     <button class="search-btn" onclick="searchJob()">
                         <span>🔍</span>
-                        <span id="buttonText">Search</span>
+                        <span id="buttonText">SEARCH</span>
                     </button>
                 </div>
                 <div class="hint">
@@ -498,7 +519,7 @@
             <!-- Loading -->
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Searching for your job...</p>
+                <p style="font-weight: 600; color: var(--gray);">Searching for your job...</p>
             </div>
             
             <!-- Error -->
@@ -508,6 +529,7 @@
             
             <!-- Results -->
             <div class="results" id="results">
+                <!-- Job Card -->
                 <div class="job-card">
                     <div class="job-header">
                         <div class="job-id" id="resultJobNumber">-</div>
@@ -537,17 +559,16 @@
                     </div>
                 </div>
                 
-                <!-- Modern Deposit Notice -->
+                <!-- CENTERED Deposit Notice -->
                 <div class="deposit-notice">
-                    <div class="deposit-icon">💰</div>
                     <div class="deposit-title">50% DEPOSIT REQUIRED</div>
                     <div class="deposit-message">
-                        A 50% deposit is required before we can start your job. 
+                        A 50% deposit is required before we can start your job.<br>
                         Please contact us to arrange payment.
                     </div>
                 </div>
                 
-                <!-- Green Notes Section -->
+                <!-- CENTERED Notes Section -->
                 <div class="notes-section">
                     <div class="notes-header">
                         <div class="notes-icon">📋</div>
@@ -573,7 +594,7 @@
                 </a>
             </div>
             <div class="footer-note">
-                Updates automatically from Google Sheets • 50% deposit required to start work
+                Live updates from Google Sheets • 50% deposit required to start work
             </div>
         </div>
     </div>
@@ -614,7 +635,7 @@
                         allJobs[jobNumber] = {
                             status: cells[1] ? (cells[1].v || 'Awaiting Deposit') : 'Awaiting Deposit',
                             price: cells[2] ? formatPrice(cells[2].v) : 'Not quoted',
-                            date: cells[3] ? (cells[3].v || 'Not specified') : 'Not specified',
+                            date: cells[3] ? (cells[3].v || 'Today') : 'Today',
                             notes: cells[4] ? (cells[4].v || '') : ''
                         };
                     }
@@ -623,7 +644,6 @@
                 dataLoaded = true;
                 const count = Object.keys(allJobs).length;
                 indicator.innerHTML = `<span>✅</span><span>Live data connected (${count} jobs)</span>`;
-                indicator.className = 'status-indicator success';
                 
             } catch (error) {
                 console.error('Failed to load data:', error);
@@ -635,19 +655,19 @@
                         status: 'Awaiting Deposit', 
                         price: 'R 2,500.00', 
                         date: 'Today', 
-                        notes: '✅ Quotation ready\n📅 Submitted today\n💳 50% deposit required\n📞 Call 043 065 0097 to proceed' 
+                        notes: '✅ Quotation ready for review\n📅 Submitted today\n💳 50% deposit required\n📞 Call to arrange payment' 
                     },
                     'j1002': { 
                         status: 'In Progress', 
                         price: 'R 4,750.00', 
                         date: 'Today', 
-                        notes: '✅ Deposit received\n💰 Work in progress\n⏳ Estimated completion: 3-5 days\n🔧 Current stage: Precision cutting' 
+                        notes: '✅ Deposit received\n💰 Work in progress\n⏳ Estimated completion: 3-5 days\n🔧 Precision cutting stage' 
                     },
                     'j1003': { 
                         status: 'Ready for Collection', 
                         price: 'R 8,200.00', 
                         date: 'Today', 
-                        notes: '🎉 Job completed\n✅ Quality check passed\n📦 Ready for collection\n📍 Collect at our workshop' 
+                        notes: '🎉 Job completed successfully\n✅ Quality check passed\n📦 Ready for collection\n📍 Workshop collection' 
                     }
                 };
                 dataLoaded = true;
@@ -684,9 +704,9 @@
             }
             
             if (!dataLoaded) {
-                buttonText.textContent = 'Loading...';
+                buttonText.textContent = 'LOADING...';
                 await loadJobData();
-                buttonText.textContent = 'Search';
+                buttonText.textContent = 'SEARCH';
             }
             
             loading.style.display = 'block';
@@ -737,16 +757,16 @@
             // Replace line breaks with HTML breaks and add emoji styling
             return notes
                 .replace(/\n/g, '<br>')
-                .replace(/✅/g, '<span style="color: #10b981;">✅</span>')
-                .replace(/📅/g, '<span style="color: #3b82f6;">📅</span>')
-                .replace(/💳/g, '<span style="color: #8b5cf6;">💳</span>')
-                .replace(/💰/g, '<span style="color: #059669;">💰</span>')
-                .replace(/📞/g, '<span style="color: #ef4444;">📞</span>')
-                .replace(/🔧/g, '<span style="color: #6366f1;">🔧</span>')
-                .replace(/⏳/g, '<span style="color: #f97316;">⏳</span>')
-                .replace(/🎉/g, '<span style="color: #ec4899;">🎉</span>')
-                .replace(/📦/g, '<span style="color: #14b8a6;">📦</span>')
-                .replace(/📍/g, '<span style="color: #8b5cf6;">📍</span>');
+                .replace(/✅/g, '<span style="color: #84cc16; font-size: 18px;">✅</span>')
+                .replace(/📅/g, '<span style="color: #3b82f6; font-size: 18px;">📅</span>')
+                .replace(/💳/g, '<span style="color: #8b5cf6; font-size: 18px;">💳</span>')
+                .replace(/💰/g, '<span style="color: #84cc16; font-size: 18px;">💰</span>')
+                .replace(/📞/g, '<span style="color: #ef4444; font-size: 18px;">📞</span>')
+                .replace(/🔧/g, '<span style="color: #6366f1; font-size: 18px;">🔧</span>')
+                .replace(/⏳/g, '<span style="color: #f97316; font-size: 18px;">⏳</span>')
+                .replace(/🎉/g, '<span style="color: #ec4899; font-size: 18px;">🎉</span>')
+                .replace(/📦/g, '<span style="color: #14b8a6; font-size: 18px;">📦</span>')
+                .replace(/📍/g, '<span style="color: #8b5cf6; font-size: 18px;">📍</span>');
         }
         
         function showError(message) {
