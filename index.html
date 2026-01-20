@@ -1,18 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Live Job Tracker</title>
+    <title>Job Status Tracker | Cut It Right</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary: #3b82f6;
+            --dark: #1f2937;
+            --light: #f9fafb;
+            --gray: #6b7280;
+            --gray-light: #e5e7eb;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+        }
+        
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -21,143 +34,319 @@
         }
         
         .container {
+            width: 100%;
+            max-width: 480px;
             background: white;
             border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 550px;
+            box-shadow: 
+                0 10px 25px rgba(0, 0, 0, 0.05),
+                0 20px 48px rgba(16, 185, 129, 0.08);
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* BUSINESS NAME HEADER - MODERN LIME STYLE */
-        .business-header {
-            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-            padding: 25px 30px;
+        /* Modern Header */
+        .header {
+            background: linear-gradient(135deg, var(--dark) 0%, #111827 100%);
+            padding: 32px 24px;
             text-align: center;
-            border-bottom: 3px solid #a3e635;
             position: relative;
             overflow: hidden;
         }
         
-        .business-header::before {
+        .header::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(to right, #a3e635, #84cc16, #65a30d);
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
         }
         
-        .business-name {
-            font-size: 34px;
-            font-weight: 900;
-            background: linear-gradient(135deg, #a3e635 0%, #84cc16 50%, #65a30d 100%);
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 2px 10px rgba(163, 230, 53, 0.3);
-            letter-spacing: -0.5px;
             margin-bottom: 8px;
-            text-transform: uppercase;
+            letter-spacing: -0.5px;
         }
         
-        .business-tagline {
-            color: #d1d5db;
-            font-size: 16px;
+        .tagline {
+            color: var(--gray-light);
+            font-size: 14px;
             font-weight: 500;
-            letter-spacing: 1px;
-        }
-        
-        .tracker-header {
-            background: linear-gradient(to right, #007749, #001489);
-            color: white;
-            padding: 25px 30px;
-            text-align: center;
-        }
-        
-        .tracker-header h1 {
-            font-size: 26px;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        .tracker-header p {
+            letter-spacing: 0.5px;
             opacity: 0.9;
-            font-size: 15px;
         }
         
+        /* Main Content */
         .content {
-            padding: 30px;
+            padding: 32px;
         }
         
-        .input-group {
-            margin-bottom: 25px;
+        .search-section {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--gray-light);
         }
         
-        .input-group label {
-            display: block;
-            margin-bottom: 10px;
-            color: #374151;
-            font-weight: 600;
-            font-size: 16px;
+        .search-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .input-wrapper {
+        .search-title::before {
+            content: '🔍';
+            font-size: 20px;
+        }
+        
+        .search-box {
             display: flex;
             gap: 12px;
+            margin-bottom: 12px;
         }
         
         input {
             flex: 1;
             padding: 16px 20px;
-            border: 2px solid #e5e7eb;
+            border: 2px solid var(--gray-light);
             border-radius: 12px;
             font-size: 16px;
-            transition: all 0.3s;
-            background: #f9fafb;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
         }
         
         input:focus {
             outline: none;
-            border-color: #a3e635;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(163, 230, 53, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
         }
         
-        button {
-            background: linear-gradient(135deg, #a3e635 0%, #84cc16 100%);
-            color: #000;
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
             border: none;
-            padding: 16px 32px;
+            padding: 0 32px;
             border-radius: 12px;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             white-space: nowrap;
-            box-shadow: 0 4px 6px -1px rgba(163, 230, 53, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
-        button:hover {
+        .search-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 12px -2px rgba(163, 230, 53, 0.3);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
         }
         
-        button:active {
+        .search-btn:active {
             transform: translateY(0);
         }
         
-        .status-indicator {
-            text-align: center;
-            padding: 16px;
-            background: #f8fafc;
+        .hint {
+            color: var(--gray);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        /* Results */
+        .results {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .job-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--gray-light);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .job-header {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 20px;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .job-id {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .job-status {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+        
+        .job-details {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            color: var(--gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .price {
+            color: var(--primary-dark);
+            font-size: 20px;
+        }
+        
+        /* Deposit Notice - Modern Style */
+        .deposit-notice {
+            background: linear-gradient(135deg, var(--warning-light) 0%, #fffbeb 100%);
+            border: 1px solid rgba(245, 158, 11, 0.2);
             border-radius: 12px;
-            margin-bottom: 24px;
+            padding: 20px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .deposit-notice::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--warning);
+        }
+        
+        .deposit-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--warning);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        
+        .deposit-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+        
+        .deposit-message {
             font-size: 14px;
-            color: #64748b;
-            border: 2px solid #e2e8f0;
+            color: #b45309;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        /* Notes Section - Green Modern Style */
+        .notes-section {
+            background: linear-gradient(135deg, #ecfdf5 0%, var(--primary-light) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+        
+        .notes-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .notes-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .notes-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .notes-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.6;
+            color: var(--dark);
+            white-space: pre-line;
+        }
+        
+        /* Status Indicator */
+        .status-indicator {
+            background: var(--light);
+            border: 1px solid var(--gray-light);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--gray);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -165,252 +354,26 @@
         }
         
         .status-indicator.success {
-            background: #f0fdf4;
-            color: #166534;
-            border-color: #bbf7d0;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-color: rgba(16, 185, 129, 0.2);
         }
         
-        .status-indicator.error {
-            background: #fef2f2;
-            color: #991b1b;
-            border-color: #fecaca;
-        }
-        
-        .result-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 18px;
-            padding: 28px;
-            margin-top: 24px;
-            display: none;
-            border-left: 6px solid #a3e635;
-            animation: slideIn 0.4s ease-out;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-        
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .job-details-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .job-detail {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            transition: transform 0.2s;
-        }
-        
-        .job-detail:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        }
-        
-        .detail-label {
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #6b7280;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        
-        .detail-value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #111827;
-        }
-        
-        .price-value {
-            color: #059669;
-            font-size: 22px;
-        }
-        
-        /* GREEN & BOLD NOTES SECTION */
-        .notes-section {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            padding: 25px;
-            border-radius: 12px;
-            border: 4px solid #047857;
-            margin-top: 25px;
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .notes-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 8px;
-            height: 100%;
-            background: linear-gradient(to bottom, #10b981, #047857);
-        }
-        
-        .notes-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .notes-icon {
-            background: white;
-            color: #10b981;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            font-weight: bold;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .notes-label {
-            font-size: 18px;
-            font-weight: 900;
-            color: white;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .notes-content {
-            background: white;
-            padding: 22px;
-            border-radius: 10px;
-            border: 3px solid #a7f3d0;
-            font-size: 17px;
-            font-weight: 700;
-            line-height: 1.8;
-            color: #064e3b;
-            white-space: pre-line;
-            min-height: 100px;
-            box-shadow: inset 0 4px 8px rgba(0,0,0,0.05);
-            overflow-wrap: break-word;
-        }
-        
-        .deposit-notice {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 3px solid #f59e0b;
-            border-radius: 12px;
-            padding: 22px;
-            margin-top: 25px;
-            text-align: center;
-            color: #92400e;
-            font-weight: 700;
-            font-size: 17px;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .deposit-notice::before {
-            content: '⚠️';
-            position: absolute;
-            top: 18px;
-            left: 22px;
-            font-size: 28px;
-        }
-        
-        .deposit-notice strong {
-            color: #b45309;
-            font-size: 20px;
-            display: block;
-            margin-bottom: 10px;
-        }
-        
-        .deposit-calculation {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            border: 3px solid #f59e0b;
-            margin: 15px 0;
-            font-size: 18px;
-            font-weight: 800;
-            color: #b45309;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            text-align: left;
-        }
-        
-        .deposit-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed #fbbf24;
-        }
-        
-        .deposit-row:last-child {
-            border-bottom: none;
-            font-weight: 900;
-            color: #dc2626;
-            font-size: 20px;
-        }
-        
-        .deposit-label {
-            font-weight: 700;
-        }
-        
-        .deposit-value {
-            font-weight: 800;
-        }
-        
-        .payment-info {
-            background: #fffbeb;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            border: 2px solid #fbbf24;
-            font-size: 15px;
-            font-weight: 600;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: 800;
-            margin-top: 8px;
-        }
-        
-        .status-in-progress { background: #dbeafe; color: #1e40af; }
-        .status-ready { background: #dcfce7; color: #166534; }
-        .status-completed { background: #f0f9ff; color: #0c4a6e; }
-        .status-pending { background: #fef3c7; color: #92400e; }
-        .status-quoted { background: #f3e8ff; color: #6b21a8; }
-        .status-awaiting-deposit { 
-            background: linear-gradient(135deg, #fef3c7, #fde68a); 
-            color: #92400e; 
-            border: 3px solid #f59e0b;
-            font-weight: 900;
-        }
-        
+        /* Loading */
         .loading {
-            text-align: center;
-            padding: 30px;
             display: none;
+            text-align: center;
+            padding: 40px;
         }
         
         .spinner {
-            border: 4px solid rgba(163, 230, 53, 0.1);
-            border-top: 4px solid #a3e635;
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--primary-light);
+            border-top: 3px solid var(--primary);
             border-radius: 50%;
-            width: 48px;
-            height: 48px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 16px;
         }
         
         @keyframes spin {
@@ -418,34 +381,31 @@
             100% { transform: rotate(360deg); }
         }
         
-        .error-message {
+        /* Error */
+        .error {
             background: #fef2f2;
-            color: #991b1b;
-            padding: 18px;
+            border: 1px solid #fecaca;
             border-radius: 12px;
-            margin-top: 20px;
+            padding: 20px;
+            margin: 20px 0;
             display: none;
-            border-left: 6px solid #dc2626;
+            color: #991b1b;
+            font-weight: 500;
         }
         
+        /* Footer */
         .footer {
-            text-align: center;
+            background: var(--light);
             padding: 24px;
-            color: #6b7280;
-            font-size: 14px;
-            border-top: 1px solid #e5e7eb;
-            background: #f9fafb;
-        }
-        
-        .footer p {
-            margin: 6px 0;
+            border-top: 1px solid var(--gray-light);
+            text-align: center;
         }
         
         .contact-info {
             display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-top: 16px;
+            gap: 24px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
         }
         
@@ -453,146 +413,145 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #4b5563;
+            color: var(--gray);
             text-decoration: none;
-            transition: color 0.2s;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.3s;
         }
         
         .contact-item:hover {
-            color: #a3e635;
+            color: var(--primary);
         }
         
-        @media (max-width: 640px) {
-            .business-name {
-                font-size: 28px;
+        .footer-note {
+            color: var(--gray);
+            font-size: 13px;
+            margin-top: 12px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            .content {
+                padding: 24px;
             }
             
-            .job-details-grid {
+            .job-details {
                 grid-template-columns: 1fr;
             }
             
-            .input-wrapper {
+            .search-box {
                 flex-direction: column;
             }
             
-            button {
+            .search-btn {
                 width: 100%;
+                justify-content: center;
             }
             
             .contact-info {
                 flex-direction: column;
                 gap: 12px;
             }
-            
-            .deposit-notice {
-                padding: 18px 18px 18px 70px;
-            }
-            
-            .deposit-notice::before {
-                top: 18px;
-                left: 20px;
-                font-size: 26px;
-            }
-            
-            .deposit-calculation {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 </head>
 <body>
     <div class="container">
-        <!-- BUSINESS NAME HEADER -->
-        <div class="business-header">
-            <div class="business-name">CUT IT RIGHT</div>
-            <div class="business-tagline">Professional Cutting Service • Precision Guaranteed</div>
+        <!-- Modern Header -->
+        <div class="header">
+            <div class="logo">CUT IT RIGHT</div>
+            <div class="tagline">PRECISION CUTTING SERVICES</div>
         </div>
         
-        <!-- TRACKER HEADER -->
-        <div class="tracker-header">
-            <h1>🔍 Job Status Tracker</h1>
-            <p>Enter your job number to check real-time status and quotation price</p>
-        </div>
-        
-        <!-- MAIN CONTENT -->
+        <!-- Main Content -->
         <div class="content">
             <div class="status-indicator" id="statusIndicator">
                 <span>🔄</span>
                 <span>Connecting to live database...</span>
             </div>
             
-            <div class="input-group">
-                <label for="jobNumber">Your Job Number:</label>
-                <div class="input-wrapper">
+            <!-- Search Section -->
+            <div class="search-section">
+                <div class="search-title">Track Your Job</div>
+                <div class="search-box">
                     <input 
                         type="text" 
                         id="jobNumber" 
-                        placeholder="e.g. j1001, j1002, j1003"
+                        placeholder="Enter job number (e.g. j1001)"
                         autocomplete="off"
                         oninput="this.value = this.value.toLowerCase()"
                         autofocus
                     >
-                    <button onclick="searchJob()">
-                        <span id="buttonText">🔍 Search Job</span>
+                    <button class="search-btn" onclick="searchJob()">
+                        <span>🔍</span>
+                        <span id="buttonText">Search</span>
                     </button>
                 </div>
-                <small style="color: #6b7280; display: block; margin-top: 8px; font-size: 14px;">
-                    📝 Enter the job number from your quotation or invoice
-                </small>
+                <div class="hint">
+                    <span>📝</span>
+                    <span>Enter the job number from your quotation</span>
+                </div>
             </div>
             
+            <!-- Loading -->
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p style="color: #4b5563; margin-top: 12px; font-weight: 500;">Searching for your job...</p>
+                <p>Searching for your job...</p>
             </div>
             
-            <div class="error-message" id="errorMessage">
-                <strong>⚠️ Error:</strong> <span id="errorText"></span>
+            <!-- Error -->
+            <div class="error" id="error">
+                <span id="errorText"></span>
             </div>
             
-            <!-- RESULTS CARD -->
-            <div class="result-card" id="resultCard">
-                <div class="job-details-grid">
-                    <div class="job-detail">
-                        <div class="detail-label">Job Number</div>
-                        <div class="detail-value" id="resultJobNumber">-</div>
+            <!-- Results -->
+            <div class="results" id="results">
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="job-id" id="resultJobNumber">-</div>
+                        <div class="job-status" id="statusBadge">-</div>
                     </div>
                     
-                    <div class="job-detail">
-                        <div class="detail-label">Current Status</div>
-                        <div class="detail-value" id="resultStatus">-</div>
-                        <div class="status-badge" id="statusBadge"></div>
-                    </div>
-                    
-                    <div class="job-detail">
-                        <div class="detail-label">Quotation Price</div>
-                        <div class="detail-value price-value" id="resultPrice">-</div>
-                    </div>
-                    
-                    <div class="job-detail">
-                        <div class="detail-label">Last Updated</div>
-                        <div class="detail-value" id="resultDate">-</div>
+                    <div class="job-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value" id="resultStatus">-</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Quotation</div>
+                            <div class="detail-value price" id="resultPrice">-</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Last Updated</div>
+                            <div class="detail-value" id="resultDate">-</div>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <div class="detail-label">Job Number</div>
+                            <div class="detail-value" id="resultJobNumber2">-</div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- DEPOSIT CALCULATION SECTION -->
+                <!-- Modern Deposit Notice -->
                 <div class="deposit-notice">
-                    <strong>⚠️ 50% DEPOSIT REQUIRED TO START WORK</strong>
-                    <div class="deposit-calculation" id="depositCalculation">
-                        <!-- Will be filled by JavaScript -->
-                    </div>
-                    <div class="payment-info">
-                        💳 Deposit payable to: <strong>Cut It Right</strong><br>
-                        📧 Email: <strong>cutitright.info@gmail.com</strong><br>
-                        📞 Call: <strong>043 065 0097</strong> for banking details
+                    <div class="deposit-icon">💰</div>
+                    <div class="deposit-title">50% DEPOSIT REQUIRED</div>
+                    <div class="deposit-message">
+                        A 50% deposit is required before we can start your job. 
+                        Please contact us to arrange payment.
                     </div>
                 </div>
                 
-                <!-- GREEN & BOLD NOTES SECTION -->
+                <!-- Green Notes Section -->
                 <div class="notes-section">
                     <div class="notes-header">
                         <div class="notes-icon">📋</div>
-                        <div class="notes-label">Job Updates & Important Information</div>
+                        <div class="notes-title">Job Updates & Information</div>
                     </div>
                     <div class="notes-content" id="resultNotes">
                         No updates available
@@ -601,9 +560,8 @@
             </div>
         </div>
         
-        <!-- FOOTER -->
+        <!-- Footer -->
         <div class="footer">
-            <p>🔄 Updates automatically from Google Sheets • 🔒 POPIA Compliant</p>
             <div class="contact-info">
                 <a href="tel:0430650097" class="contact-item">
                     <span>📞</span>
@@ -614,9 +572,9 @@
                     <span>cutitright.info@gmail.com</span>
                 </a>
             </div>
-            <p style="margin-top: 16px; font-size: 13px; color: #9ca3af;">
-                <strong>Payment Terms:</strong> 50% deposit required to start work • Balance payable on completion
-            </p>
+            <div class="footer-note">
+                Updates automatically from Google Sheets • 50% deposit required to start work
+            </div>
         </div>
     </div>
 
@@ -634,7 +592,7 @@
             const indicator = document.getElementById('statusIndicator');
             
             try {
-                indicator.innerHTML = '<span>🔄</span><span>Loading job data from live database...</span>';
+                indicator.innerHTML = '<span>🔄</span><span>Loading job data...</span>';
                 
                 const response = await fetch(SHEET_URL);
                 
@@ -664,33 +622,32 @@
                 
                 dataLoaded = true;
                 const count = Object.keys(allJobs).length;
-                indicator.innerHTML = `<span>✅</span><span>Live database connected (${count} jobs loaded)</span>`;
+                indicator.innerHTML = `<span>✅</span><span>Live data connected (${count} jobs)</span>`;
                 indicator.className = 'status-indicator success';
                 
             } catch (error) {
                 console.error('Failed to load data:', error);
-                indicator.innerHTML = '<span>⚠️</span><span>Using offline data - check connection</span>';
-                indicator.className = 'status-indicator error';
+                indicator.innerHTML = '<span>⚠️</span><span>Using offline data</span>';
                 
-                // Fallback data with clear deposit examples
+                // Fallback data
                 allJobs = {
                     'j1001': { 
                         status: 'Awaiting Deposit', 
                         price: 'R 2,500.00', 
                         date: 'Today', 
-                        notes: '✅ QUOTATION READY\n📅 Submitted: Today\n💳 50% Deposit Required\n📞 Call 043 065 0097 to pay deposit\n🚀 Work starts immediately after payment' 
+                        notes: '✅ Quotation ready\n📅 Submitted today\n💳 50% deposit required\n📞 Call 043 065 0097 to proceed' 
                     },
                     'j1002': { 
                         status: 'In Progress', 
                         price: 'R 4,750.00', 
                         date: 'Today', 
-                        notes: '✅ DEPOSIT RECEIVED\n💰 50% Deposit: R 2,375.00 paid\n📅 Work started: Today\n⏳ Estimated completion: 3-5 days\n🔧 Current stage: Precision cutting' 
+                        notes: '✅ Deposit received\n💰 Work in progress\n⏳ Estimated completion: 3-5 days\n🔧 Current stage: Precision cutting' 
                     },
                     'j1003': { 
                         status: 'Ready for Collection', 
                         price: 'R 8,200.00', 
                         date: 'Today', 
-                        notes: '🎉 JOB COMPLETED\n✅ Quality check passed\n💰 Balance due: R 4,100.00\n📦 Ready for collection\n📍 Collect at our workshop\n📞 Call before collecting' 
+                        notes: '🎉 Job completed\n✅ Quality check passed\n📦 Ready for collection\n📍 Collect at our workshop' 
                     }
                 };
                 dataLoaded = true;
@@ -710,40 +667,16 @@
             });
         }
         
-        function extractNumericPrice(priceStr) {
-            if (!priceStr || priceStr === 'Not quoted') return 0;
-            return parseFloat(priceStr.replace(/[^0-9.-]+/g, ""));
-        }
-        
-        function calculateDepositDetails(priceStr) {
-            const price = extractNumericPrice(priceStr);
-            if (price <= 0) return null;
-            
-            const deposit = price * 0.5;
-            const balance = price * 0.5;
-            
-            return {
-                price: price,
-                deposit: deposit,
-                balance: balance,
-                formatted: {
-                    price: 'R ' + price.toLocaleString('en-ZA', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-                    deposit: 'R ' + deposit.toLocaleString('en-ZA', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
-                    balance: 'R ' + balance.toLocaleString('en-ZA', {minimumFractionDigits: 2, maximumFractionDigits: 2})
-                }
-            };
-        }
-        
         async function searchJob() {
             const jobNumber = document.getElementById('jobNumber').value.trim().toLowerCase();
             const loading = document.getElementById('loading');
-            const error = document.getElementById('errorMessage');
-            const result = document.getElementById('resultCard');
+            const error = document.getElementById('error');
+            const results = document.getElementById('results');
             const buttonText = document.getElementById('buttonText');
             
             loading.style.display = 'none';
             error.style.display = 'none';
-            result.style.display = 'none';
+            results.style.display = 'none';
             
             if (!jobNumber) {
                 showError('Please enter a job number');
@@ -753,7 +686,7 @@
             if (!dataLoaded) {
                 buttonText.textContent = 'Loading...';
                 await loadJobData();
-                buttonText.textContent = '🔍 Search Job';
+                buttonText.textContent = 'Search';
             }
             
             loading.style.display = 'block';
@@ -764,62 +697,32 @@
                 if (allJobs[jobNumber]) {
                     displayJob(jobNumber, allJobs[jobNumber]);
                 } else {
-                    showError(`Job "${jobNumber.toUpperCase()}" not found. Check the number and try again.`);
+                    showError(`Job "${jobNumber.toUpperCase()}" not found. Please check the number.`);
                 }
             }, 500);
         }
         
         function displayJob(jobNumber, job) {
-            const result = document.getElementById('resultCard');
-            const depositCalcDiv = document.getElementById('depositCalculation');
+            const results = document.getElementById('results');
             
-            // Update basic info
-            document.getElementById('resultJobNumber').textContent = jobNumber.toUpperCase();
+            // Update job info
+            const jobNum = jobNumber.toUpperCase();
+            document.getElementById('resultJobNumber').textContent = jobNum;
+            document.getElementById('resultJobNumber2').textContent = jobNum;
             document.getElementById('resultStatus').textContent = job.status;
             document.getElementById('resultPrice').textContent = job.price;
             document.getElementById('resultDate').textContent = job.date;
+            
+            // Update status badge
+            const badge = document.getElementById('statusBadge');
+            badge.textContent = job.status;
             
             // Update notes
             let notes = job.notes || 'No updates available. Please contact us for information.';
             document.getElementById('resultNotes').innerHTML = formatNotes(notes);
             
-            // Calculate and display deposit details
-            const depositDetails = calculateDepositDetails(job.price);
-            if (depositDetails) {
-                depositCalcDiv.innerHTML = `
-                    <div class="deposit-row">
-                        <span class="deposit-label">Total Quotation:</span>
-                        <span class="deposit-value">${depositDetails.formatted.price}</span>
-                    </div>
-                    <div class="deposit-row">
-                        <span class="deposit-label">50% Deposit Required:</span>
-                        <span class="deposit-value">${depositDetails.formatted.deposit}</span>
-                    </div>
-                    <div class="deposit-row">
-                        <span class="deposit-label">Balance on Completion:</span>
-                        <span class="deposit-value">${depositDetails.formatted.balance}</span>
-                    </div>
-                `;
-            } else {
-                depositCalcDiv.innerHTML = `
-                    <div class="deposit-row">
-                        <span class="deposit-label">Total Quotation:</span>
-                        <span class="deposit-value">Not quoted yet</span>
-                    </div>
-                    <div class="deposit-row">
-                        <span class="deposit-label">50% Deposit Required:</span>
-                        <span class="deposit-value">Will calculate after quoting</span>
-                    </div>
-                `;
-            }
-            
-            // Set status badge
-            const badge = document.getElementById('statusBadge');
-            badge.textContent = job.status;
-            badge.className = 'status-badge ' + getStatusClass(job.status);
-            
-            // Show result
-            result.style.display = 'block';
+            // Show results
+            results.style.display = 'block';
             
             // Clear input
             document.getElementById('jobNumber').value = '';
@@ -827,41 +730,27 @@
             
             // Update status indicator
             document.getElementById('statusIndicator').innerHTML = 
-                `<span>✅</span><span>Last search: ${jobNumber.toUpperCase()} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
+                `<span>✅</span><span>Last search: ${jobNum} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
         }
         
         function formatNotes(notes) {
-            // Replace line breaks with HTML breaks and add emoji formatting
-            let formattedNotes = notes
+            // Replace line breaks with HTML breaks and add emoji styling
+            return notes
                 .replace(/\n/g, '<br>')
-                .replace(/✅/g, '<span style="color: #10b981; font-size: 18px;">✅</span>')
-                .replace(/📅/g, '<span style="color: #3b82f6; font-size: 18px;">📅</span>')
-                .replace(/💳/g, '<span style="color: #8b5cf6; font-size: 18px;">💳</span>')
-                .replace(/💰/g, '<span style="color: #059669; font-size: 18px;">💰</span>')
-                .replace(/📞/g, '<span style="color: #ef4444; font-size: 18px;">📞</span>')
-                .replace(/🚀/g, '<span style="color: #f59e0b; font-size: 18px;">🚀</span>')
-                .replace(/🔧/g, '<span style="color: #6366f1; font-size: 18px;">🔧</span>')
-                .replace(/⏳/g, '<span style="color: #f97316; font-size: 18px;">⏳</span>')
-                .replace(/🎉/g, '<span style="color: #ec4899; font-size: 18px;">🎉</span>')
-                .replace(/📦/g, '<span style="color: #14b8a6; font-size: 18px;">📦</span>')
-                .replace(/📍/g, '<span style="color: #8b5cf6; font-size: 18px;">📍</span>');
-            
-            return formattedNotes;
-        }
-        
-        function getStatusClass(status) {
-            status = status.toLowerCase();
-            if (status.includes('awaiting deposit') || status.includes('deposit')) return 'status-awaiting-deposit';
-            if (status.includes('progress')) return 'status-in-progress';
-            if (status.includes('ready')) return 'status-ready';
-            if (status.includes('complete')) return 'status-completed';
-            if (status.includes('pending')) return 'status-pending';
-            if (status.includes('quote')) return 'status-quoted';
-            return 'status-awaiting-deposit';
+                .replace(/✅/g, '<span style="color: #10b981;">✅</span>')
+                .replace(/📅/g, '<span style="color: #3b82f6;">📅</span>')
+                .replace(/💳/g, '<span style="color: #8b5cf6;">💳</span>')
+                .replace(/💰/g, '<span style="color: #059669;">💰</span>')
+                .replace(/📞/g, '<span style="color: #ef4444;">📞</span>')
+                .replace(/🔧/g, '<span style="color: #6366f1;">🔧</span>')
+                .replace(/⏳/g, '<span style="color: #f97316;">⏳</span>')
+                .replace(/🎉/g, '<span style="color: #ec4899;">🎉</span>')
+                .replace(/📦/g, '<span style="color: #14b8a6;">📦</span>')
+                .replace(/📍/g, '<span style="color: #8b5cf6;">📍</span>');
         }
         
         function showError(message) {
-            const error = document.getElementById('errorMessage');
+            const error = document.getElementById('error');
             document.getElementById('errorText').textContent = message;
             error.style.display = 'block';
         }
