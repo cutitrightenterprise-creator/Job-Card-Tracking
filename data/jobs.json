@@ -1,0 +1,20 @@
+{
+  "jobs": [
+    {
+      "jobNumber": "JOB-2024-001",
+      "status": "In Progress",
+      "lastUpdated": "2024-03-15",
+      "estimatedCompletion": "2024-03-20",
+      "notes": "Awaiting parts from supplier",
+      "internalNotes": "Customer: John Smith, Tel: 0821234567"
+    },
+    {
+      "jobNumber": "JOB-2024-002",
+      "status": "Ready for Collection",
+      "lastUpdated": "2024-03-14",
+      "estimatedCompletion": "2024-03-15",
+      "notes": "Payment pending",
+      "internalNotes": "Customer: Sarah Jones"
+    }
+  ]
+}
