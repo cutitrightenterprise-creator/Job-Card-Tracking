@@ -243,7 +243,7 @@
             margin-top: 16px;
         }
         
-        /* IMPORTANT: 50% Deposit Notice - UNCHANGED */
+        /* IMPORTANT: 50% Deposit Notice */
         .deposit-notice {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
             border: 3px solid #f59e0b;
@@ -279,7 +279,7 @@
             margin: 0 auto;
         }
         
-        /* Centered Notes Section with Repair Icon */
+        /* Centered Notes Section */
         .notes-section {
             background: linear-gradient(135deg, var(--lime-light) 0%, var(--lime-bg) 100%);
             border: 3px solid var(--lime);
@@ -333,7 +333,7 @@
             justify-content: center;
         }
         
-        /* Results Card with Repair Icons */
+        /* Results Card */
         .results {
             display: none;
             animation: fadeIn 0.4s ease-out;
@@ -420,7 +420,7 @@
             font-size: 22px;
         }
         
-        /* Loading with Garden Icon */
+        /* Loading */
         .loading {
             display: none;
             text-align: center;
@@ -442,7 +442,7 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Error with Warning Icon */
+        /* Error */
         .error {
             background: #fef2f2;
             border: 2px solid #fecaca;
@@ -459,7 +459,185 @@
             gap: 10px;
         }
         
-        /* Footer with Repair Shop Icons */
+        /* NEW: PAYMENT METHODS SECTION */
+        .payment-section {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            border: 3px solid #0ea5e9;
+            border-radius: 16px;
+            padding: 24px;
+            margin: 28px 0;
+        }
+        
+        .payment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        
+        .payment-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #0369a1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .toggle-icon {
+            font-size: 20px;
+            color: #0369a1;
+            transition: transform 0.3s;
+        }
+        
+        .payment-content {
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .payment-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .payment-option {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #7dd3fc;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.2);
+            border-color: #0ea5e9;
+        }
+        
+        .payment-icon {
+            font-size: 32px;
+            color: #0ea5e9;
+            margin-bottom: 10px;
+        }
+        
+        .payment-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0369a1;
+            margin-bottom: 5px;
+        }
+        
+        .bank-details {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            border: 2px solid #7dd3fc;
+            margin-bottom: 20px;
+        }
+        
+        .bank-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: #0369a1;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .bank-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .bank-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .bank-label {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .bank-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1e293b;
+            word-break: break-all;
+        }
+        
+        .reference-note {
+            background: #fef3c7;
+            border: 2px dashed #f59e0b;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            color: #92400e;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .whatsapp-payment {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border: 2px solid #22c55e;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px auto;
+            width: 100%;
+            max-width: 300px;
+            transition: all 0.3s;
+        }
+        
+        .whatsapp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+        }
+        
+        .policy-notice {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 3px solid #f59e0b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            color: #92400e;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        /* Footer */
         .footer {
             background: var(--lime-bg);
             padding: 28px;
@@ -506,17 +684,6 @@
             gap: 8px;
         }
         
-        /* Custom Lawnmower & Brushcutter Icons */
-        .mower-icon:before {
-            content: "✂️";
-            font-size: 1.2em;
-        }
-        
-        .brushcutter-icon:before {
-            content: "⚙️";
-            font-size: 1.2em;
-        }
-        
         /* Responsive */
         @media (max-width: 480px) {
             .content {
@@ -539,9 +706,9 @@
                 justify-content: center;
             }
             
-            .deposit-notice, .notes-section {
+            .deposit-notice, .notes-section, .payment-section {
                 margin: 20px 0;
-                padding: 24px;
+                padding: 20px;
             }
             
             .logo-text {
@@ -560,6 +727,14 @@
             
             .icon-decoration {
                 font-size: 40px;
+            }
+            
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .bank-info {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -708,7 +883,7 @@
                     </div>
                 </div>
                 
-                <!-- ✅ 50% DEPOSIT NOTICE - UNCHANGED AND STILL PROMINENT -->
+                <!-- ✅ 50% DEPOSIT NOTICE -->
                 <div class="deposit-notice">
                     <div class="deposit-icon">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -717,6 +892,113 @@
                     <div class="deposit-message">
                         A 50% deposit is required before we can start your repair.<br>
                         Please contact us to arrange payment.
+                    </div>
+                </div>
+                
+                <!-- NEW: PAYMENT METHODS SECTION -->
+                <div class="payment-section">
+                    <div class="payment-header" onclick="togglePayment()">
+                        <div class="payment-title">
+                            <i class="fas fa-credit-card"></i>
+                            PAYMENT METHODS
+                        </div>
+                        <div class="toggle-icon" id="paymentToggle">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-content" id="paymentContent">
+                        <div class="payment-options">
+                            <div class="payment-option" onclick="showEFT()">
+                                <div class="payment-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <div class="payment-name">EFT/BANK TRANSFER</div>
+                                <div style="font-size: 14px; color: #64748b;">Direct bank payment</div>
+                            </div>
+                            
+                            <div class="payment-option" onclick="showWhatsApp()">
+                                <div class="payment-icon">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div class="payment-name">WHATSAPP PAYMENT</div>
+                                <div style="font-size: 14px; color: #64748b;">Send proof via WhatsApp</div>
+                            </div>
+                        </div>
+                        
+                        <!-- EFT BANK DETAILS (Initially hidden) -->
+                        <div class="bank-details" id="eftDetails" style="display: none;">
+                            <div class="bank-title">
+                                <i class="fas fa-university"></i>
+                                EFT BANKING DETAILS
+                            </div>
+                            
+                            <div class="bank-info">
+                                <div class="bank-item">
+                                    <div class="bank-label">Bank Name</div>
+                                    <div class="bank-value">FIRST NATIONAL BANK</div>
+                                </div>
+                                
+                                <div class="bank-item">
+                                    <div class="bank-label">Account Number</div>
+                                    <div class="bank-value">62842333693</div>
+                                </div>
+                                
+                                <div class="bank-item">
+                                    <div class="bank-label">Branch Name</div>
+                                    <div class="bank-value">KING WILLIAMS TOWN 264</div>
+                                </div>
+                                
+                                <div class="bank-item">
+                                    <div class="bank-label">Branch Code</div>
+                                    <div class="bank-value">210519</div>
+                                </div>
+                                
+                                <div class="bank-item">
+                                    <div class="bank-label">Account Type</div>
+                                    <div class="bank-value">CURRENT/CHEQUE ACCOUNT</div>
+                                </div>
+                                
+                                <div class="bank-item" style="grid-column: span 2;">
+                                    <div class="bank-label">Reference</div>
+                                    <div class="bank-value" id="jobReference">USE YOUR JOB NUMBER AS REFERENCE</div>
+                                </div>
+                            </div>
+                            
+                            <div class="reference-note">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <strong>IMPORTANT:</strong> Use your Job Number as payment reference. Keep proof of payment.
+                            </div>
+                        </div>
+                        
+                        <!-- WhatsApp Payment Section -->
+                        <div class="whatsapp-payment" id="whatsappPayment" style="display: none;">
+                            <div class="bank-title">
+                                <i class="fab fa-whatsapp"></i>
+                                SEND PAYMENT PROOF VIA WHATSAPP
+                            </div>
+                            <p style="color: #166534; margin-bottom: 15px; font-weight: 600;">
+                                After making payment, send your proof of payment to our WhatsApp number:
+                            </p>
+                            
+                            <a href="https://wa.me/27677094033?text=Hello%20Cut%20It%20Right%2C%20I%20have%20made%20payment%20for%20job%20number%3A%20" 
+                               class="whatsapp-btn" 
+                               target="_blank"
+                               id="whatsappLink">
+                                <i class="fab fa-whatsapp"></i>
+                                SEND TO WHATSAPP: 076 709 4033
+                            </a>
+                            
+                            <p style="color: #166534; margin-top: 15px; font-size: 14px; font-weight: 600;">
+                                Please include your Job Number and proof of payment screenshot.
+                            </p>
+                        </div>
+                        
+                        <!-- 90-DAY POLICY NOTICE -->
+                        <div class="policy-notice">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>IMPORTANT POLICY:</strong> Machines not collected within 90 days will be sold to defray costs.
+                        </div>
                     </div>
                 </div>
                 
@@ -763,6 +1045,7 @@
         
         let allJobs = {};
         let dataLoaded = false;
+        let currentJobNumber = '';
         
         async function loadJobData() {
             const indicator = document.getElementById('statusIndicator');
@@ -823,12 +1106,6 @@
                         price: 'R 2,200.00', 
                         date: 'Today', 
                         notes: '🎉 Lawnmower repair completed\n✅ Full service and tune-up done\n💰 Balance due: R 1,100.00\n📦 Ready for collection\n📍 Workshop collection' 
-                    },
-                    'j1004': { 
-                        status: 'Awaiting Parts', 
-                        price: 'R 1,800.00', 
-                        date: 'Today', 
-                        notes: '🔧 Brushcutter stripped down\n⚙️ Awaiting replacement parts\n📅 Parts ETA: 3-5 days\n💳 Deposit not yet received\n📞 Please contact us' 
                     }
                 };
                 dataLoaded = true;
@@ -856,9 +1133,44 @@
             if (status.includes('ready')) return '<i class="fas fa-check-circle"></i>';
             if (status.includes('complete')) return '<i class="fas fa-check-double"></i>';
             if (status.includes('pending')) return '<i class="fas fa-clock"></i>';
-            if (status.includes('awaiting parts')) return '<i class="fas fa-box-open"></i>';
             if (status.includes('quote')) return '<i class="fas fa-file-invoice-dollar"></i>';
             return '<i class="fas fa-clock"></i>';
+        }
+        
+        // Payment Methods Functions
+        function togglePayment() {
+            const content = document.getElementById('paymentContent');
+            const toggle = document.getElementById('paymentToggle');
+            
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                toggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
+            } else {
+                content.style.display = 'block';
+                toggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
+            }
+        }
+        
+        function showEFT() {
+            document.getElementById('eftDetails').style.display = 'block';
+            document.getElementById('whatsappPayment').style.display = 'none';
+            
+            // Update reference with current job number
+            if (currentJobNumber) {
+                document.getElementById('jobReference').textContent = currentJobNumber.toUpperCase();
+            }
+        }
+        
+        function showWhatsApp() {
+            document.getElementById('eftDetails').style.display = 'none';
+            document.getElementById('whatsappPayment').style.display = 'block';
+            
+            // Update WhatsApp link with current job number
+            if (currentJobNumber) {
+                const whatsappText = `Hello Cut It Right, I have made payment for job number: ${currentJobNumber.toUpperCase()}. Here is my proof of payment:`;
+                const encodedText = encodeURIComponent(whatsappText);
+                document.getElementById('whatsappLink').href = `https://wa.me/27677094033?text=${encodedText}`;
+            }
         }
         
         async function searchJob() {
@@ -898,6 +1210,7 @@
         
         function displayJob(jobNumber, job) {
             const results = document.getElementById('results');
+            currentJobNumber = jobNumber;
             
             // Update job info
             const jobNum = jobNumber.toUpperCase();
@@ -906,6 +1219,14 @@
             document.getElementById('resultStatus').innerHTML = `${getStatusIcon(job.status)} ${job.status}`;
             document.getElementById('resultPrice').innerHTML = `<i class="fas fa-rand-sign"></i> ${job.price}`;
             document.getElementById('resultDate').innerHTML = `<i class="fas fa-calendar-day"></i> ${job.date}`;
+            
+            // Update payment reference
+            document.getElementById('jobReference').textContent = jobNum;
+            
+            // Update WhatsApp link
+            const whatsappText = `Hello Cut It Right, I have made payment for job number: ${jobNum}. Here is my proof of payment:`;
+            const encodedText = encodeURIComponent(whatsappText);
+            document.getElementById('whatsappLink').href = `https://wa.me/27677094033?text=${encodedText}`;
             
             // Update status badge with icon
             const badge = document.getElementById('statusBadge');
