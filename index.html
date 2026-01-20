@@ -232,14 +232,14 @@
             font-size: 22px;
         }
         
-        /* UPDATED NOTES SECTION - MORE VISIBLE */
+        /* GREEN & BOLD NOTES SECTION */
         .notes-section {
-            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-            padding: 24px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 25px;
             border-radius: 12px;
-            border: 3px solid #3b82f6;
-            margin-top: 20px;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            border: 4px solid #047857;
+            margin-top: 25px;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
             position: relative;
             overflow: hidden;
         }
@@ -249,133 +249,67 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 6px;
+            width: 8px;
             height: 100%;
-            background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
+            background: linear-gradient(to bottom, #10b981, #047857);
         }
         
         .notes-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
         
         .notes-icon {
-            background: #3b82f6;
-            color: white;
-            width: 36px;
-            height: 36px;
+            background: white;
+            color: #10b981;
+            width: 42px;
+            height: 42px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         
         .notes-label {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1e40af;
+            font-size: 18px;
+            font-weight: 900;
+            color: white;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .notes-content {
             background: white;
-            padding: 20px;
+            padding: 22px;
             border-radius: 10px;
-            border: 2px solid #dbeafe;
-            font-size: 16px;
-            line-height: 1.7;
-            color: #1f2937;
+            border: 3px solid #a7f3d0;
+            font-size: 17px;
+            font-weight: 700;
+            line-height: 1.8;
+            color: #064e3b;
             white-space: pre-line;
-            min-height: 80px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            min-height: 100px;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.05);
             overflow-wrap: break-word;
-        }
-        
-        /* COLORED NOTES BASED ON STATUS */
-        .notes-awaiting-deposit {
-            border-color: #f59e0b;
-            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-        }
-        
-        .notes-awaiting-deposit .notes-content {
-            border-color: #fbbf24;
-            background: #fffbeb;
-            color: #92400e;
-        }
-        
-        .notes-awaiting-deposit .notes-icon {
-            background: #f59e0b;
-        }
-        
-        .notes-awaiting-deposit .notes-label {
-            color: #b45309;
-        }
-        
-        .notes-in-progress {
-            border-color: #3b82f6;
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-        }
-        
-        .notes-in-progress .notes-content {
-            border-color: #93c5fd;
-            background: #eff6ff;
-            color: #1e40af;
-        }
-        
-        .notes-completed {
-            border-color: #10b981;
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-        }
-        
-        .notes-completed .notes-content {
-            border-color: #a7f3d0;
-            background: #ecfdf5;
-            color: #065f46;
-        }
-        
-        .notes-completed .notes-icon {
-            background: #10b981;
-        }
-        
-        .notes-completed .notes-label {
-            color: #047857;
-        }
-        
-        .notes-ready {
-            border-color: #8b5cf6;
-            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
-        }
-        
-        .notes-ready .notes-content {
-            border-color: #c4b5fd;
-            background: #f5f3ff;
-            color: #5b21b6;
-        }
-        
-        .notes-ready .notes-icon {
-            background: #8b5cf6;
-        }
-        
-        .notes-ready .notes-label {
-            color: #6d28d9;
         }
         
         .deposit-notice {
             background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
             border: 3px solid #f59e0b;
             border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
+            padding: 22px;
+            margin-top: 25px;
             text-align: center;
             color: #92400e;
-            font-weight: 600;
-            font-size: 16px;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+            font-weight: 700;
+            font-size: 17px;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
             position: relative;
             overflow: hidden;
         }
@@ -383,36 +317,71 @@
         .deposit-notice::before {
             content: '⚠️';
             position: absolute;
-            top: 15px;
-            left: 20px;
-            font-size: 24px;
+            top: 18px;
+            left: 22px;
+            font-size: 28px;
         }
         
         .deposit-notice strong {
             color: #b45309;
-            font-size: 18px;
+            font-size: 20px;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         
-        .deposit-amount {
+        .deposit-calculation {
             background: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 2px dashed #f59e0b;
-            margin: 10px 0;
-            font-size: 20px;
-            font-weight: 700;
+            padding: 15px;
+            border-radius: 10px;
+            border: 3px solid #f59e0b;
+            margin: 15px 0;
+            font-size: 18px;
+            font-weight: 800;
             color: #b45309;
-            display: inline-block;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            text-align: left;
+        }
+        
+        .deposit-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #fbbf24;
+        }
+        
+        .deposit-row:last-child {
+            border-bottom: none;
+            font-weight: 900;
+            color: #dc2626;
+            font-size: 20px;
+        }
+        
+        .deposit-label {
+            font-weight: 700;
+        }
+        
+        .deposit-value {
+            font-weight: 800;
+        }
+        
+        .payment-info {
+            background: #fffbeb;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 2px solid #fbbf24;
+            font-size: 15px;
+            font-weight: 600;
         }
         
         .status-badge {
             display: inline-block;
-            padding: 6px 16px;
+            padding: 8px 18px;
             border-radius: 20px;
-            font-size: 14px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 800;
             margin-top: 8px;
         }
         
@@ -424,8 +393,8 @@
         .status-awaiting-deposit { 
             background: linear-gradient(135deg, #fef3c7, #fde68a); 
             color: #92400e; 
-            border: 2px solid #f59e0b;
-            font-weight: 800;
+            border: 3px solid #f59e0b;
+            font-weight: 900;
         }
         
         .loading {
@@ -516,7 +485,17 @@
             }
             
             .deposit-notice {
-                padding: 15px 15px 15px 60px;
+                padding: 18px 18px 18px 70px;
+            }
+            
+            .deposit-notice::before {
+                top: 18px;
+                left: 20px;
+                font-size: 26px;
+            }
+            
+            .deposit-calculation {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -596,16 +575,21 @@
                     </div>
                 </div>
                 
-                <!-- DEPOSIT NOTICE - ALWAYS SHOWN -->
+                <!-- DEPOSIT CALCULATION SECTION -->
                 <div class="deposit-notice">
-                    <strong>⚠️ IMPORTANT: 50% DEPOSIT REQUIRED</strong>
-                    A 50% deposit is required for us to proceed with your job.
-                    <div id="depositAmount" class="deposit-amount">-</div>
-                    Deposit payable to: Cut It Right | Email: cutitright.info@gmail.com
+                    <strong>⚠️ 50% DEPOSIT REQUIRED TO START WORK</strong>
+                    <div class="deposit-calculation" id="depositCalculation">
+                        <!-- Will be filled by JavaScript -->
+                    </div>
+                    <div class="payment-info">
+                        💳 Deposit payable to: <strong>Cut It Right</strong><br>
+                        📧 Email: <strong>cutitright.info@gmail.com</strong><br>
+                        📞 Call: <strong>043 065 0097</strong> for banking details
+                    </div>
                 </div>
                 
-                <!-- UPDATED NOTES SECTION - HIGHLY VISIBLE -->
-                <div class="notes-section" id="notesSection">
+                <!-- GREEN & BOLD NOTES SECTION -->
+                <div class="notes-section">
                     <div class="notes-header">
                         <div class="notes-icon">📋</div>
                         <div class="notes-label">Job Updates & Important Information</div>
@@ -631,7 +615,7 @@
                 </a>
             </div>
             <p style="margin-top: 16px; font-size: 13px; color: #9ca3af;">
-                <strong>Payment Terms:</strong> 50% deposit required to start work • Balance on completion
+                <strong>Payment Terms:</strong> 50% deposit required to start work • Balance payable on completion
             </p>
         </div>
     </div>
@@ -688,25 +672,25 @@
                 indicator.innerHTML = '<span>⚠️</span><span>Using offline data - check connection</span>';
                 indicator.className = 'status-indicator error';
                 
-                // Fallback data
+                // Fallback data with clear deposit examples
                 allJobs = {
                     'j1001': { 
                         status: 'Awaiting Deposit', 
                         price: 'R 2,500.00', 
-                        date: '19 March 2024', 
-                        notes: '✅ QUOTATION READY\n📅 Submitted: 19 March 2024\n💳 50% Deposit Required: R 1,250.00\n📞 Please contact us to make payment\n🚀 We can start immediately after deposit' 
+                        date: 'Today', 
+                        notes: '✅ QUOTATION READY\n📅 Submitted: Today\n💳 50% Deposit Required\n📞 Call 043 065 0097 to pay deposit\n🚀 Work starts immediately after payment' 
                     },
                     'j1002': { 
                         status: 'In Progress', 
                         price: 'R 4,750.00', 
-                        date: '18 March 2024', 
-                        notes: '✅ DEPOSIT RECEIVED\n💰 Amount: R 2,375.00\n📅 Started: 18 March 2024\n⏳ Estimated Completion: 22 March 2024\n🔧 Current Stage: Precision Cutting\n📞 We will contact you with updates' 
+                        date: 'Today', 
+                        notes: '✅ DEPOSIT RECEIVED\n💰 50% Deposit: R 2,375.00 paid\n📅 Work started: Today\n⏳ Estimated completion: 3-5 days\n🔧 Current stage: Precision cutting' 
                     },
                     'j1003': { 
                         status: 'Ready for Collection', 
                         price: 'R 8,200.00', 
                         date: 'Today', 
-                        notes: '🎉 JOB COMPLETED\n✅ Quality check passed\n📦 Ready for collection\n💰 Balance due: R 4,100.00\n📍 Collection: Our workshop\n⏰ Hours: Mon-Fri 8am-5pm\n📞 Please call before collecting' 
+                        notes: '🎉 JOB COMPLETED\n✅ Quality check passed\n💰 Balance due: R 4,100.00\n📦 Ready for collection\n📍 Collect at our workshop\n📞 Call before collecting' 
                     }
                 };
                 dataLoaded = true;
@@ -726,17 +710,28 @@
             });
         }
         
-        function calculateDeposit(priceStr) {
-            if (!priceStr || priceStr === 'Not quoted') return 'N/A';
-            
-            const price = parseFloat(priceStr.replace(/[^0-9.-]+/g, ""));
-            if (isNaN(price)) return 'N/A';
+        function extractNumericPrice(priceStr) {
+            if (!priceStr || priceStr === 'Not quoted') return 0;
+            return parseFloat(priceStr.replace(/[^0-9.-]+/g, ""));
+        }
+        
+        function calculateDepositDetails(priceStr) {
+            const price = extractNumericPrice(priceStr);
+            if (price <= 0) return null;
             
             const deposit = price * 0.5;
-            return 'R ' + deposit.toLocaleString('en-ZA', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
+            const balance = price * 0.5;
+            
+            return {
+                price: price,
+                deposit: deposit,
+                balance: balance,
+                formatted: {
+                    price: 'R ' + price.toLocaleString('en-ZA', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    deposit: 'R ' + deposit.toLocaleString('en-ZA', {minimumFractionDigits: 2, maximumFractionDigits: 2}),
+                    balance: 'R ' + balance.toLocaleString('en-ZA', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+                }
+            };
         }
         
         async function searchJob() {
@@ -776,8 +771,7 @@
         
         function displayJob(jobNumber, job) {
             const result = document.getElementById('resultCard');
-            const notesSection = document.getElementById('notesSection');
-            const depositAmountDiv = document.getElementById('depositAmount');
+            const depositCalcDiv = document.getElementById('depositCalculation');
             
             // Update basic info
             document.getElementById('resultJobNumber').textContent = jobNumber.toUpperCase();
@@ -785,25 +779,44 @@
             document.getElementById('resultPrice').textContent = job.price;
             document.getElementById('resultDate').textContent = job.date;
             
-            // Update notes with formatting
+            // Update notes
             let notes = job.notes || 'No updates available. Please contact us for information.';
             document.getElementById('resultNotes').innerHTML = formatNotes(notes);
             
-            // Update deposit amount
-            const depositAmount = calculateDeposit(job.price);
-            if (depositAmount !== 'N/A') {
-                depositAmountDiv.textContent = `Required Deposit: ${depositAmount}`;
+            // Calculate and display deposit details
+            const depositDetails = calculateDepositDetails(job.price);
+            if (depositDetails) {
+                depositCalcDiv.innerHTML = `
+                    <div class="deposit-row">
+                        <span class="deposit-label">Total Quotation:</span>
+                        <span class="deposit-value">${depositDetails.formatted.price}</span>
+                    </div>
+                    <div class="deposit-row">
+                        <span class="deposit-label">50% Deposit Required:</span>
+                        <span class="deposit-value">${depositDetails.formatted.deposit}</span>
+                    </div>
+                    <div class="deposit-row">
+                        <span class="deposit-label">Balance on Completion:</span>
+                        <span class="deposit-value">${depositDetails.formatted.balance}</span>
+                    </div>
+                `;
             } else {
-                depositAmountDiv.textContent = 'Deposit amount will be calculated after quoting';
+                depositCalcDiv.innerHTML = `
+                    <div class="deposit-row">
+                        <span class="deposit-label">Total Quotation:</span>
+                        <span class="deposit-value">Not quoted yet</span>
+                    </div>
+                    <div class="deposit-row">
+                        <span class="deposit-label">50% Deposit Required:</span>
+                        <span class="deposit-value">Will calculate after quoting</span>
+                    </div>
+                `;
             }
             
             // Set status badge
             const badge = document.getElementById('statusBadge');
             badge.textContent = job.status;
             badge.className = 'status-badge ' + getStatusClass(job.status);
-            
-            // Set notes section color based on status
-            setNotesColor(job.status);
             
             // Show result
             result.style.display = 'block';
@@ -821,47 +834,24 @@
             // Replace line breaks with HTML breaks and add emoji formatting
             let formattedNotes = notes
                 .replace(/\n/g, '<br>')
-                .replace(/✅/g, '<span style="color: #10b981;">✅</span>')
-                .replace(/📅/g, '<span style="color: #3b82f6;">📅</span>')
-                .replace(/💳/g, '<span style="color: #8b5cf6;">💳</span>')
-                .replace(/💰/g, '<span style="color: #059669;">💰</span>')
-                .replace(/📞/g, '<span style="color: #ef4444;">📞</span>')
-                .replace(/🚀/g, '<span style="color: #f59e0b;">🚀</span>')
-                .replace(/🔧/g, '<span style="color: #6366f1;">🔧</span>')
-                .replace(/⏳/g, '<span style="color: #f97316;">⏳</span>')
-                .replace(/🎉/g, '<span style="color: #ec4899;">🎉</span>')
-                .replace(/📦/g, '<span style="color: #14b8a6;">📦</span>')
-                .replace(/📍/g, '<span style="color: #8b5cf6;">📍</span>')
-                .replace(/⏰/g, '<span style="color: #0ea5e9;">⏰</span>');
+                .replace(/✅/g, '<span style="color: #10b981; font-size: 18px;">✅</span>')
+                .replace(/📅/g, '<span style="color: #3b82f6; font-size: 18px;">📅</span>')
+                .replace(/💳/g, '<span style="color: #8b5cf6; font-size: 18px;">💳</span>')
+                .replace(/💰/g, '<span style="color: #059669; font-size: 18px;">💰</span>')
+                .replace(/📞/g, '<span style="color: #ef4444; font-size: 18px;">📞</span>')
+                .replace(/🚀/g, '<span style="color: #f59e0b; font-size: 18px;">🚀</span>')
+                .replace(/🔧/g, '<span style="color: #6366f1; font-size: 18px;">🔧</span>')
+                .replace(/⏳/g, '<span style="color: #f97316; font-size: 18px;">⏳</span>')
+                .replace(/🎉/g, '<span style="color: #ec4899; font-size: 18px;">🎉</span>')
+                .replace(/📦/g, '<span style="color: #14b8a6; font-size: 18px;">📦</span>')
+                .replace(/📍/g, '<span style="color: #8b5cf6; font-size: 18px;">📍</span>');
             
             return formattedNotes;
         }
         
-        function setNotesColor(status) {
-            const notesSection = document.getElementById('notesSection');
-            
-            // Remove all color classes
-            notesSection.className = 'notes-section';
-            
-            // Add appropriate color class
-            status = status.toLowerCase();
-            if (status.includes('awaiting deposit') || status.includes('deposit')) {
-                notesSection.classList.add('notes-awaiting-deposit');
-            } else if (status.includes('progress')) {
-                notesSection.classList.add('notes-in-progress');
-            } else if (status.includes('complete')) {
-                notesSection.classList.add('notes-completed');
-            } else if (status.includes('ready')) {
-                notesSection.classList.add('notes-ready');
-            } else {
-                notesSection.classList.add('notes-in-progress');
-            }
-        }
-        
         function getStatusClass(status) {
             status = status.toLowerCase();
-            if (status.includes('awaiting deposit')) return 'status-awaiting-deposit';
-            if (status.includes('deposit')) return 'status-awaiting-deposit';
+            if (status.includes('awaiting deposit') || status.includes('deposit')) return 'status-awaiting-deposit';
             if (status.includes('progress')) return 'status-in-progress';
             if (status.includes('ready')) return 'status-ready';
             if (status.includes('complete')) return 'status-completed';
