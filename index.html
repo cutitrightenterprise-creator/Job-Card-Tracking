@@ -75,8 +75,8 @@
         
         .tagline {
             color: var(--dark);
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
             letter-spacing: 1px;
             opacity: 0.9;
         }
@@ -103,7 +103,7 @@
             gap: 10px;
         }
         
-        /* Search Section */
+        /* Search Section - BUTTON BELOW INPUT */
         .search-section {
             background: var(--lime-bg);
             border-radius: 20px;
@@ -136,14 +136,9 @@
             gap: 12px;
         }
         
-        .search-box {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        
-        input {
-            flex: 1;
+        /* INPUT BAR (Full width) */
+        .input-bar {
+            width: 100%;
             padding: 18px 22px;
             border: 2px solid var(--lime);
             border-radius: 14px;
@@ -152,33 +147,40 @@
             background: var(--white);
             color: var(--dark);
             transition: all 0.3s;
+            margin-bottom: 16px;
         }
         
-        input:focus {
+        .input-bar:focus {
             outline: none;
             border-color: var(--lime-dark);
             box-shadow: 0 0 0 4px rgba(163, 230, 53, 0.2);
         }
         
+        /* SEARCH BUTTON (Below input, full width) */
         .search-btn {
+            width: 100%;
             background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
             color: var(--dark);
             border: none;
-            padding: 0 36px;
+            padding: 18px;
             border-radius: 14px;
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 18px;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 10px;
-            white-space: nowrap;
+            justify-content: center;
+            gap: 12px;
         }
         
         .search-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(163, 230, 53, 0.4);
+        }
+        
+        .search-btn:active {
+            transform: translateY(0);
         }
         
         .hint {
@@ -189,6 +191,7 @@
             justify-content: center;
             gap: 8px;
             font-weight: 500;
+            margin-top: 16px;
         }
         
         /* Centered Deposit Notice */
@@ -449,15 +452,6 @@
                 grid-template-columns: 1fr;
             }
             
-            .search-box {
-                flex-direction: column;
-            }
-            
-            .search-btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
             .contact-info {
                 flex-direction: column;
                 gap: 12px;
@@ -474,6 +468,14 @@
                 margin: 20px 0;
                 padding: 24px;
             }
+            
+            .logo {
+                font-size: 32px;
+            }
+            
+            .tagline {
+                font-size: 15px;
+            }
         }
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
@@ -483,7 +485,7 @@
         <!-- Lime Green Header -->
         <div class="header">
             <div class="logo">CUT IT RIGHT</div>
-            <div class="tagline">PRECISION CUTTING SERVICES</div>
+            <div class="tagline">AUTOMOTIVE REPAIR & SALES SHOP</div>
         </div>
         
         <!-- Main Content -->
@@ -493,23 +495,27 @@
                 <span>Connecting to live database...</span>
             </div>
             
-            <!-- Search Section -->
+            <!-- Search Section - BUTTON BELOW INPUT -->
             <div class="search-section">
                 <div class="search-title">🔍 TRACK YOUR JOB</div>
-                <div class="search-box">
-                    <input 
-                        type="text" 
-                        id="jobNumber" 
-                        placeholder="Enter job number (e.g. j1001)"
-                        autocomplete="off"
-                        oninput="this.value = this.value.toLowerCase()"
-                        autofocus
-                    >
-                    <button class="search-btn" onclick="searchJob()">
-                        <span>🔍</span>
-                        <span id="buttonText">SEARCH</span>
-                    </button>
-                </div>
+                
+                <!-- Input Bar -->
+                <input 
+                    type="text" 
+                    class="input-bar"
+                    id="jobNumber" 
+                    placeholder="Enter job number (e.g. j1001)"
+                    autocomplete="off"
+                    oninput="this.value = this.value.toLowerCase()"
+                    autofocus
+                >
+                
+                <!-- Search Button (BELOW input) -->
+                <button class="search-btn" onclick="searchJob()">
+                    <span>🔍</span>
+                    <span id="buttonText">SEARCH JOB STATUS</span>
+                </button>
+                
                 <div class="hint">
                     <span>📝</span>
                     <span>Enter the job number from your quotation</span>
@@ -661,13 +667,13 @@
                         status: 'In Progress', 
                         price: 'R 4,750.00', 
                         date: 'Today', 
-                        notes: '✅ Deposit received\n💰 Work in progress\n⏳ Estimated completion: 3-5 days\n🔧 Precision cutting stage' 
+                        notes: '✅ Deposit received\n💰 Work in progress\n⏳ Estimated completion: 3-5 days\n🔧 Automotive repair stage' 
                     },
                     'j1003': { 
                         status: 'Ready for Collection', 
                         price: 'R 8,200.00', 
                         date: 'Today', 
-                        notes: '🎉 Job completed successfully\n✅ Quality check passed\n📦 Ready for collection\n📍 Workshop collection' 
+                        notes: '🎉 Vehicle repair completed\n✅ Quality check passed\n📦 Ready for collection\n📍 Workshop collection' 
                     }
                 };
                 dataLoaded = true;
@@ -706,7 +712,7 @@
             if (!dataLoaded) {
                 buttonText.textContent = 'LOADING...';
                 await loadJobData();
-                buttonText.textContent = 'SEARCH';
+                buttonText.textContent = 'SEARCH JOB STATUS';
             }
             
             loading.style.display = 'block';
