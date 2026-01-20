@@ -240,6 +240,22 @@
             margin-top: 10px;
         }
         
+        .deposit-notice {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 20px;
+            text-align: center;
+            color: #92400e;
+            font-weight: 600;
+        }
+        
+        .deposit-notice strong {
+            color: #b45309;
+            font-size: 18px;
+        }
+        
         .status-badge {
             display: inline-block;
             padding: 6px 16px;
@@ -254,6 +270,7 @@
         .status-completed { background: #f0f9ff; color: #0c4a6e; }
         .status-pending { background: #fef3c7; color: #92400e; }
         .status-quoted { background: #f3e8ff; color: #6b21a8; }
+        .status-awaiting-deposit { background: #fef3c7; color: #92400e; border: 2px dashed #f59e0b; }
         
         .loading {
             text-align: center;
@@ -340,6 +357,7 @@
             .contact-info {
                 flex-direction: column;
                 gap: 12px;
+            }
         }
     </style>
 </head>
@@ -347,8 +365,8 @@
     <div class="container">
         <!-- BUSINESS NAME HEADER -->
         <div class="business-header">
-            <div class="business-name">YOUR BUSINESS NAME</div>
-            <div class="business-tagline">Professional Service • Quality Guaranteed</div>
+            <div class="business-name">CUT IT RIGHT</div>
+            <div class="business-tagline">Professional Cutting Service • Precision Guaranteed</div>
         </div>
         
         <!-- TRACKER HEADER -->
@@ -418,6 +436,12 @@
                     </div>
                 </div>
                 
+                <!-- DEPOSIT NOTICE - ALWAYS SHOWN -->
+                <div class="deposit-notice">
+                    <strong>⚠️ IMPORTANT: 50% DEPOSIT REQUIRED</strong><br>
+                    A 50% deposit is required for us to proceed with your job.
+                </div>
+                
                 <div class="notes-section">
                     <div class="detail-label">Job Notes & Updates</div>
                     <div class="detail-value" id="resultNotes" style="font-weight: normal; font-size: 16px; line-height: 1.6;">-</div>
@@ -429,19 +453,18 @@
         <div class="footer">
             <p>🔄 Updates automatically from Google Sheets • 🔒 POPIA Compliant</p>
             <div class="contact-info">
-                <a href="tel:+27111234567" class="contact-item">
+                <a href="tel:0430650097" class="contact-item">
                     <span>📞</span>
-                    <span>+27 11 123 4567</span>
+                    <span>043 065 0097</span>
                 </a>
-                <a href="mailto:info@yourbusiness.co.za" class="contact-item">
+                <a href="mailto:cutitright.info@gmail.com" class="contact-item">
                     <span>✉️</span>
-                    <span>info@yourbusiness.co.za</span>
-                </a>
-                <a href="https://yourbusiness.co.za" class="contact-item">
-                    <span>🌐</span>
-                    <span>yourbusiness.co.za</span>
+                    <span>cutitright.info@gmail.com</span>
                 </a>
             </div>
+            <p style="margin-top: 16px; font-size: 13px; color: #9ca3af;">
+                <strong>Payment Terms:</strong> 50% deposit required to start work
+            </p>
         </div>
     </div>
 
@@ -486,7 +509,7 @@
                     if (cells && cells[0] && cells[0].v) {
                         const jobNumber = cells[0].v.toString().trim().toLowerCase();
                         allJobs[jobNumber] = {
-                            status: cells[1] ? (cells[1].v || 'Pending') : 'Pending',
+                            status: cells[1] ? (cells[1].v || 'Awaiting Deposit') : 'Awaiting Deposit',
                             price: cells[2] ? formatPrice(cells[2].v) : 'Not quoted',
                             date: cells[3] ? (cells[3].v || 'Not specified') : 'Not specified',
                             notes: cells[4] ? (cells[4].v || '') : ''
@@ -509,22 +532,22 @@
                 // Fallback data if Google Sheets fails
                 allJobs = {
                     'j1001': { 
-                        status: 'In Progress', 
+                        status: 'Awaiting Deposit', 
                         price: 'R 2,500.00', 
                         date: '19 March 2024', 
-                        notes: 'Awaiting customer approval on design' 
+                        notes: '50% deposit of R 1,250.00 required to proceed' 
                     },
                     'j1002': { 
-                        status: 'Quoted', 
+                        status: 'In Progress', 
                         price: 'R 4,750.00', 
                         date: '18 March 2024', 
-                        notes: 'Ready for collection - payment pending' 
+                        notes: 'Deposit received - work in progress' 
                     },
                     'j1003': { 
                         status: 'Completed', 
                         price: 'R 8,200.00', 
                         date: '15 March 2024', 
-                        notes: 'Delivered to client - balance paid in full' 
+                        notes: 'Job completed - balance paid in full' 
                     }
                 };
                 dataLoaded = true;
@@ -540,6 +563,20 @@
             if (isNaN(value)) return 'Not quoted';
             
             return 'R ' + value.toLocaleString('en-ZA', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        
+        // Calculate deposit amount
+        function calculateDeposit(priceStr) {
+            if (!priceStr || priceStr === 'Not quoted') return 'N/A';
+            
+            const price = parseFloat(priceStr.replace(/[^0-9.-]+/g, ""));
+            if (isNaN(price)) return 'N/A';
+            
+            const deposit = price * 0.5;
+            return 'R ' + deposit.toLocaleString('en-ZA', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
@@ -572,7 +609,7 @@
             
             loading.style.display = 'block';
             
-            // Simulate search delay (remove in production)
+            // Simulate search delay
             setTimeout(() => {
                 loading.style.display = 'none';
                 
@@ -593,7 +630,16 @@
             document.getElementById('resultStatus').textContent = job.status;
             document.getElementById('resultPrice').textContent = job.price;
             document.getElementById('resultDate').textContent = job.date;
-            document.getElementById('resultNotes').textContent = job.notes || 'No notes available';
+            
+            // Update notes with deposit info if applicable
+            let notes = job.notes || 'No notes available';
+            if (job.status.toLowerCase().includes('awaiting') || job.status.toLowerCase().includes('deposit')) {
+                const depositAmount = calculateDeposit(job.price);
+                if (depositAmount !== 'N/A') {
+                    notes = `📋 ${notes}\n\n💳 Required Deposit: ${depositAmount} (50% of ${job.price})`;
+                }
+            }
+            document.getElementById('resultNotes').textContent = notes;
             
             // Set status badge
             const badge = document.getElementById('statusBadge');
@@ -615,12 +661,14 @@
         // Get CSS class for status
         function getStatusClass(status) {
             status = status.toLowerCase();
+            if (status.includes('awaiting deposit')) return 'status-awaiting-deposit';
+            if (status.includes('deposit')) return 'status-awaiting-deposit';
             if (status.includes('progress')) return 'status-in-progress';
             if (status.includes('ready')) return 'status-ready';
             if (status.includes('complete')) return 'status-completed';
             if (status.includes('pending')) return 'status-pending';
             if (status.includes('quote')) return 'status-quoted';
-            return 'status-in-progress';
+            return 'status-awaiting-deposit';
         }
         
         // Show error message
@@ -647,12 +695,6 @@
             
             // Focus on input
             document.getElementById('jobNumber').focus();
-            
-            // Add custom business name
-            const businessName = prompt("Enter your business name:", "YOUR BUSINESS NAME");
-            if (businessName && businessName.trim() !== "") {
-                document.querySelector('.business-name').textContent = businessName.toUpperCase();
-            }
         });
     </script>
 </body>
