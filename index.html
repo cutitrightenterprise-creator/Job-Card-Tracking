@@ -236,7 +236,7 @@
             transform: translateY(0);
         }
         
-        /* NEW: FINANCIAL STATEMENT BUTTON */
+        /* FINANCIAL STATEMENT BUTTON */
         .finance-btn {
             width: 100%;
             background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
@@ -399,7 +399,7 @@
             font-size: 22px;
         }
         
-        /* NEW: FINANCIAL STATEMENT CARD */
+        /* FINANCIAL STATEMENT CARD */
         .finance-card {
             background: var(--blue-light);
             border-radius: 16px;
@@ -514,7 +514,7 @@
             color: #92400e;
         }
         
-        /* NEW: THANK YOU MESSAGE */
+        /* THANK YOU MESSAGE */
         .thank-you-message {
             background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
             border: 3px solid var(--lime);
@@ -595,7 +595,7 @@
             gap: 10px;
         }
         
-        /* NEW: PAYMENT METHODS SECTION */
+        /* PAYMENT METHODS SECTION */
         .payment-section {
             background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
             border: 3px solid #0ea5e9;
@@ -951,7 +951,7 @@
                     <span id="buttonText">SEARCH REPAIR STATUS</span>
                 </button>
                 
-                <!-- NEW: Financial Statement Search Button -->
+                <!-- Financial Statement Search Button -->
                 <button class="finance-btn" onclick="searchFinancialStatement()">
                     <i class="fas fa-file-invoice-dollar"></i>
                     <span id="financeButtonText">VIEW FINANCIAL STATEMENT</span>
@@ -1055,21 +1055,10 @@
                         <div class="finance-item">
                             <div class="finance-label">
                                 <i class="fas fa-calendar-alt"></i>
-                                Start Date
+                                Loan Status
                             </div>
-                            <div class="finance-value" id="financeStartDate">
-                                <i class="fas fa-calendar-day"></i>
-                                -
-                            </div>
-                        </div>
-                        
-                        <div class="finance-item">
-                            <div class="finance-label">
-                                <i class="fas fa-calendar-check"></i>
-                                Due Date
-                            </div>
-                            <div class="finance-value" id="financeDueDate">
-                                <i class="fas fa-calendar-times"></i>
+                            <div class="finance-value" id="financeStatusDetail">
+                                <i class="fas fa-info-circle"></i>
                                 -
                             </div>
                         </div>
@@ -1088,10 +1077,21 @@
                         <div class="finance-item">
                             <div class="finance-label">
                                 <i class="fas fa-credit-card"></i>
-                                Next Payment Due
+                                Next Payment
                             </div>
                             <div class="finance-value" id="financeNextPayment">
                                 <i class="fas fa-rand-sign"></i>
+                                -
+                            </div>
+                        </div>
+                        
+                        <div class="finance-item">
+                            <div class="finance-label">
+                                <i class="fas fa-sticky-note"></i>
+                                Notes
+                            </div>
+                            <div class="finance-value" id="financeNotes">
+                                <i class="fas fa-comment"></i>
                                 -
                             </div>
                         </div>
@@ -1099,7 +1099,7 @@
                     
                     <div class="payment-due" id="financePaymentDue">
                         <i class="fas fa-exclamation-circle"></i>
-                        PAYMENT STATUS: -
+                        IMPORTANT: Please contact office for payment details
                     </div>
                 </div>
             </div>
@@ -1178,7 +1178,7 @@
                     </div>
                 </div>
                 
-                <!-- NEW: THANK YOU MESSAGE -->
+                <!-- THANK YOU MESSAGE -->
                 <div class="thank-you-message">
                     <div class="thank-you-icon">
                         <i class="fas fa-heart"></i>
@@ -1244,4 +1244,554 @@
                                     <div class="bank-value">KING WILLIAMS TOWN 264</div>
                                 </div>
                                 
-                                <div class="bank
+                                <div class="bank-item">
+                                    <div class="bank-label">Branch Code</div>
+                                    <div class="bank-value">210519</div>
+                                </div>
+                                
+                                <div class="bank-item">
+                                    <div class="bank-label">Account Type</div>
+                                    <div class="bank-value">CURRENT/CHEQUE ACCOUNT</div>
+                                </div>
+                                
+                                <div class="bank-item" style="grid-column: span 2;">
+                                    <div class="bank-label">Reference</div>
+                                    <div class="bank-value" id="jobReference">USE YOUR JOB NUMBER AS REFERENCE</div>
+                                </div>
+                            </div>
+                            
+                            <div class="reference-note">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <strong>IMPORTANT:</strong> Use your Job Number as payment reference. Keep proof of payment.
+                            </div>
+                        </div>
+                        
+                        <!-- WhatsApp Payment Section -->
+                        <div class="whatsapp-payment" id="whatsappPayment" style="display: none;">
+                            <div class="bank-title">
+                                <i class="fab fa-whatsapp"></i>
+                                SEND PAYMENT PROOF VIA WHATSAPP
+                            </div>
+                            <p style="color: #166534; margin-bottom: 15px; font-weight: 600;">
+                                After making payment, send your proof of payment to our WhatsApp number:
+                            </p>
+                            
+                            <a href="https://wa.me/27677094033?text=Hello%20Cut%20It%20Right%2C%20I%20have%20made%20payment%20for%20job%20number%3A%20" 
+                               class="whatsapp-btn" 
+                               target="_blank"
+                               id="whatsappLink">
+                                <i class="fab fa-whatsapp"></i>
+                                SEND TO WHATSAPP: 076 709 4033
+                            </a>
+                            
+                            <p style="color: #166534; margin-top: 15px; font-size: 14px; font-weight: 600;">
+                                Please include your Job Number and proof of payment screenshot.
+                            </p>
+                        </div>
+                        
+                        <!-- 90-DAY POLICY NOTICE -->
+                        <div class="policy-notice">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>IMPORTANT POLICY:</strong> Machines not collected within 90 days will be sold to defray costs.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer with Repair Shop Icons -->
+        <div class="footer">
+            <div class="contact-info">
+                <a href="tel:0430650097" class="contact-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>043 065 0097</span>
+                </a>
+                <a href="mailto:cutitright.info@gmail.com" class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>cutitright.info@gmail.com</span>
+                </a>
+            </div>
+            <div class="footer-note">
+                <i class="fas fa-database"></i>
+                <span>Live updates from Google Sheets • 50% deposit required to start repair</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= CONFIGURATION =================
+        const GOOGLE_SHEET_ID = '18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo';
+        const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
+        // =================================================
+        
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json`;
+        
+        let allJobs = {};
+        let allFinancialStatements = {};
+        let dataLoaded = false;
+        let financeDataLoaded = false;
+        let currentJobNumber = '';
+        let currentCustomerName = '';
+        
+        // ================= CSV PARSING HELPER =================
+        function parseCSVRow(row) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < row.length; i++) {
+                const char = row[i];
+                const nextChar = row[i + 1];
+                
+                if (char === '"' && inQuotes && nextChar === '"') {
+                    current += '"';
+                    i++; // Skip next quote
+                } else if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current);
+            return result;
+        }
+        
+        // ================= LOAD FINANCIAL DATA =================
+        async function loadFinancialData() {
+            try {
+                console.log('Loading financial data from CSV...');
+                document.getElementById('statusIndicator').innerHTML = 
+                    '<i class="fas fa-sync-alt fa-spin"></i><span>Loading financial data...</span>';
+                
+                const response = await fetch(FINANCE_SHEET_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                const csvText = await response.text();
+                console.log('CSV data received');
+                
+                // Parse CSV data
+                const rows = csvText.split('\n').filter(row => row.trim() !== '');
+                
+                allFinancialStatements = {};
+                
+                // Skip header row (row 0)
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i];
+                    const columns = parseCSVRow(row);
+                    
+                    if (columns.length >= 1 && columns[0]) {
+                        const customerName = columns[0].trim().toLowerCase();
+                        
+                        // Your sheet structure (based on what I can see):
+                        // Column 0: Customer Name
+                        // Column 1: Loan Amount
+                        // Column 2: Interest Rate
+                        // Column 3: Total to Pay
+                        // Column 4: Loan Status
+                        // Column 5: Notes/Comments
+                        
+                        const loanAmount = columns[1] ? parseFloat(columns[1].replace(/[^0-9.-]+/g, "")) : 0;
+                        const interestRate = columns[2] ? parseFloat(columns[2].replace('%', '')) : 0;
+                        const totalPayable = columns[3] ? parseFloat(columns[3].replace(/[^0-9.-]+/g, "")) : 0;
+                        
+                        allFinancialStatements[customerName] = {
+                            customerName: columns[0] || '',
+                            loanAmount: formatPrice(loanAmount),
+                            interest: interestRate + '%',
+                            totalPayable: formatPrice(totalPayable),
+                            loanStatus: columns[4] || 'Active',
+                            notes: columns[5] || '',
+                            interestAmount: formatPrice(totalPayable - loanAmount),
+                            nextPayment: calculateNextPayment(totalPayable, columns[4])
+                        };
+                    }
+                }
+                
+                financeDataLoaded = true;
+                const count = Object.keys(allFinancialStatements).length;
+                console.log(`✓ Loaded ${count} financial statements`);
+                console.log('Available customers:', Object.keys(allFinancialStatements));
+                
+                document.getElementById('statusIndicator').innerHTML = 
+                    `<i class="fas fa-check-circle"></i><span>Live data connected (${count} financial records)</span>`;
+                
+            } catch (error) {
+                console.error('Failed to load financial data:', error);
+                
+                // Fallback data
+                allFinancialStatements = {
+                    'john doe': {
+                        customerName: 'John Doe',
+                        loanAmount: 'R 15,000.00',
+                        interest: '10%',
+                        totalPayable: 'R 16,500.00',
+                        loanStatus: 'Active',
+                        notes: 'Monthly payments',
+                        interestAmount: 'R 1,500.00',
+                        nextPayment: 'R 1,500.00'
+                    },
+                    'jane smith': {
+                        customerName: 'Jane Smith',
+                        loanAmount: 'R 8,000.00',
+                        interest: '12%',
+                        totalPayable: 'R 8,960.00',
+                        loanStatus: 'Active',
+                        notes: 'Quarterly payments',
+                        interestAmount: 'R 960.00',
+                        nextPayment: 'R 2,240.00'
+                    }
+                };
+                financeDataLoaded = true;
+                
+                document.getElementById('statusIndicator').innerHTML = 
+                    '<i class="fas fa-exclamation-triangle"></i><span>Using sample financial data</span>';
+            }
+        }
+        
+        // ================= LOAD JOB DATA =================
+        async function loadJobData() {
+            const indicator = document.getElementById('statusIndicator');
+            
+            try {
+                indicator.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i><span>Loading repair data...</span>';
+                
+                const response = await fetch(SHEET_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                const text = await response.text();
+                const json = JSON.parse(text.substring(47).slice(0, -2));
+                const rows = json.table.rows;
+                
+                allJobs = {};
+                rows.forEach((row, index) => {
+                    if (index === 0) return;
+                    
+                    const cells = row.c;
+                    if (cells && cells[0] && cells[0].v) {
+                        const jobNumber = cells[0].v.toString().trim().toLowerCase();
+                        allJobs[jobNumber] = {
+                            status: cells[1] ? (cells[1].v || 'Awaiting Deposit') : 'Awaiting Deposit',
+                            price: cells[2] ? formatPrice(cells[2].v) : 'Not quoted',
+                            date: cells[3] ? (cells[3].v || 'Today') : 'Today',
+                            notes: cells[4] ? (cells[4].v || '') : ''
+                        };
+                    }
+                });
+                
+                dataLoaded = true;
+                const count = Object.keys(allJobs).length;
+                indicator.innerHTML = `<i class="fas fa-check-circle"></i><span>Live data connected (${count} repair jobs)</span>`;
+                
+            } catch (error) {
+                console.error('Failed to load data:', error);
+                indicator.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Using offline repair data</span>';
+                
+                // Fallback data
+                allJobs = {
+                    'j1001': { 
+                        status: 'Awaiting Deposit', 
+                        price: 'R 850.00', 
+                        date: 'Today', 
+                        notes: 'Lawnmower blade replacement' 
+                    },
+                    'j1002': { 
+                        status: 'In Progress', 
+                        price: 'R 1,250.00', 
+                        date: 'Today', 
+                        notes: 'Brushcutter carburetor repair' 
+                    },
+                    'j1003': { 
+                        status: 'Ready for Collection', 
+                        price: 'R 2,200.00', 
+                        date: 'Today', 
+                        notes: 'Full service completed' 
+                    }
+                };
+                dataLoaded = true;
+            }
+        }
+        
+        // ================= HELPER FUNCTIONS =================
+        function formatPrice(value) {
+            if (!value && value !== 0) return 'R 0.00';
+            if (typeof value === 'string') {
+                value = parseFloat(value.replace(/[^0-9.-]+/g, ""));
+            }
+            if (isNaN(value)) return 'R 0.00';
+            
+            return 'R ' + value.toLocaleString('en-ZA', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        
+        function calculateNextPayment(totalPayable, status) {
+            if (!totalPayable) return 'R 0.00';
+            
+            const total = typeof totalPayable === 'string' 
+                ? parseFloat(totalPayable.replace(/[^0-9.-]+/g, "")) 
+                : totalPayable;
+            
+            if (status && status.toLowerCase().includes('paid')) {
+                return 'R 0.00';
+            }
+            
+            // Simple calculation: 25% of total as next payment
+            const nextPayment = total * 0.25;
+            return formatPrice(nextPayment);
+        }
+        
+        function getStatusIcon(status) {
+            status = status.toLowerCase();
+            if (status.includes('awaiting deposit')) return '<i class="fas fa-money-check-alt"></i>';
+            if (status.includes('deposit')) return '<i class="fas fa-money-check-alt"></i>';
+            if (status.includes('progress')) return '<i class="fas fa-tools"></i>';
+            if (status.includes('ready')) return '<i class="fas fa-check-circle"></i>';
+            if (status.includes('complete')) return '<i class="fas fa-check-double"></i>';
+            if (status.includes('pending')) return '<i class="fas fa-clock"></i>';
+            if (status.includes('quote')) return '<i class="fas fa-file-invoice-dollar"></i>';
+            return '<i class="fas fa-clock"></i>';
+        }
+        
+        function getLoanStatusIcon(status) {
+            if (!status) return '<i class="fas fa-question-circle"></i>';
+            status = status.toLowerCase();
+            if (status.includes('active')) return '<i class="fas fa-check-circle"></i>';
+            if (status.includes('paid')) return '<i class="fas fa-check-double"></i>';
+            if (status.includes('overdue')) return '<i class="fas fa-exclamation-triangle"></i>';
+            if (status.includes('default')) return '<i class="fas fa-times-circle"></i>';
+            return '<i class="fas fa-clock"></i>';
+        }
+        
+        // ================= PAYMENT METHODS =================
+        function togglePayment() {
+            const content = document.getElementById('paymentContent');
+            const toggle = document.getElementById('paymentToggle');
+            
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                toggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
+            } else {
+                content.style.display = 'block';
+                toggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
+            }
+        }
+        
+        function showEFT() {
+            document.getElementById('eftDetails').style.display = 'block';
+            document.getElementById('whatsappPayment').style.display = 'none';
+            
+            if (currentJobNumber) {
+                document.getElementById('jobReference').textContent = currentJobNumber.toUpperCase();
+            }
+        }
+        
+        function showWhatsApp() {
+            document.getElementById('eftDetails').style.display = 'none';
+            document.getElementById('whatsappPayment').style.display = 'block';
+            
+            if (currentJobNumber) {
+                const whatsappText = `Hello Cut It Right, I have made payment for job number: ${currentJobNumber.toUpperCase()}. Here is my proof of payment:`;
+                const encodedText = encodeURIComponent(whatsappText);
+                document.getElementById('whatsappLink').href = `https://wa.me/27677094033?text=${encodedText}`;
+            }
+        }
+        
+        // ================= SEARCH FUNCTIONS =================
+        async function searchJob() {
+            const jobNumber = document.getElementById('jobNumber').value.trim().toLowerCase();
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const results = document.getElementById('results');
+            const buttonText = document.getElementById('buttonText');
+            
+            loading.style.display = 'none';
+            error.style.display = 'none';
+            results.style.display = 'none';
+            
+            if (!jobNumber) {
+                showError('Please enter a repair job number');
+                return;
+            }
+            
+            if (!dataLoaded) {
+                buttonText.textContent = 'LOADING...';
+                await loadJobData();
+                buttonText.textContent = 'SEARCH REPAIR STATUS';
+            }
+            
+            loading.style.display = 'block';
+            
+            setTimeout(() => {
+                loading.style.display = 'none';
+                
+                if (allJobs[jobNumber]) {
+                    displayJob(jobNumber, allJobs[jobNumber]);
+                } else {
+                    showError(`Repair job "${jobNumber.toUpperCase()}" not found. Please check the number.`);
+                }
+            }, 500);
+        }
+        
+        async function searchFinancialStatement() {
+            // Always reload fresh data
+            await loadFinancialData();
+            
+            // Get available customers
+            const customers = Object.keys(allFinancialStatements);
+            if (customers.length === 0) {
+                showFinanceError('No financial data available. Please try again later.');
+                return;
+            }
+            
+            // Prompt for name
+            const customerName = prompt(`Enter your full name (case doesn't matter):\n\nAvailable names:\n${customers.map(name => `• ${name.charAt(0).toUpperCase() + name.slice(1)}`).join('\n')}`);
+            
+            if (!customerName || customerName.trim() === '') {
+                showFinanceError('Please enter your name');
+                return;
+            }
+            
+            const searchName = customerName.trim().toLowerCase();
+            const loading = document.getElementById('financeLoading');
+            const error = document.getElementById('financeError');
+            const results = document.getElementById('financeResults');
+            
+            // Hide other sections
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            results.style.display = 'none';
+            currentCustomerName = searchName;
+            
+            setTimeout(() => {
+                loading.style.display = 'none';
+                
+                if (allFinancialStatements[searchName]) {
+                    displayFinancialStatement(searchName, allFinancialStatements[searchName]);
+                } else {
+                    // Try partial match
+                    const matches = customers.filter(name => 
+                        name.includes(searchName) || searchName.includes(name)
+                    );
+                    
+                    if (matches.length > 0) {
+                        const matchedName = matches[0];
+                        displayFinancialStatement(matchedName, allFinancialStatements[matchedName]);
+                    } else {
+                        showFinanceError(`No record found for "${customerName}".\n\nAvailable names:\n${customers.map(name => `• ${name.charAt(0).toUpperCase() + name.slice(1)}`).join('\n')}`);
+                    }
+                }
+            }, 500);
+        }
+        
+        function displayJob(jobNumber, job) {
+            const results = document.getElementById('results');
+            currentJobNumber = jobNumber;
+            
+            // Update job info
+            const jobNum = jobNumber.toUpperCase();
+            document.getElementById('resultJobNumber').innerHTML = `<i class="fas fa-tools"></i> ${jobNum}`;
+            document.getElementById('resultJobNumber2').innerHTML = `<i class="fas fa-barcode"></i> ${jobNum}`;
+            document.getElementById('resultStatus').innerHTML = `${getStatusIcon(job.status)} ${job.status}`;
+            document.getElementById('resultPrice').innerHTML = `<i class="fas fa-rand-sign"></i> ${job.price}`;
+            document.getElementById('resultDate').innerHTML = `<i class="fas fa-calendar-day"></i> ${job.date}`;
+            
+            // Update payment reference
+            document.getElementById('jobReference').textContent = jobNum;
+            
+            // Update WhatsApp link
+            const whatsappText = `Hello Cut It Right, I have made payment for job number: ${jobNum}. Here is my proof of payment:`;
+            const encodedText = encodeURIComponent(whatsappText);
+            document.getElementById('whatsappLink').href = `https://wa.me/27677094033?text=${encodedText}`;
+            
+            // Update status badge
+            const badge = document.getElementById('statusBadge');
+            badge.innerHTML = `${getStatusIcon(job.status)} ${job.status}`;
+            
+            // Show results
+            results.style.display = 'block';
+            
+            // Clear input
+            document.getElementById('jobNumber').value = '';
+            document.getElementById('jobNumber').focus();
+            
+            // Update status indicator
+            document.getElementById('statusIndicator').innerHTML = 
+                `<i class="fas fa-check-circle"></i><span>Last search: ${jobNum} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
+        }
+        
+        function displayFinancialStatement(customerName, finance) {
+            const results = document.getElementById('financeResults');
+            
+            // Format name
+            const displayName = customerName.split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+            
+            // Update display
+            document.getElementById('financeCustomerName').innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
+            document.getElementById('financeName').innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
+            document.getElementById('financeLoanStatus').innerHTML = `${getLoanStatusIcon(finance.loanStatus)} ${finance.loanStatus || 'Active'}`;
+            document.getElementById('financeInterest').innerHTML = `<i class="fas fa-chart-line"></i> ${finance.interest || '0%'}`;
+            document.getElementById('financeLoanAmount').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.loanAmount || 'R 0.00'}`;
+            document.getElementById('financeTotalPayable').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.totalPayable || 'R 0.00'}`;
+            document.getElementById('financeStatusDetail').innerHTML = `<i class="fas fa-info-circle"></i> ${finance.loanStatus || 'Active'}`;
+            document.getElementById('financeInterestAmount').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.interestAmount || 'R 0.00'}`;
+            document.getElementById('financeNextPayment').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.nextPayment || 'R 0.00'}`;
+            document.getElementById('financeNotes').innerHTML = `<i class="fas fa-comment"></i> ${finance.notes || 'No notes'}`;
+            
+            // Show results
+            results.style.display = 'block';
+            
+            // Update status indicator
+            document.getElementById('statusIndicator').innerHTML = 
+                `<i class="fas fa-file-invoice-dollar"></i><span>Financial statement for ${displayName} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
+        }
+        
+        function showError(message) {
+            const error = document.getElementById('error');
+            document.getElementById('errorText').textContent = message;
+            error.style.display = 'flex';
+        }
+        
+        function showFinanceError(message) {
+            const error = document.getElementById('financeError');
+            document.getElementById('financeErrorText').textContent = message;
+            error.style.display = 'flex';
+        }
+        
+        // ================= INITIALIZE =================
+        window.addEventListener('DOMContentLoaded', function() {
+            // Load both datasets
+            loadJobData();
+            loadFinancialData();
+            
+            // Refresh data every 2 minutes
+            setInterval(loadJobData, 2 * 60 * 1000);
+            setInterval(loadFinancialData, 2 * 60 * 1000);
+            
+            // Enter key support for job search
+            document.getElementById('jobNumber').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchJob();
+                }
+            });
+            
+            document.getElementById('jobNumber').focus();
+        });
+    </script>
+</body>
+</html>
