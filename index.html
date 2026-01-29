@@ -17,8 +17,6 @@
             --blue: #3b82f6;
             --blue-dark: #1d4ed8;
             --blue-light: #dbeafe;
-            --purple: #8b5cf6;
-            --purple-dark: #7c3aed;
         }
         
         * {
@@ -516,19 +514,19 @@
             color: #92400e;
         }
         
-        /* INTEREST CALCULATION CARD */
-        .interest-card {
-            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
-            border: 3px solid var(--purple);
-            border-radius: 16px;
+        /* INTEREST CALCULATION SECTION */
+        .interest-calculation {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #7dd3fc;
+            border-radius: 12px;
             padding: 20px;
             margin-top: 20px;
         }
         
         .interest-title {
-            font-size: 18px;
-            font-weight: 900;
-            color: var(--purple-dark);
+            font-size: 16px;
+            font-weight: 800;
+            color: #0369a1;
             margin-bottom: 15px;
             display: flex;
             align-items: center;
@@ -549,7 +547,7 @@
         
         .interest-label {
             font-size: 12px;
-            color: #7c3aed;
+            color: #64748b;
             font-weight: 700;
             text-transform: uppercase;
         }
@@ -1076,7 +1074,7 @@
                     <div class="finance-item">
                         <div class="finance-label">
                             <i class="fas fa-money-bill-wave"></i>
-                            Loan Amount
+                            Current Loan Amount
                         </div>
                         <div class="finance-value finance-total" id="financeLoanAmount">
                             <i class="fas fa-rand-sign"></i>
@@ -1087,9 +1085,9 @@
                     <div class="finance-item">
                         <div class="finance-label">
                             <i class="fas fa-file-invoice-dollar"></i>
-                            Total to Pay
+                            Total Interest Due
                         </div>
-                        <div class="finance-value finance-total" id="financeTotalPayable">
+                        <div class="finance-value finance-total" id="financeTotalInterest">
                             <i class="fas fa-rand-sign"></i>
                             -
                         </div>
@@ -1098,10 +1096,21 @@
                 
                 <div class="finance-summary">
                     <div class="summary-title">
-                        <i class="fas fa-calculator"></i>
-                        Payment Summary
+                        <i class="fas fa-calendar-alt"></i>
+                        Payment Details
                     </div>
                     <div class="summary-details">
+                        <div class="finance-item">
+                            <div class="finance-label">
+                                <i class="fas fa-coins"></i>
+                                Next Payment Due
+                            </div>
+                            <div class="finance-value" id="financeNextPayment">
+                                <i class="fas fa-rand-sign"></i>
+                                -
+                            </div>
+                        </div>
+                        
                         <div class="finance-item">
                             <div class="finance-label">
                                 <i class="fas fa-info-circle"></i>
@@ -1109,17 +1118,6 @@
                             </div>
                             <div class="finance-value" id="financeStatusDetail">
                                 <i class="fas fa-chart-bar"></i>
-                                -
-                            </div>
-                        </div>
-                        
-                        <div class="finance-item">
-                            <div class="finance-label">
-                                <i class="fas fa-coins"></i>
-                                Next Payment
-                            </div>
-                            <div class="finance-value" id="financeNextPayment">
-                                <i class="fas fa-rand-sign"></i>
                                 -
                             </div>
                         </div>
@@ -1137,49 +1135,38 @@
                         
                         <div class="finance-item">
                             <div class="finance-label">
-                                <i class="fas fa-calendar-alt"></i>
-                                Last Updated
+                                <i class="fas fa-calendar-day"></i>
+                                Statement Date
                             </div>
                             <div class="finance-value" id="financeLastUpdated">
-                                <i class="fas fa-calendar-day"></i>
+                                <i class="fas fa-calendar"></i>
                                 -
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- INTEREST CALCULATION CARD -->
-                <div class="interest-card" id="interestCard">
-                    <div class="interest-title">
-                        <i class="fas fa-calculator"></i>
-                        Interest Calculation Details
-                    </div>
-                    <div class="interest-grid">
-                        <div class="interest-item">
-                            <div class="interest-label">Total Interest Charged</div>
-                            <div class="interest-value" id="financeTotalInterest">-</div>
+                    
+                    <div class="interest-calculation">
+                        <div class="interest-title">
+                            <i class="fas fa-calculator"></i>
+                            Interest Calculation
                         </div>
-                        
-                        <div class="interest-item">
-                            <div class="interest-label">Monthly Interest</div>
-                            <div class="interest-value" id="financeMonthlyInterest">-</div>
-                        </div>
-                        
-                        <div class="interest-item">
-                            <div class="interest-label">Annual Interest</div>
-                            <div class="interest-value" id="financeAnnualInterest">-</div>
-                        </div>
-                        
-                        <div class="interest-item">
-                            <div class="interest-label">Effective Rate</div>
-                            <div class="interest-value" id="financeEffectiveRate">-</div>
+                        <div class="interest-grid">
+                            <div class="interest-item">
+                                <div class="interest-label">Monthly Interest</div>
+                                <div class="interest-value" id="financeMonthlyInterest">-</div>
+                            </div>
+                            
+                            <div class="interest-item">
+                                <div class="interest-label">Calculation</div>
+                                <div class="interest-value" id="financeCalculation">-</div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="payment-due" id="financePaymentDue">
                     <i class="fas fa-exclamation-circle"></i>
-                    IMPORTANT: Contact office for exact payment schedule
+                    <span id="paymentMessage">Payment due: Contact office for details</span>
                 </div>
             </div>
             
@@ -1422,52 +1409,36 @@
             return parseFloat(value);
         }
         
-        function calculateTotalInterest(loanAmount, totalPayable) {
-            const loan = parseFinancialNumber(loanAmount);
-            const total = parseFinancialNumber(totalPayable);
-            return total - loan;
-        }
-        
-        function calculateAnnualInterest(loanAmount, interestRate) {
+        // YOUR BUSINESS MODEL: Monthly interest = Loan Amount × Interest Rate
+        function calculateMonthlyInterest(loanAmount, interestRate) {
             const loan = parseFinancialNumber(loanAmount);
             const rate = parseFinancialNumber(interestRate) / 100; // Convert 10% to 0.10
+            
+            // Monthly interest = Loan Amount × Interest Rate
             return loan * rate;
         }
         
-        function calculateMonthlyInterest(loanAmount, interestRate) {
-            const annualInterest = calculateAnnualInterest(loanAmount, interestRate);
-            return annualInterest / 12;
-        }
-        
-        function calculateEffectiveRate(loanAmount, totalPayable, termMonths = 12) {
-            const loan = parseFinancialNumber(loanAmount);
-            const total = parseFinancialNumber(totalPayable);
-            if (loan === 0) return 0;
-            
-            // Simple effective annual rate calculation
-            const totalInterest = total - loan;
-            const annualRate = (totalInterest / loan) * (12 / termMonths) * 100;
-            return annualRate.toFixed(2);
-        }
-        
-        function calculateNextPaymentAmount(totalPayable, loanStatus, loanAmount, interestRate) {
-            const total = parseFinancialNumber(totalPayable);
+        // Next payment = Monthly interest (NOT divided by 12, NOT principal + interest)
+        function calculateNextPayment(loanAmount, interestRate, loanStatus) {
             const status = (loanStatus || '').toLowerCase();
             
-            if (status.includes('paid') || status.includes('settled')) {
+            if (status.includes('paid') || status.includes('settled') || status.includes('complete')) {
                 return 0;
             }
             
             if (status.includes('overdue')) {
-                // For overdue loans, suggest 50% of remaining balance
-                return total * 0.5;
+                // For overdue, double the interest
+                return calculateMonthlyInterest(loanAmount, interestRate) * 2;
             }
             
-            // Default calculation: monthly principal + interest
-            const monthlyInterest = calculateMonthlyInterest(loanAmount, interestRate);
-            const remainingMonths = 12; // Assuming 12-month term
-            const monthlyPrincipal = total / remainingMonths;
-            return monthlyPrincipal + monthlyInterest;
+            // Normal case: Next payment = Monthly interest
+            return calculateMonthlyInterest(loanAmount, interestRate);
+        }
+        
+        function calculateTotalInterest(totalPayable, loanAmount) {
+            const total = parseFinancialNumber(totalPayable);
+            const loan = parseFinancialNumber(loanAmount);
+            return total - loan;
         }
         
         // ================= CSV PARSING HELPER =================
@@ -1528,43 +1499,50 @@
                         
                         // Your sheet structure:
                         // Column 0: Customer Name
-                        // Column 1: Loan Amount
-                        // Column 2: Interest Rate
-                        // Column 3: Total to Pay
+                        // Column 1: Loan Amount (CURRENT loan amount after any payments)
+                        // Column 2: Interest Rate (%)
+                        // Column 3: Total to Pay (if different from loan amount + interest)
                         // Column 4: Loan Status
                         // Column 5: Notes/Comments
                         
                         const loanAmount = columns[1] || '0';
                         const interestRate = columns[2] || '0';
-                        const totalPayable = columns[3] || '0';
+                        const totalPayable = columns[3] || loanAmount; // If no total, use loan amount
                         const loanStatus = columns[4] || 'Active';
                         const notes = columns[5] || '';
                         
-                        // Calculate all interest values
-                        const totalInterest = calculateTotalInterest(loanAmount, totalPayable);
-                        const annualInterest = calculateAnnualInterest(loanAmount, interestRate);
+                        // Calculate based on YOUR business model
                         const monthlyInterest = calculateMonthlyInterest(loanAmount, interestRate);
-                        const nextPayment = calculateNextPaymentAmount(totalPayable, loanStatus, loanAmount, interestRate);
-                        const effectiveRate = calculateEffectiveRate(loanAmount, totalPayable);
+                        const nextPayment = calculateNextPayment(loanAmount, interestRate, loanStatus);
+                        const totalInterest = calculateTotalInterest(totalPayable, loanAmount);
+                        
+                        // Format interest rate for display
+                        let displayInterestRate = interestRate;
+                        if (!displayInterestRate.includes('%')) {
+                            displayInterestRate += '%';
+                        }
+                        
+                        // Create calculation formula text
+                        const calculationFormula = `${formatNumber(loanAmount)} × ${parseFinancialNumber(interestRate)}%`;
                         
                         allFinancialStatements[customerName] = {
                             customerName: columns[0] || '',
                             loanAmount: formatPrice(loanAmount),
-                            interest: interestRate + (interestRate.includes('%') ? '' : '%'),
+                            interest: displayInterestRate,
                             totalPayable: formatPrice(totalPayable),
                             loanStatus: loanStatus,
                             notes: notes,
                             lastUpdated: new Date().toLocaleDateString('en-ZA'),
                             
-                            // Calculated values
-                            totalInterest: formatPrice(totalInterest),
-                            annualInterest: formatPrice(annualInterest),
+                            // Calculated values based on YOUR model
                             monthlyInterest: formatPrice(monthlyInterest),
                             nextPayment: formatPrice(nextPayment),
-                            effectiveRate: effectiveRate + '%'
+                            totalInterest: formatPrice(totalInterest),
+                            calculationFormula: calculationFormula,
+                            interestRateValue: parseFinancialNumber(interestRate)
                         };
                         
-                        console.log(`Loaded: ${customerName} - ${formatPrice(loanAmount)} at ${interestRate}%`);
+                        console.log(`Loaded: ${customerName} - Loan: ${formatPrice(loanAmount)}, Monthly Interest: ${formatPrice(monthlyInterest)}`);
                     }
                 }
                 
@@ -1578,47 +1556,43 @@
             } catch (error) {
                 console.error('Failed to load financial data:', error);
                 
-                // Fallback sample data with correct calculations
+                // Fallback sample data with YOUR calculation model
                 const loanAmount1 = 15000;
-                const interestRate1 = 10;
-                const totalPayable1 = 16500;
-                const totalInterest1 = calculateTotalInterest(loanAmount1, totalPayable1);
-                const monthlyInterest1 = calculateMonthlyInterest(loanAmount1, interestRate1);
+                const interestRate1 = 10; // 10%
+                const monthlyInterest1 = calculateMonthlyInterest(loanAmount1, interestRate1); // 15000 × 10% = 1500
                 
                 const loanAmount2 = 8000;
-                const interestRate2 = 12;
-                const totalPayable2 = 8960;
-                const totalInterest2 = calculateTotalInterest(loanAmount2, totalPayable2);
-                const monthlyInterest2 = calculateMonthlyInterest(loanAmount2, interestRate2);
+                const interestRate2 = 12; // 12%
+                const monthlyInterest2 = calculateMonthlyInterest(loanAmount2, interestRate2); // 8000 × 12% = 960
                 
                 allFinancialStatements = {
                     'john doe': {
                         customerName: 'John Doe',
                         loanAmount: formatPrice(loanAmount1),
                         interest: interestRate1 + '%',
-                        totalPayable: formatPrice(totalPayable1),
+                        totalPayable: formatPrice(loanAmount1 + (monthlyInterest1 * 12)), // Assuming 12 months
                         loanStatus: 'Active',
-                        notes: 'Monthly payments',
+                        notes: 'Monthly interest only, no principal reduction',
                         lastUpdated: new Date().toLocaleDateString('en-ZA'),
-                        totalInterest: formatPrice(totalInterest1),
-                        annualInterest: formatPrice(calculateAnnualInterest(loanAmount1, interestRate1)),
                         monthlyInterest: formatPrice(monthlyInterest1),
-                        nextPayment: formatPrice(calculateNextPaymentAmount(totalPayable1, 'Active', loanAmount1, interestRate1)),
-                        effectiveRate: calculateEffectiveRate(loanAmount1, totalPayable1) + '%'
+                        nextPayment: formatPrice(monthlyInterest1), // Next payment = monthly interest
+                        totalInterest: formatPrice(monthlyInterest1 * 12),
+                        calculationFormula: `${formatNumber(loanAmount1)} × ${interestRate1}%`,
+                        interestRateValue: interestRate1
                     },
                     'jane smith': {
                         customerName: 'Jane Smith',
                         loanAmount: formatPrice(loanAmount2),
                         interest: interestRate2 + '%',
-                        totalPayable: formatPrice(totalPayable2),
-                        loanStatus: 'Paid',
-                        notes: 'Fully settled',
+                        totalPayable: formatPrice(loanAmount2 + (monthlyInterest2 * 6)), // Paid half
+                        loanStatus: 'Active',
+                        notes: 'Made partial payment, interest reduced',
                         lastUpdated: new Date().toLocaleDateString('en-ZA'),
-                        totalInterest: formatPrice(totalInterest2),
-                        annualInterest: formatPrice(calculateAnnualInterest(loanAmount2, interestRate2)),
                         monthlyInterest: formatPrice(monthlyInterest2),
-                        nextPayment: formatPrice(0),
-                        effectiveRate: calculateEffectiveRate(loanAmount2, totalPayable2) + '%'
+                        nextPayment: formatPrice(monthlyInterest2),
+                        totalInterest: formatPrice(monthlyInterest2 * 6),
+                        calculationFormula: `${formatNumber(loanAmount2)} × ${interestRate2}%`,
+                        interestRateValue: interestRate2
                     }
                 };
                 financeDataLoaded = true;
@@ -1626,6 +1600,145 @@
                 document.getElementById('statusIndicator').innerHTML = 
                     '<i class="fas fa-exclamation-triangle"></i><span>Using sample financial data</span>';
             }
+        }
+        
+        // ================= HELPER FUNCTIONS =================
+        function formatPrice(value) {
+            if (!value && value !== 0) return 'R 0.00';
+            const num = parseFinancialNumber(value);
+            if (isNaN(num)) return 'R 0.00';
+            
+            return 'R ' + num.toLocaleString('en-ZA', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        
+        function formatNumber(value) {
+            const num = parseFinancialNumber(value);
+            if (isNaN(num)) return '0';
+            return num.toLocaleString('en-ZA');
+        }
+        
+        function getStatusIcon(status) {
+            status = status.toLowerCase();
+            if (status.includes('awaiting deposit')) return '<i class="fas fa-money-check-alt"></i>';
+            if (status.includes('deposit')) return '<i class="fas fa-money-check-alt"></i>';
+            if (status.includes('progress')) return '<i class="fas fa-tools"></i>';
+            if (status.includes('ready')) return '<i class="fas fa-check-circle"></i>';
+            if (status.includes('complete')) return '<i class="fas fa-check-double"></i>';
+            if (status.includes('pending')) return '<i class="fas fa-clock"></i>';
+            if (status.includes('quote')) return '<i class="fas fa-file-invoice-dollar"></i>';
+            return '<i class="fas fa-clock"></i>';
+        }
+        
+        function getLoanStatusIcon(status) {
+            if (!status) return '<i class="fas fa-question-circle"></i>';
+            status = status.toLowerCase();
+            if (status.includes('active')) return '<i class="fas fa-check-circle"></i>';
+            if (status.includes('paid')) return '<i class="fas fa-check-double"></i>';
+            if (status.includes('overdue')) return '<i class="fas fa-exclamation-triangle"></i>';
+            if (status.includes('default')) return '<i class="fas fa-times-circle"></i>';
+            return '<i class="fas fa-clock"></i>';
+        }
+        
+        // ================= SEARCH FINANCIAL STATEMENT =================
+        async function searchFinancialStatement() {
+            // Always reload fresh data
+            await loadFinancialData();
+            
+            // Get available customers
+            const customers = Object.keys(allFinancialStatements);
+            if (customers.length === 0) {
+                showFinanceError('No financial data available. Please try again later.');
+                return;
+            }
+            
+            // SIMPLE PROMPT - NO LIST OF NAMES
+            const customerName = prompt("Please enter your full name:");
+            
+            if (!customerName || customerName.trim() === '') {
+                showFinanceError('Please enter your name');
+                return;
+            }
+            
+            const searchName = customerName.trim().toLowerCase();
+            const loading = document.getElementById('financeLoading');
+            const error = document.getElementById('financeError');
+            const results = document.getElementById('financeResults');
+            
+            // Hide other sections
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            results.style.display = 'none';
+            currentCustomerName = searchName;
+            
+            setTimeout(() => {
+                loading.style.display = 'none';
+                
+                if (allFinancialStatements[searchName]) {
+                    displayFinancialStatement(searchName, allFinancialStatements[searchName]);
+                } else {
+                    // Try partial match
+                    const matches = customers.filter(name => 
+                        name.includes(searchName) || searchName.includes(name)
+                    );
+                    
+                    if (matches.length > 0) {
+                        const matchedName = matches[0];
+                        displayFinancialStatement(matchedName, allFinancialStatements[matchedName]);
+                    } else {
+                        showFinanceError(`No financial statement found for "${customerName}".\n\nPlease check your name spelling or contact our office.`);
+                    }
+                }
+            }, 500);
+        }
+        
+        function displayFinancialStatement(customerName, finance) {
+            const results = document.getElementById('financeResults');
+            
+            // Format name
+            const displayName = customerName.split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+            
+            // Update main display
+            document.getElementById('financeCustomerName').innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
+            document.getElementById('financeName').innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
+            document.getElementById('financeLoanStatus').innerHTML = `${getLoanStatusIcon(finance.loanStatus)} ${finance.loanStatus || 'Active'}`;
+            document.getElementById('financeInterest').innerHTML = `<i class="fas fa-chart-line"></i> ${finance.interest || '0%'}`;
+            document.getElementById('financeLoanAmount').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.loanAmount || 'R 0.00'}`;
+            document.getElementById('financeTotalInterest').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.totalInterest || 'R 0.00'}`;
+            document.getElementById('financeNextPayment').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.nextPayment || 'R 0.00'}`;
+            document.getElementById('financeStatusDetail').innerHTML = `<i class="fas fa-chart-bar"></i> ${finance.loanStatus || 'Active'}`;
+            document.getElementById('financeNotes').innerHTML = `<i class="fas fa-comment"></i> ${finance.notes || 'No notes'}`;
+            document.getElementById('financeLastUpdated').innerHTML = `<i class="fas fa-calendar"></i> ${finance.lastUpdated || 'Today'}`;
+            
+            // Update interest calculation section
+            document.getElementById('financeMonthlyInterest').textContent = finance.monthlyInterest || 'R 0.00';
+            document.getElementById('financeCalculation').textContent = finance.calculationFormula || '-';
+            
+            // Update payment message based on status
+            const paymentMessage = document.getElementById('paymentMessage');
+            const status = (finance.loanStatus || '').toLowerCase();
+            
+            if (status.includes('paid')) {
+                paymentMessage.textContent = 'LOAN FULLY PAID - No payment due';
+            } else if (status.includes('overdue')) {
+                paymentMessage.textContent = `OVERDUE - Next payment: ${finance.nextPayment}`;
+            } else {
+                paymentMessage.textContent = `Next payment due: ${finance.nextPayment}`;
+            }
+            
+            // Show results
+            results.style.display = 'block';
+            
+            // Update status indicator
+            document.getElementById('statusIndicator').innerHTML = 
+                `<i class="fas fa-file-invoice-dollar"></i><span>Financial statement for ${displayName} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
         }
         
         // ================= LOAD JOB DATA =================
@@ -1694,75 +1807,7 @@
             }
         }
         
-        // ================= HELPER FUNCTIONS =================
-        function formatPrice(value) {
-            if (!value && value !== 0) return 'R 0.00';
-            const num = parseFinancialNumber(value);
-            if (isNaN(num)) return 'R 0.00';
-            
-            return 'R ' + num.toLocaleString('en-ZA', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
-        
-        function getStatusIcon(status) {
-            status = status.toLowerCase();
-            if (status.includes('awaiting deposit')) return '<i class="fas fa-money-check-alt"></i>';
-            if (status.includes('deposit')) return '<i class="fas fa-money-check-alt"></i>';
-            if (status.includes('progress')) return '<i class="fas fa-tools"></i>';
-            if (status.includes('ready')) return '<i class="fas fa-check-circle"></i>';
-            if (status.includes('complete')) return '<i class="fas fa-check-double"></i>';
-            if (status.includes('pending')) return '<i class="fas fa-clock"></i>';
-            if (status.includes('quote')) return '<i class="fas fa-file-invoice-dollar"></i>';
-            return '<i class="fas fa-clock"></i>';
-        }
-        
-        function getLoanStatusIcon(status) {
-            if (!status) return '<i class="fas fa-question-circle"></i>';
-            status = status.toLowerCase();
-            if (status.includes('active')) return '<i class="fas fa-check-circle"></i>';
-            if (status.includes('paid')) return '<i class="fas fa-check-double"></i>';
-            if (status.includes('overdue')) return '<i class="fas fa-exclamation-triangle"></i>';
-            if (status.includes('default')) return '<i class="fas fa-times-circle"></i>';
-            return '<i class="fas fa-clock"></i>';
-        }
-        
-        // ================= PAYMENT METHODS =================
-        function togglePayment() {
-            const content = document.getElementById('paymentContent');
-            const toggle = document.getElementById('paymentToggle');
-            
-            if (content.style.display === 'block') {
-                content.style.display = 'none';
-                toggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
-            } else {
-                content.style.display = 'block';
-                toggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
-            }
-        }
-        
-        function showEFT() {
-            document.getElementById('eftDetails').style.display = 'block';
-            document.getElementById('whatsappPayment').style.display = 'none';
-            
-            if (currentJobNumber) {
-                document.getElementById('jobReference').textContent = currentJobNumber.toUpperCase();
-            }
-        }
-        
-        function showWhatsApp() {
-            document.getElementById('eftDetails').style.display = 'none';
-            document.getElementById('whatsappPayment').style.display = 'block';
-            
-            if (currentJobNumber) {
-                const whatsappText = `Hello Cut It Right, I have made payment for job number: ${currentJobNumber.toUpperCase()}. Here is my proof of payment:`;
-                const encodedText = encodeURIComponent(whatsappText);
-                document.getElementById('whatsappLink').href = `https://wa.me/27677094033?text=${encodedText}`;
-            }
-        }
-        
-        // ================= SEARCH FUNCTIONS =================
+        // ================= SEARCH JOB =================
         async function searchJob() {
             const jobNumber = document.getElementById('jobNumber').value.trim().toLowerCase();
             const loading = document.getElementById('loading');
@@ -1794,60 +1839,6 @@
                     displayJob(jobNumber, allJobs[jobNumber]);
                 } else {
                     showError(`Repair job "${jobNumber.toUpperCase()}" not found. Please check the number.`);
-                }
-            }, 500);
-        }
-        
-        async function searchFinancialStatement() {
-            // Always reload fresh data
-            await loadFinancialData();
-            
-            // Get available customers
-            const customers = Object.keys(allFinancialStatements);
-            if (customers.length === 0) {
-                showFinanceError('No financial data available. Please try again later.');
-                return;
-            }
-            
-            // Prompt for name
-            const customerName = prompt(`Enter your full name (case doesn't matter):\n\nAvailable names:\n${customers.map(name => `• ${name.charAt(0).toUpperCase() + name.slice(1)}`).join('\n')}`);
-            
-            if (!customerName || customerName.trim() === '') {
-                showFinanceError('Please enter your name');
-                return;
-            }
-            
-            const searchName = customerName.trim().toLowerCase();
-            const loading = document.getElementById('financeLoading');
-            const error = document.getElementById('financeError');
-            const results = document.getElementById('financeResults');
-            
-            // Hide other sections
-            document.getElementById('results').style.display = 'none';
-            document.getElementById('error').style.display = 'none';
-            
-            loading.style.display = 'block';
-            error.style.display = 'none';
-            results.style.display = 'none';
-            currentCustomerName = searchName;
-            
-            setTimeout(() => {
-                loading.style.display = 'none';
-                
-                if (allFinancialStatements[searchName]) {
-                    displayFinancialStatement(searchName, allFinancialStatements[searchName]);
-                } else {
-                    // Try partial match
-                    const matches = customers.filter(name => 
-                        name.includes(searchName) || searchName.includes(name)
-                    );
-                    
-                    if (matches.length > 0) {
-                        const matchedName = matches[0];
-                        displayFinancialStatement(matchedName, allFinancialStatements[matchedName]);
-                    } else {
-                        showFinanceError(`No record found for "${customerName}".\n\nAvailable names:\n${customers.map(name => `• ${name.charAt(0).toUpperCase() + name.slice(1)}`).join('\n')}`);
-                    }
                 }
             }, 500);
         }
@@ -1888,41 +1879,38 @@
                 `<i class="fas fa-check-circle"></i><span>Last search: ${jobNum} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
         }
         
-        function displayFinancialStatement(customerName, finance) {
-            const results = document.getElementById('financeResults');
+        // ================= PAYMENT METHODS =================
+        function togglePayment() {
+            const content = document.getElementById('paymentContent');
+            const toggle = document.getElementById('paymentToggle');
             
-            // Format name
-            const displayName = customerName.split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                toggle.innerHTML = '<i class="fas fa-chevron-down"></i>';
+            } else {
+                content.style.display = 'block';
+                toggle.innerHTML = '<i class="fas fa-chevron-up"></i>';
+            }
+        }
+        
+        function showEFT() {
+            document.getElementById('eftDetails').style.display = 'block';
+            document.getElementById('whatsappPayment').style.display = 'none';
             
-            // Update main display
-            document.getElementById('financeCustomerName').innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
-            document.getElementById('financeName').innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
-            document.getElementById('financeLoanStatus').innerHTML = `${getLoanStatusIcon(finance.loanStatus)} ${finance.loanStatus || 'Active'}`;
-            document.getElementById('financeInterest').innerHTML = `<i class="fas fa-chart-line"></i> ${finance.interest || '0%'}`;
-            document.getElementById('financeLoanAmount').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.loanAmount || 'R 0.00'}`;
-            document.getElementById('financeTotalPayable').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.totalPayable || 'R 0.00'}`;
-            document.getElementById('financeStatusDetail').innerHTML = `<i class="fas fa-chart-bar"></i> ${finance.loanStatus || 'Active'}`;
-            document.getElementById('financeNextPayment').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.nextPayment || 'R 0.00'}`;
-            document.getElementById('financeNotes').innerHTML = `<i class="fas fa-comment"></i> ${finance.notes || 'No notes'}`;
-            document.getElementById('financeLastUpdated').innerHTML = `<i class="fas fa-calendar-day"></i> ${finance.lastUpdated || 'Today'}`;
+            if (currentJobNumber) {
+                document.getElementById('jobReference').textContent = currentJobNumber.toUpperCase();
+            }
+        }
+        
+        function showWhatsApp() {
+            document.getElementById('eftDetails').style.display = 'none';
+            document.getElementById('whatsappPayment').style.display = 'block';
             
-            // Update interest calculation section
-            document.getElementById('financeTotalInterest').textContent = finance.totalInterest || 'R 0.00';
-            document.getElementById('financeMonthlyInterest').textContent = finance.monthlyInterest || 'R 0.00';
-            document.getElementById('financeAnnualInterest').textContent = finance.annualInterest || 'R 0.00';
-            document.getElementById('financeEffectiveRate').textContent = finance.effectiveRate || '0%';
-            
-            // Show interest card
-            document.getElementById('interestCard').style.display = 'block';
-            
-            // Show results
-            results.style.display = 'block';
-            
-            // Update status indicator
-            document.getElementById('statusIndicator').innerHTML = 
-                `<i class="fas fa-file-invoice-dollar"></i><span>Financial statement for ${displayName} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
+            if (currentJobNumber) {
+                const whatsappText = `Hello Cut It Right, I have made payment for job number: ${currentJobNumber.toUpperCase()}. Here is my proof of payment:`;
+                const encodedText = encodeURIComponent(whatsappText);
+                document.getElementById('whatsappLink').href = `https://wa.me/27677094033?text=${encodedText}`;
+            }
         }
         
         function showError(message) {
