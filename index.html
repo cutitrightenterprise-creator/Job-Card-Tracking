@@ -6,7 +6,6 @@
     
     <!-- FAVICON - BROWSER TAB ICON -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔧</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔧</text></svg>">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -24,6 +23,8 @@
             --blue-light: #dbeafe;
             --green: #10b981;
             --green-dark: #059669;
+            --orange: #f59e0b;
+            --orange-dark: #d97706;
         }
         
         * {
@@ -47,31 +48,18 @@
             max-width: 500px;
             background: var(--white);
             border-radius: 24px;
-            box-shadow: 
-                0 10px 30px rgba(163, 230, 53, 0.15),
-                0 20px 50px rgba(163, 230, 53, 0.1);
+            box-shadow: 0 10px 30px rgba(163, 230, 53, 0.15), 0 20px 50px rgba(163, 230, 53, 0.1);
             overflow: hidden;
             border: 2px solid var(--lime-light);
         }
         
-        /* Lime Green Header with Garden Equipment Icons */
+        /* Header */
         .header {
             background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
             padding: 40px 24px;
             text-align: center;
             position: relative;
             overflow: hidden;
-        }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: linear-gradient(to right, #ffffff 0%, var(--lime-light) 50%, #ffffff 100%);
-            opacity: 0.3;
         }
         
         .logo-container {
@@ -101,7 +89,6 @@
             color: var(--dark);
             text-transform: uppercase;
             letter-spacing: 2px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .tagline {
@@ -119,7 +106,6 @@
             position: relative;
         }
         
-        /* Status Indicator */
         .status-indicator {
             background: var(--lime-bg);
             border: 2px solid var(--lime-light);
@@ -157,7 +143,109 @@
             background: linear-gradient(to right, var(--lime), var(--lime-dark));
         }
         
-        /* FINANCIAL STATEMENT CARD */
+        .search-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .input-container {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--lime-dark);
+            font-size: 20px;
+        }
+        
+        .input-bar {
+            width: 100%;
+            padding: 18px 22px 18px 55px;
+            border: 2px solid var(--lime);
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            background: var(--white);
+            color: var(--dark);
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        .input-bar:focus {
+            outline: none;
+            border-color: var(--lime-dark);
+            box-shadow: 0 0 0 4px rgba(163, 230, 53, 0.2);
+        }
+        
+        /* Buttons */
+        .search-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
+            color: var(--dark);
+            border: none;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(163, 230, 53, 0.4);
+        }
+        
+        .finance-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .finance-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .hint {
+            color: var(--gray);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 500;
+            margin-top: 16px;
+        }
+        
+        /* Financial Statement Card */
         .finance-card {
             background: var(--blue-light);
             border-radius: 16px;
@@ -174,6 +262,28 @@
             margin-bottom: 20px;
             padding-bottom: 16px;
             border-bottom: 2px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .finance-title {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--blue-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .finance-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 800;
+            background: white;
+            color: var(--blue-dark);
+            border: 2px solid var(--blue);
         }
         
         .finance-details {
@@ -214,6 +324,7 @@
             font-size: 22px;
         }
         
+        /* Payment Summary */
         .finance-summary {
             background: white;
             border-radius: 12px;
@@ -274,6 +385,7 @@
             border-radius: 12px;
             padding: 20px;
             margin-top: 20px;
+            display: none;
         }
         
         .topup-title {
@@ -313,7 +425,7 @@
         
         .apply-topup-btn {
             width: 100%;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
             color: white;
             border: none;
             padding: 12px;
@@ -453,9 +565,92 @@
             box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
         }
         
-        /* [Keep all your other existing CSS styles exactly as they are] */
-        /* ... (Input bars, buttons, job cards, etc remain the same) ... */
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
         
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 4px solid var(--lime-light);
+            border-top: 4px solid var(--lime);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .finance-spinner {
+            width: 44px;
+            height: 44px;
+            border: 4px solid var(--blue-light);
+            border-top: 4px solid var(--blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Error */
+        .error {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+            color: #991b1b;
+            font-weight: 600;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        /* Payment Due */
+        .payment-due {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            text-align: center;
+            font-weight: 900;
+            color: #92400e;
+        }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            .content {
+                padding: 24px;
+            }
+            
+            .finance-details, .summary-details, .topup-grid, .banking-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-text {
+                font-size: 32px;
+            }
+            
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 36px;
+            }
+            
+            .tagline {
+                font-size: 15px;
+            }
+        }
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
 </head>
@@ -526,8 +721,16 @@
     </div>
     
     <div class="container">
-        <!-- [Keep all your existing HTML exactly as before] -->
-        <!-- Header, search section, etc -->
+        <!-- Header -->
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="logo-text">CUT IT RIGHT</div>
+            </div>
+            <div class="tagline">LAWNMOWER & BRUSHCUTTER REPAIR SHOP</div>
+        </div>
         
         <!-- Main Content -->
         <div class="content">
@@ -572,6 +775,28 @@
                     <i class="fas fa-info-circle"></i>
                     <span>Enter your name to view your loan statement</span>
                 </div>
+            </div>
+            
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="font-weight: 600; color: var(--gray);">Searching for your repair job...</p>
+            </div>
+            
+            <div class="loading" id="financeLoading" style="display: none;">
+                <div class="finance-spinner"></div>
+                <p style="font-weight: 600; color: var(--blue-dark);">Searching for your financial statement...</p>
+            </div>
+            
+            <!-- Error -->
+            <div class="error" id="error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText"></span>
+            </div>
+            
+            <div class="error" id="financeError" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="financeErrorText"></span>
             </div>
             
             <!-- Financial Statement Results -->
@@ -732,10 +957,6 @@
                     <span id="paymentMessage">Payment due: Contact office for details</span>
                 </div>
             </div>
-            
-            <!-- [Keep the rest of your HTML exactly as before] -->
-            <!-- Job results, deposit notice, thank you message, payment section, footer -->
-            
         </div>
     </div>
 
@@ -824,207 +1045,47 @@ Please send proof of payment to WhatsApp: 076 709 4033
             window.open(`https://wa.me/27677094033?text=${encodedText}`, '_blank');
         }
         
-        // ================= UPDATED LOAD FINANCIAL DATA =================
-        async function loadFinancialData() {
-            try {
-                console.log('Loading financial data from CSV...');
-                document.getElementById('statusIndicator').innerHTML = 
-                    '<i class="fas fa-sync-alt fa-spin"></i><span>Loading financial data...</span>';
-                
-                const response = await fetch(FINANCE_SHEET_URL);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                
-                const csvText = await response.text();
-                console.log('CSV data received');
-                
-                // Parse CSV data
-                const rows = csvText.split('\n').filter(row => row.trim() !== '');
-                
-                allFinancialStatements = {};
-                
-                // Skip header row (row 0)
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i];
-                    const columns = parseCSVRow(row);
-                    
-                    if (columns.length >= 1 && columns[0]) {
-                        const customerName = columns[0].trim().toLowerCase();
-                        
-                        // Your sheet structure (6 columns + optional 7th for top-up):
-                        // Column 0: Customer Name
-                        // Column 1: Current Loan Amount
-                        // Column 2: Interest Rate (%)
-                        // Column 3: Total Amount Due
-                        // Column 4: Loan Status
-                        // Column 5: Notes
-                        // Column 6: Top-up Qualification (optional - if empty, calculate)
-                        
-                        const loanAmount = columns[1] || '0';
-                        const interestRate = columns[2] || '0';
-                        const totalPayable = columns[3] || loanAmount;
-                        const loanStatus = columns[4] || 'Active';
-                        const notes = columns[5] || '';
-                        const topupQualification = columns[6] || ''; // Optional column
-                        
-                        // Calculate based on YOUR business model
-                        const monthlyInterest = calculateMonthlyInterest(loanAmount, interestRate);
-                        const nextPayment = calculateNextPayment(loanAmount, interestRate, loanStatus);
-                        const totalInterest = calculateTotalInterest(totalPayable, loanAmount);
-                        
-                        // Calculate or use provided top-up qualification
-                        const qualifyAmount = topupQualification ? 
-                            parseFinancialNumber(topupQualification) : 
-                            calculateTopupQualification(loanAmount);
-                        
-                        const newTotalLoan = parseFinancialNumber(loanAmount) + qualifyAmount;
-                        const newMonthlyInterest = calculateMonthlyInterest(newTotalLoan, interestRate);
-                        
-                        // Format interest rate for display
-                        let displayInterestRate = interestRate;
-                        if (!displayInterestRate.includes('%')) {
-                            displayInterestRate += '%';
-                        }
-                        
-                        allFinancialStatements[customerName] = {
-                            customerName: columns[0] || '',
-                            loanAmount: formatPrice(loanAmount),
-                            interest: displayInterestRate,
-                            totalPayable: formatPrice(totalPayable),
-                            loanStatus: loanStatus,
-                            notes: notes,
-                            lastUpdated: new Date().toLocaleDateString('en-ZA'),
-                            
-                            // Calculated values
-                            monthlyInterest: formatPrice(monthlyInterest),
-                            nextPayment: formatPrice(nextPayment),
-                            totalInterest: formatPrice(totalInterest),
-                            interestRateValue: parseFinancialNumber(interestRate),
-                            rawLoanAmount: parseFinancialNumber(loanAmount),
-                            
-                            // Top-up calculations
-                            topupQualifyAmount: formatPrice(qualifyAmount),
-                            topupNewTotal: formatPrice(newTotalLoan),
-                            topupNewInterest: formatPrice(newMonthlyInterest),
-                            topupStatus: qualifyAmount > 0 ? 'Available' : 'Not Available'
-                        };
-                    }
-                }
-                
-                financeDataLoaded = true;
-                const count = Object.keys(allFinancialStatements).length;
-                console.log(`✓ Loaded ${count} financial statements`);
-                
-                document.getElementById('statusIndicator').innerHTML = 
-                    `<i class="fas fa-check-circle"></i><span>Live data connected (${count} financial records)</span>`;
-                
-            } catch (error) {
-                console.error('Failed to load financial data:', error);
-                
-                // Fallback sample data
-                const loanAmount1 = 15000;
-                const interestRate1 = 10;
-                const monthlyInterest1 = calculateMonthlyInterest(loanAmount1, interestRate1);
-                const qualifyAmount1 = calculateTopupQualification(loanAmount1);
-                const newTotal1 = loanAmount1 + qualifyAmount1;
-                const newInterest1 = calculateMonthlyInterest(newTotal1, interestRate1);
-                
-                allFinancialStatements = {
-                    'john doe': {
-                        customerName: 'John Doe',
-                        loanAmount: formatPrice(loanAmount1),
-                        interest: interestRate1 + '%',
-                        totalPayable: formatPrice(loanAmount1 + (monthlyInterest1 * 12)),
-                        loanStatus: 'Active',
-                        notes: 'Good payment history',
-                        lastUpdated: new Date().toLocaleDateString('en-ZA'),
-                        monthlyInterest: formatPrice(monthlyInterest1),
-                        nextPayment: formatPrice(monthlyInterest1),
-                        totalInterest: formatPrice(monthlyInterest1 * 12),
-                        interestRateValue: interestRate1,
-                        rawLoanAmount: loanAmount1,
-                        topupQualifyAmount: formatPrice(qualifyAmount1),
-                        topupNewTotal: formatPrice(newTotal1),
-                        topupNewInterest: formatPrice(newInterest1),
-                        topupStatus: 'Available'
-                    }
-                };
-                financeDataLoaded = true;
-                
-                document.getElementById('statusIndicator').innerHTML = 
-                    '<i class="fas fa-exclamation-triangle"></i><span>Using sample financial data</span>';
+        // ================= INTEREST CALCULATION FUNCTIONS =================
+        function parseFinancialNumber(value) {
+            if (!value && value !== 0) return 0;
+            if (typeof value === 'string') {
+                return parseFloat(value.replace(/[^0-9.-]+/g, ""));
             }
+            return parseFloat(value);
         }
         
-        // ================= UPDATED DISPLAY FUNCTION =================
-        function displayFinancialStatement(customerName, finance) {
-            const results = document.getElementById('financeResults');
-            currentCustomerData = finance;
-            
-            // Format name
-            const displayName = customerName.split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
-            
-            // Update main display
-            document.getElementById('financeCustomerName').innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
-            document.getElementById('financeName').innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
-            document.getElementById('financeLoanStatus').innerHTML = `${getLoanStatusIcon(finance.loanStatus)} ${finance.loanStatus || 'Active'}`;
-            document.getElementById('financeInterest').innerHTML = `<i class="fas fa-chart-line"></i> ${finance.interest || '0%'}`;
-            document.getElementById('financeLoanAmount').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.loanAmount || 'R 0.00'}`;
-            document.getElementById('financeTotalPayable').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.totalPayable || 'R 0.00'}`;
-            document.getElementById('financeMonthlyInterest').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.monthlyInterest || 'R 0.00'}`;
-            document.getElementById('financeNextPayment').innerHTML = `<i class="fas fa-rand-sign"></i> ${finance.nextPayment || 'R 0.00'}`;
-            document.getElementById('financeStatusDetail').innerHTML = `<i class="fas fa-chart-bar"></i> ${finance.loanStatus || 'Active'}`;
-            document.getElementById('financeLastUpdated').innerHTML = `<i class="fas fa-calendar"></i> ${finance.lastUpdated || 'Today'}`;
-            
-            // Update loan top-up section
-            document.getElementById('topupQualifyAmount').textContent = finance.topupQualifyAmount || 'R 0.00';
-            document.getElementById('topupNewTotal').textContent = finance.topupNewTotal || 'R 0.00';
-            document.getElementById('topupNewInterest').textContent = finance.topupNewInterest || 'R 0.00';
-            document.getElementById('topupStatus').textContent = finance.topupStatus || 'Not Available';
-            
-            // Show/hide top-up section based on qualification
-            const topupSection = document.getElementById('loanTopup');
-            if (parseFinancialNumber(finance.topupQualifyAmount) > 0 && 
-                !finance.loanStatus.toLowerCase().includes('paid')) {
-                topupSection.style.display = 'block';
-            } else {
-                topupSection.style.display = 'none';
-            }
-            
-            // Update payment message
-            const paymentMessage = document.getElementById('paymentMessage');
-            const status = (finance.loanStatus || '').toLowerCase();
-            
-            if (status.includes('paid')) {
-                paymentMessage.textContent = 'LOAN FULLY PAID - No payment due';
-            } else if (status.includes('overdue')) {
-                paymentMessage.textContent = `OVERDUE - Pay ${finance.nextPayment} immediately`;
-            } else {
-                paymentMessage.textContent = `Next payment due: ${finance.nextPayment}`;
-            }
-            
-            // Show results
-            results.style.display = 'block';
-            
-            // Update status indicator
-            document.getElementById('statusIndicator').innerHTML = 
-                `<i class="fas fa-file-invoice-dollar"></i><span>Financial statement for ${displayName}</span>`;
+        function calculateMonthlyInterest(loanAmount, interestRate) {
+            const loan = parseFinancialNumber(loanAmount);
+            const rate = parseFinancialNumber(interestRate) / 100;
+            return loan * rate;
         }
         
-        // ================= KEEP ALL EXISTING FUNCTIONS =================
-        // parseFinancialNumber, calculateMonthlyInterest, calculateNextPayment,
-        // calculateTotalInterest, parseCSVRow, formatPrice, formatNumber,
-        // getStatusIcon, getLoanStatusIcon, loadJobData, searchJob, displayJob,
-        // searchFinancialStatement, showError, showFinanceError, togglePayment,
-        // showEFT, showWhatsApp, and all event listeners
+        function calculateNextPayment(loanAmount, interestRate, loanStatus) {
+            const status = (loanStatus || '').toLowerCase();
+            
+            if (status.includes('paid') || status.includes('settled') || status.includes('complete')) {
+                return 0;
+            }
+            
+            if (status.includes('overdue')) {
+                return calculateMonthlyInterest(loanAmount, interestRate) * 2;
+            }
+            
+            return calculateMonthlyInterest(loanAmount, interestRate);
+        }
         
-        // [Include all the remaining JavaScript functions from the previous code]
-        // ... (All your existing functions remain unchanged)
+        function calculateTotalInterest(totalPayable, loanAmount) {
+            const total = parseFinancialNumber(totalPayable);
+            const loan = parseFinancialNumber(loanAmount);
+            return total - loan;
+        }
         
-    </script>
-</body>
-</html>
+        // ================= CSV PARSING HELPER =================
+        function parseCSVRow(row) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < row.length; i++) {
+                const char = row[i];
+                const nextChar = row[i + 
