@@ -590,6 +590,93 @@
             margin: 0 auto;
         }
         
+        /* PAY NOW BUTTON STYLES */
+        .paynow-container {
+            margin: 28px 0;
+            text-align: center;
+        }
+        
+        .paynow-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
+            color: var(--dark);
+            border: none;
+            padding: 20px;
+            border-radius: 14px;
+            font-size: 22px;
+            font-weight: 900;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(163, 230, 53, 0.3);
+        }
+        
+        .paynow-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(163, 230, 53, 0.5);
+        }
+        
+        .paynow-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Payment Modal */
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            height: 80%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 22px;
+            cursor: pointer;
+            z-index: 10;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: #b91c1c;
+        }
+        
+        .payment-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
         /* Loading */
         .loading {
             display: none;
@@ -799,6 +886,7 @@
             width: 100%;
             max-width: 300px;
             transition: all 0.3s;
+            text-decoration: none;
         }
         
         .whatsapp-btn:hover {
@@ -931,6 +1019,11 @@
             
             .interest-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .paynow-btn {
+                font-size: 18px;
+                padding: 16px;
             }
         }
     </style>
@@ -1114,8 +1207,7 @@
                         <div class="finance-item">
                             <div class="finance-label">
                                 <i class="fas fa-info-circle"></i>
-                                Loan Status
-                            </div>
+                                Loan Status                            </div>
                             <div class="finance-value" id="financeStatusDetail">
                                 <i class="fas fa-chart-bar"></i>
                                 -
@@ -1167,6 +1259,14 @@
                 <div class="payment-due" id="financePaymentDue">
                     <i class="fas fa-exclamation-circle"></i>
                     <span id="paymentMessage">Payment due: Contact office for details</span>
+                </div>
+                
+                <!-- PAY NOW BUTTON for Financial Statement -->
+                <div class="paynow-container">
+                    <button class="paynow-btn" onclick="openPaymentPage()">
+                        <i class="fas fa-credit-card"></i>
+                        PAY NOW
+                    </button>
                 </div>
             </div>
             
@@ -1254,6 +1354,14 @@
                         We appreciate you choosing Cut It Right for your lawnmower and brushcutter repairs.
                         Your satisfaction is our priority!
                     </div>
+                </div>
+                
+                <!-- PAY NOW BUTTON for Job Search Results -->
+                <div class="paynow-container">
+                    <button class="paynow-btn" onclick="openPaymentPage()">
+                        <i class="fas fa-credit-card"></i>
+                        PAY NOW
+                    </button>
                 </div>
                 
                 <!-- PAYMENT METHODS SECTION -->
@@ -1383,11 +1491,20 @@
             </div>
         </div>
     </div>
+    
+    <!-- Payment Modal -->
+    <div class="payment-modal" id="paymentModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePaymentModal()">&times;</button>
+            <iframe class="payment-iframe" id="paymentIframe" src=""></iframe>
+        </div>
+    </div>
 
     <script>
         // ================= CONFIGURATION =================
         const GOOGLE_SHEET_ID = '18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo';
         const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
+        const PAYMENT_PAGE_URL = 'https://pay.yoco.com/cut-it-right-enterprise-pty-ltd';
         // =================================================
         
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json`;
@@ -1878,6 +1995,35 @@
             document.getElementById('statusIndicator').innerHTML = 
                 `<i class="fas fa-check-circle"></i><span>Last search: ${jobNum} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
         }
+        
+        // ================= PAY NOW BUTTON =================
+        function openPaymentPage() {
+            const modal = document.getElementById('paymentModal');
+            const iframe = document.getElementById('paymentIframe');
+            
+            let paymentUrl = PAYMENT_PAGE_URL;
+            if (currentJobNumber) {
+                paymentUrl += `?reference=${currentJobNumber.toUpperCase()}`;
+            }
+            
+            iframe.src = paymentUrl;
+            modal.style.display = 'flex';
+        }
+        
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            const iframe = document.getElementById('paymentIframe');
+            modal.style.display = 'none';
+            iframe.src = '';
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('paymentModal');
+            if (event.target === modal) {
+                closePaymentModal();
+            }
+        });
         
         // ================= PAYMENT METHODS =================
         function togglePayment() {
