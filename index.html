@@ -1595,6 +1595,7 @@
         const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo/edit?usp=sharing';
         const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
         const CASH_REPORT_URL = 'https://docs.google.com/spreadsheets/d/1f52fhwbgbWkH3TTRkW0PZTWqjS46KUwX/edit?usp=sharing';
+        const ATTENDANCE_API_URL = 'https://script.google.com/macros/s/AKfycbzaZInAcAjPzPRtBU1u-en9K7wFr5c5o8bIQ2mENEpiCHOLQp2HwXKiJrIDBZJ2Y5eC/exec';
         const PAYMENT_PAGE_URL = 'https://pay.yoco.com/cut-it-right-enterprise-pty-ltd';
         const ADMIN_PIN = '1234';
         const EDIT_PIN = '6263';
@@ -1612,7 +1613,7 @@
         let adminVerified = false;
         let employeeListUnlocked = false;
         
-        // ================= ATTENDANCE DATA (LOCAL STORAGE) =================
+        // ================= ATTENDANCE DATA =================
         let attendanceRecords = [];
         let currentEmployee = '';
         let pendingAttendanceAction = null;
@@ -1721,6 +1722,10 @@
         
         // ================= ATTENDANCE PIN PROTECTION =================
         function requestAttendancePin(action) {
+            if (!employeeListUnlocked) {
+                showAttendanceMsg('Please unlock employee list first', 'error');
+                return;
+            }
             pendingAttendanceAction = action;
             const modal = document.getElementById('attendancePinModal');
             const pinInput = document.getElementById('attendancePin');
@@ -1752,47 +1757,26 @@
             document.getElementById('attendancePinModal').style.display = 'none';
         }
         
-        function executeAttendanceAction(action) {
-            if (action === 'clockin') {
-                performClockIn();
-            } else if (action === 'clockout') {
-                performClockOut();
-            } else if (action === 'breakstart') {
-                performBreakStart();
-            } else if (action === 'breakend') {
-                performBreakEnd();
-            }
-        }
-        
         // Close modals when clicking outside
         document.addEventListener('click', function(event) {
             const passwordModal = document.getElementById('passwordModal');
             const cashModal = document.getElementById('cashReportModal');
             const attendanceModal = document.getElementById('attendancePinModal');
-            if (event.target === passwordModal) {
-                closePasswordModal();
-            }
-            if (event.target === cashModal) {
-                closeCashReportModal();
-            }
-            if (event.target === attendanceModal) {
-                closeAttendancePinModal();
-            }
+            if (event.target === passwordModal) closePasswordModal();
+            if (event.target === cashModal) closeCashReportModal();
+            if (event.target === attendanceModal) closeAttendancePinModal();
         });
         
         // Enter key support for PIN inputs
         document.getElementById('editPin')?.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') verifyEditPin();
         });
-        
         document.getElementById('cashReportPin')?.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') verifyCashReportPin();
         });
-        
         document.getElementById('attendancePin')?.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') verifyAttendancePin();
         });
-        
         document.getElementById('verifyAttendancePinBtn')?.addEventListener('click', verifyAttendancePin);
         
         // ================= INTEREST CALCULATION FUNCTIONS =================
@@ -1849,20 +1833,15 @@
         // ================= LOAD FINANCIAL DATA =================
         async function loadFinancialData() {
             try {
-                console.log('Loading financial data from CSV...');
                 document.getElementById('statusIndicator').innerHTML = '<i class="fas fa-sync-alt fa-spin"></i><span>Loading financial data...</span>';
-                
                 const response = await fetch(FINANCE_SHEET_URL);
                 if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                
                 const csvText = await response.text();
                 const rows = csvText.split('\n').filter(row => row.trim() !== '');
                 allFinancialStatements = {};
-                
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i];
                     const columns = parseCSVRow(row);
-                    
                     if (columns.length >= 1 && columns[0]) {
                         const customerName = columns[0].trim().toLowerCase();
                         const loanAmount = columns[1] || '0';
@@ -1870,16 +1849,12 @@
                         const totalPayable = columns[3] || loanAmount;
                         const loanStatus = columns[4] || 'Active';
                         const notes = columns[5] || '';
-                        
                         const monthlyInterest = calculateMonthlyInterest(loanAmount, interestRate);
                         const nextPayment = calculateNextPayment(loanAmount, interestRate, loanStatus);
                         const totalInterest = calculateTotalInterest(totalPayable, loanAmount);
-                        
                         let displayInterestRate = interestRate;
                         if (!displayInterestRate.includes('%')) displayInterestRate += '%';
-                        
                         const calculationFormula = `${formatNumber(loanAmount)} × ${parseFinancialNumber(interestRate)}%`;
-                        
                         allFinancialStatements[customerName] = {
                             customerName: columns[0] || '',
                             loanAmount: formatPrice(loanAmount),
@@ -1896,11 +1871,9 @@
                         };
                     }
                 }
-                
                 financeDataLoaded = true;
                 const count = Object.keys(allFinancialStatements).length;
                 document.getElementById('statusIndicator').innerHTML = `<i class="fas fa-check-circle"></i><span>Live data connected (${count} financial records)</span>`;
-                
             } catch (error) {
                 console.error('Failed to load financial data:', error);
                 const loanAmount1 = 15000;
@@ -1909,7 +1882,6 @@
                 const loanAmount2 = 8000;
                 const interestRate2 = 12;
                 const monthlyInterest2 = calculateMonthlyInterest(loanAmount2, interestRate2);
-                
                 allFinancialStatements = {
                     'john doe': {
                         customerName: 'John Doe',
@@ -1984,35 +1956,28 @@
         // ================= SEARCH FINANCIAL STATEMENT =================
         async function searchFinancialStatement() {
             await loadFinancialData();
-            
             const customers = Object.keys(allFinancialStatements);
             if (customers.length === 0) {
                 showFinanceError('No financial data available. Please try again later.');
                 return;
             }
-            
             const customerName = prompt("Please enter your full name:");
             if (!customerName || customerName.trim() === '') {
                 showFinanceError('Please enter your name');
                 return;
             }
-            
             const searchName = customerName.trim().toLowerCase();
             const loading = document.getElementById('financeLoading');
             const error = document.getElementById('financeError');
             const results = document.getElementById('financeResults');
-            
             document.getElementById('results').style.display = 'none';
             document.getElementById('error').style.display = 'none';
-            
             loading.style.display = 'block';
             error.style.display = 'none';
             results.style.display = 'none';
             currentCustomerName = searchName;
-            
             setTimeout(() => {
                 loading.style.display = 'none';
-                
                 if (allFinancialStatements[searchName]) {
                     displayFinancialStatement(searchName, allFinancialStatements[searchName]);
                 } else {
@@ -2029,7 +1994,6 @@
         function displayFinancialStatement(customerName, finance) {
             const results = document.getElementById('financeResults');
             const displayName = customerName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-            
             document.getElementById('financeCustomerName').innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
             document.getElementById('financeName').innerHTML = `<i class="fas fa-user"></i> ${displayName}`;
             document.getElementById('financeLoanStatus').innerHTML = `${getLoanStatusIcon(finance.loanStatus)} ${finance.loanStatus || 'Active'}`;
@@ -2042,10 +2006,8 @@
             document.getElementById('financeLastUpdated').innerHTML = `<i class="fas fa-calendar"></i> ${finance.lastUpdated || 'Today'}`;
             document.getElementById('financeMonthlyInterest').textContent = finance.monthlyInterest || 'R 0.00';
             document.getElementById('financeCalculation').textContent = finance.calculationFormula || '-';
-            
             const paymentMessage = document.getElementById('paymentMessage');
             const status = (finance.loanStatus || '').toLowerCase();
-            
             if (status.includes('paid')) {
                 paymentMessage.textContent = 'LOAN FULLY PAID - No payment due';
             } else if (status.includes('overdue')) {
@@ -2053,7 +2015,6 @@
             } else {
                 paymentMessage.textContent = `Next payment due: ${finance.nextPayment}`;
             }
-            
             results.style.display = 'block';
             document.getElementById('statusIndicator').innerHTML = `<i class="fas fa-file-invoice-dollar"></i><span>Financial statement for ${displayName} • ${new Date().toLocaleTimeString('en-ZA', {hour: '2-digit', minute:'2-digit'})}</span>`;
         }
@@ -2068,7 +2029,6 @@
                 const text = await response.text();
                 const json = JSON.parse(text.substring(47).slice(0, -2));
                 const rows = json.table.rows;
-                
                 allJobs = {};
                 rows.forEach((row, index) => {
                     if (index === 0) return;
@@ -2083,7 +2043,6 @@
                         };
                     }
                 });
-                
                 dataLoaded = true;
                 const count = Object.keys(allJobs).length;
                 indicator.innerHTML = `<i class="fas fa-check-circle"></i><span>Live data connected (${count} repair jobs)</span>`;
@@ -2106,24 +2065,19 @@
             const error = document.getElementById('error');
             const results = document.getElementById('results');
             const buttonText = document.getElementById('buttonText');
-            
             loading.style.display = 'none';
             error.style.display = 'none';
             results.style.display = 'none';
-            
             if (!jobNumber) {
                 showError('Please enter a repair job number');
                 return;
             }
-            
             if (!dataLoaded) {
                 buttonText.textContent = 'LOADING...';
                 await loadJobData();
                 buttonText.textContent = 'SEARCH REPAIR STATUS';
             }
-            
             loading.style.display = 'block';
-            
             setTimeout(() => {
                 loading.style.display = 'none';
                 if (allJobs[jobNumber]) {
@@ -2138,21 +2092,17 @@
             const results = document.getElementById('results');
             currentJobNumber = jobNumber;
             const jobNum = jobNumber.toUpperCase();
-            
             document.getElementById('resultJobNumber').innerHTML = `<i class="fas fa-tools"></i> ${jobNum}`;
             document.getElementById('resultJobNumber2').innerHTML = `<i class="fas fa-barcode"></i> ${jobNum}`;
             document.getElementById('resultStatus').innerHTML = `${getStatusIcon(job.status)} ${job.status}`;
             document.getElementById('resultPrice').innerHTML = `<i class="fas fa-rand-sign"></i> ${job.price}`;
             document.getElementById('resultDate').innerHTML = `<i class="fas fa-calendar-day"></i> ${job.date}`;
             document.getElementById('jobReference').textContent = jobNum;
-            
             const whatsappText = `Hello Cut It Right, I have made payment for job number: ${jobNum}. Here is my proof of payment:`;
             const encodedText = encodeURIComponent(whatsappText);
             document.getElementById('whatsappLink').href = `https://wa.me/27677094033?text=${encodedText}`;
-            
             const badge = document.getElementById('statusBadge');
             badge.innerHTML = `${getStatusIcon(job.status)} ${job.status}`;
-            
             results.style.display = 'block';
             document.getElementById('jobNumber').value = '';
             document.getElementById('jobNumber').focus();
@@ -2223,7 +2173,59 @@
             setTimeout(() => error.style.display = 'none', 3000);
         }
         
-        // ================= ATTENDANCE FUNCTIONS (LOCAL STORAGE) =================
+        // ================= LOAD ATTENDANCE FROM GOOGLE SHEET =================
+        async function loadAttendanceData() {
+            if (!employeeListUnlocked) return;
+            try {
+                const response = await fetch(ATTENDANCE_API_URL);
+                const csvText = await response.text();
+                const rows = csvText.split('\n').filter(row => row.trim() !== '');
+                attendanceRecords = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const cols = rows[i].split(',');
+                    if (cols.length >= 1 && cols[0]) {
+                        attendanceRecords.push({
+                            name: cols[0]?.replace(/"/g, '') || '',
+                            date: cols[1]?.replace(/"/g, '') || '',
+                            clockIn: cols[2]?.replace(/"/g, '') || '',
+                            clockOut: cols[3]?.replace(/"/g, '') || '',
+                            breakStart: cols[4]?.replace(/"/g, '') || '',
+                            breakEnd: cols[5]?.replace(/"/g, '') || '',
+                            status: cols[6]?.replace(/"/g, '') || ''
+                        });
+                    }
+                }
+                updateEmployeeStatus();
+                updateTodayHistory();
+                updateWeekHistory();
+                if (adminVerified) updateAdminDashboard();
+            } catch (error) {
+                console.error('Error loading attendance:', error);
+                showAttendanceMsg('Error loading attendance data', 'error');
+            }
+        }
+        
+        // ================= SAVE ATTENDANCE TO GOOGLE SHEET =================
+        async function saveToGoogleSheet(employee, action, time) {
+            try {
+                const response = await fetch(ATTENDANCE_API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: employee,
+                        action: action,
+                        time: time,
+                        date: getTodayDate(),
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                return true;
+            } catch (error) {
+                console.error('Error saving to sheet:', error);
+                return false;
+            }
+        }
         
         function getTodayDate() {
             const today = new Date();
@@ -2235,30 +2237,10 @@
             return now.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
         
-        function loadAttendanceData() {
-            if (!employeeListUnlocked) return;
-            
-            const saved = localStorage.getItem('cutitright_attendance');
-            if (saved) {
-                attendanceRecords = JSON.parse(saved);
-            } else {
-                attendanceRecords = [];
-            }
-            updateEmployeeStatus();
-            updateTodayHistory();
-            updateWeekHistory();
-            if (adminVerified) updateAdminDashboard();
-        }
-        
-        function saveAttendanceData() {
-            localStorage.setItem('cutitright_attendance', JSON.stringify(attendanceRecords));
-        }
-        
         function updateEmployeeStatus() {
             const select = document.getElementById('employeeSelect');
             currentEmployee = select.value;
             const display = document.getElementById('currentStatusDisplay');
-            
             if (!currentEmployee) {
                 display.innerHTML = '<i class="fas fa-clock"></i> Status: NOT CLOCKED IN';
                 display.className = 'status-badge-attendance status-off-attendance';
@@ -2268,12 +2250,10 @@
                 document.getElementById('breakEndBtn').disabled = true;
                 return;
             }
-            
             const today = getTodayDate();
             const todayRecords = attendanceRecords.filter(r => r.name === currentEmployee && r.date === today);
             const activeRecord = todayRecords.find(r => r.clockIn && !r.clockOut);
             const onBreak = activeRecord && activeRecord.breakStart && !activeRecord.breakEnd;
-            
             if (activeRecord) {
                 if (onBreak) {
                     display.innerHTML = `<i class="fas fa-coffee"></i> Status: ON BREAK (Clocked in at ${activeRecord.clockIn})`;
@@ -2306,15 +2286,12 @@
                 container.innerHTML = 'Select an employee to view today\'s activity';
                 return;
             }
-            
             const today = getTodayDate();
             const todayRecords = attendanceRecords.filter(r => r.name === currentEmployee && r.date === today);
-            
             if (todayRecords.length === 0) {
                 container.innerHTML = 'No activity recorded today';
                 return;
             }
-            
             let html = '<table class="attendance-history-table"><tr><th>Clock In</th><th>Clock Out</th><th>Break Start</th><th>Break End</th></tr>';
             todayRecords.forEach(r => {
                 html += `<tr>
@@ -2334,14 +2311,11 @@
                 container.innerHTML = 'Select an employee to view history';
                 return;
             }
-            
             const employeeRecords = attendanceRecords.filter(r => r.name === currentEmployee).slice(-7);
-            
             if (employeeRecords.length === 0) {
                 container.innerHTML = 'No history found for the last 7 days';
                 return;
             }
-            
             let html = '<table class="attendance-history-table"><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Break</th></tr>';
             employeeRecords.forEach(r => {
                 html += `<tr>
@@ -2355,142 +2329,50 @@
             container.innerHTML = html;
         }
         
-        function requestClockIn() {
-            if (!employeeListUnlocked) {
-                showAttendanceMsg('Please unlock employee list first', 'error');
-                return;
-            }
-            requestAttendancePin('clockin');
+        function executeAttendanceAction(action) {
+            if (action === 'clockin') performClockIn();
+            else if (action === 'clockout') performClockOut();
+            else if (action === 'breakstart') performBreakStart();
+            else if (action === 'breakend') performBreakEnd();
         }
         
-        function requestClockOut() {
-            if (!employeeListUnlocked) {
-                showAttendanceMsg('Please unlock employee list first', 'error');
-                return;
-            }
-            requestAttendancePin('clockout');
-        }
-        
-        function requestBreakStart() {
-            if (!employeeListUnlocked) {
-                showAttendanceMsg('Please unlock employee list first', 'error');
-                return;
-            }
-            requestAttendancePin('breakstart');
-        }
-        
-        function requestBreakEnd() {
-            if (!employeeListUnlocked) {
-                showAttendanceMsg('Please unlock employee list first', 'error');
-                return;
-            }
-            requestAttendancePin('breakend');
-        }
-        
-        function performClockIn() {
+        async function performClockIn() {
             if (!currentEmployee) {
                 showAttendanceMsg('Please select your name first', 'error');
                 return;
             }
-            
-            const today = getTodayDate();
-            const existingRecord = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
-            
-            if (existingRecord && existingRecord.clockIn && !existingRecord.clockOut) {
-                showAttendanceMsg('You are already clocked in today!', 'error');
-                return;
-            }
-            
-            if (existingRecord) {
-                existingRecord.clockIn = getCurrentTime();
-                existingRecord.clockOut = null;
-                existingRecord.breakStart = null;
-                existingRecord.breakEnd = null;
-            } else {
-                attendanceRecords.push({
-                    name: currentEmployee,
-                    date: today,
-                    clockIn: getCurrentTime(),
-                    clockOut: null,
-                    breakStart: null,
-                    breakEnd: null
-                });
-            }
-            
-            saveAttendanceData();
-            showAttendanceMsg(`✅ ${currentEmployee} clocked in at ${getCurrentTime()}`, 'success');
-            loadAttendanceData();
+            const time = getCurrentTime();
+            showAttendanceMsg(`⏰ Clocking in...`, 'success');
+            await saveToGoogleSheet(currentEmployee, 'clockin', time);
+            showAttendanceMsg(`✅ ${currentEmployee} clocked in at ${time}`, 'success');
+            await loadAttendanceData();
         }
         
-        function performClockOut() {
+        async function performClockOut() {
             if (!currentEmployee) return;
-            
-            const today = getTodayDate();
-            const record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
-            
-            if (!record || !record.clockIn) {
-                showAttendanceMsg('No clock in record found for today', 'error');
-                return;
-            }
-            
-            if (record.clockOut) {
-                showAttendanceMsg('You already clocked out today', 'error');
-                return;
-            }
-            
-            record.clockOut = getCurrentTime();
-            saveAttendanceData();
-            showAttendanceMsg(`✅ ${currentEmployee} clocked out at ${getCurrentTime()}`, 'success');
-            loadAttendanceData();
+            const time = getCurrentTime();
+            showAttendanceMsg(`⏰ Clocking out...`, 'success');
+            await saveToGoogleSheet(currentEmployee, 'clockout', time);
+            showAttendanceMsg(`✅ ${currentEmployee} clocked out at ${time}`, 'success');
+            await loadAttendanceData();
         }
         
-        function performBreakStart() {
+        async function performBreakStart() {
             if (!currentEmployee) return;
-            
-            const today = getTodayDate();
-            const record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
-            
-            if (!record || !record.clockIn) {
-                showAttendanceMsg('You need to clock in first', 'error');
-                return;
-            }
-            
-            if (record.clockOut) {
-                showAttendanceMsg('You already clocked out today', 'error');
-                return;
-            }
-            
-            if (record.breakStart && !record.breakEnd) {
-                showAttendanceMsg('You are already on break', 'error');
-                return;
-            }
-            
-            record.breakStart = getCurrentTime();
-            saveAttendanceData();
-            showAttendanceMsg(`☕ Break started at ${getCurrentTime()}`, 'success');
-            loadAttendanceData();
+            const time = getCurrentTime();
+            showAttendanceMsg(`☕ Starting break...`, 'success');
+            await saveToGoogleSheet(currentEmployee, 'breakstart', time);
+            showAttendanceMsg(`☕ Break started at ${time}`, 'success');
+            await loadAttendanceData();
         }
         
-        function performBreakEnd() {
+        async function performBreakEnd() {
             if (!currentEmployee) return;
-            
-            const today = getTodayDate();
-            const record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
-            
-            if (!record || !record.breakStart) {
-                showAttendanceMsg('No break started found', 'error');
-                return;
-            }
-            
-            if (record.breakEnd) {
-                showAttendanceMsg('Break already ended', 'error');
-                return;
-            }
-            
-            record.breakEnd = getCurrentTime();
-            saveAttendanceData();
-            showAttendanceMsg(`✅ Break ended at ${getCurrentTime()}`, 'success');
-            loadAttendanceData();
+            const time = getCurrentTime();
+            showAttendanceMsg(`✅ Ending break...`, 'success');
+            await saveToGoogleSheet(currentEmployee, 'breakend', time);
+            showAttendanceMsg(`✅ Break ended at ${time}`, 'success');
+            await loadAttendanceData();
         }
         
         function showAttendanceMsg(msg, type) {
@@ -2498,9 +2380,7 @@
             msgDiv.className = type === 'error' ? 'error' : 'success-msg-attendance';
             msgDiv.style.display = 'block';
             msgDiv.innerHTML = msg;
-            setTimeout(() => {
-                msgDiv.style.display = 'none';
-            }, 3000);
+            setTimeout(() => msgDiv.style.display = 'none', 3000);
         }
         
         function toggleAdmin() {
@@ -2540,7 +2420,6 @@
             const clockedIn = todayRecords.filter(r => r.clockIn && !r.clockOut).length;
             const onBreak = todayRecords.filter(r => r.breakStart && !r.breakEnd).length;
             const completed = todayRecords.filter(r => r.clockOut).length;
-            
             const statsHtml = `
                 <div class="stat-card-attendance"><div class="stat-value-attendance">${clockedIn}</div><div class="stat-label-attendance">Clocked In</div></div>
                 <div class="stat-card-attendance"><div class="stat-value-attendance">${onBreak}</div><div class="stat-label-attendance">On Break</div></div>
@@ -2553,12 +2432,10 @@
         function updateClockedInList() {
             const today = getTodayDate();
             const clockedIn = attendanceRecords.filter(r => r.date === today && r.clockIn && !r.clockOut);
-            
             if (clockedIn.length === 0) {
                 document.getElementById('clockedInList').innerHTML = '<p>No employees currently clocked in</p>';
                 return;
             }
-            
             let html = '';
             clockedIn.forEach(emp => {
                 const onBreak = emp.breakStart && !emp.breakEnd;
@@ -2575,7 +2452,6 @@
             const last7Days = {};
             const today = new Date();
             const employees = ["Lisakhanya Mei", "Nkululeko Adonisi", "Mei Mziwovuyo"];
-            
             for (let i = 0; i < 7; i++) {
                 const date = new Date(today);
                 date.setDate(today.getDate() - i);
@@ -2583,17 +2459,14 @@
                 last7Days[dateStr] = {};
                 employees.forEach(emp => { last7Days[dateStr][emp] = 0; });
             }
-            
             attendanceRecords.forEach(record => {
                 if (last7Days[record.date] && record.clockIn && record.clockOut) {
                     last7Days[record.date][record.name] = 1;
                 }
             });
-            
-            let html = '<table class="attendance-history-table"><table><th>Date</th>';
+            let html = '<table class="attendance-history-table"><tr><th>Date</th>';
             employees.forEach(emp => { html += `<th>${emp.split(' ')[0]}</th>`; });
             html += '</tr>';
-            
             for (const [date, empData] of Object.entries(last7Days)) {
                 html += `<tr><td>${date}</td>`;
                 employees.forEach(emp => {
@@ -2611,7 +2484,6 @@
             attendanceRecords.forEach(record => {
                 csv += `"${record.name}",${record.date},${record.clockIn || ''},${record.clockOut || ''},${record.breakStart || ''},${record.breakEnd || ''}\n`;
             });
-            
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -2621,25 +2493,24 @@
             URL.revokeObjectURL(url);
         }
         
+        function requestClockIn() { requestAttendancePin('clockin'); }
+        function requestClockOut() { requestAttendancePin('clockout'); }
+        function requestBreakStart() { requestAttendancePin('breakstart'); }
+        function requestBreakEnd() { requestAttendancePin('breakend'); }
+        
         // ================= INITIALIZE =================
         window.addEventListener('DOMContentLoaded', function() {
             loadJobData();
             loadFinancialData();
-            
             setInterval(loadJobData, 2 * 60 * 1000);
             setInterval(loadFinancialData, 2 * 60 * 1000);
-            
             document.getElementById('employeeSelect')?.addEventListener('change', function() {
-                if (employeeListUnlocked) {
-                    loadAttendanceData();
-                }
+                if (employeeListUnlocked) loadAttendanceData();
             });
-            
             document.getElementById('clockInBtn').onclick = requestClockIn;
             document.getElementById('clockOutBtn').onclick = requestClockOut;
             document.getElementById('breakStartBtn').onclick = requestBreakStart;
             document.getElementById('breakEndBtn').onclick = requestBreakEnd;
-            
             document.getElementById('jobNumber').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') searchJob();
             });
