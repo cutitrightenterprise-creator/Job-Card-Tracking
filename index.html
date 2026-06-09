@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Job Status Tracker | Cut It Right</title>
+    <title>Cut It Right | Job Tracker & Employee Attendance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -19,6 +19,8 @@
             --blue-light: #dbeafe;
             --purple: #8b5cf6;
             --purple-dark: #7c3aed;
+            --orange: #f97316;
+            --orange-dark: #ea580c;
         }
         
         * {
@@ -275,6 +277,28 @@
         .edit-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+        }
+        
+        .cashreport-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .cashreport-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
         }
         
         /* Password Modal */
@@ -957,6 +981,41 @@
             background: var(--white);
         }
         
+        /* PIN-protected employee section */
+        .employee-pin-section {
+            margin-bottom: 16px;
+        }
+        
+        .employee-pin-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        
+        .employee-pin-input input {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid var(--lime);
+            border-radius: 12px;
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .employee-pin-input button {
+            width: auto;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        
+        .employee-list-container {
+            display: none;
+        }
+        
         .btn-attendance {
             width: 100%;
             padding: 16px;
@@ -1139,6 +1198,58 @@
             margin-bottom: 16px;
         }
         
+        /* Attendance PIN Modal */
+        .attendance-pin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 20001;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .attendance-pin-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 350px;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .attendance-pin-content input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--lime);
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .attendance-pin-content button {
+            background: linear-gradient(135deg, var(--lime), var(--lime-dark));
+            color: var(--dark);
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .attendance-pin-error {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+        
         @media (max-width: 480px) {
             .content { padding: 24px; }
             .job-details, .finance-details { grid-template-columns: 1fr; }
@@ -1148,6 +1259,7 @@
             .btn-group-attendance { flex-direction: column; }
             .stats-grid-attendance { grid-template-columns: 1fr; }
             .btn-row { flex-direction: column; gap: 10px; }
+            .employee-pin-input { flex-direction: column; }
         }
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
@@ -1192,6 +1304,8 @@
                         <button class="finance-btn" onclick="searchFinancialStatement()"><i class="fas fa-file-invoice-dollar"></i> FINANCIAL STATEMENT</button>
                         <button class="edit-btn" onclick="requestEditAccess()"><i class="fas fa-edit"></i> EDIT JOB STATUS</button>
                     </div>
+                    
+                    <button class="cashreport-btn" onclick="requestCashReportAccess()"><i class="fas fa-money-bill-wave"></i> DAILY CASH REPORT</button>
                     
                     <div class="hint"><i class="fas fa-info-circle"></i> <span>Enter your name to view your loan statement</span></div>
                 </div>
@@ -1359,13 +1473,25 @@
                 <div id="attendanceMsg" class="success-msg-attendance"></div>
                 
                 <div class="attendance-card">
-                    <div class="attendance-card-title"><i class="fas fa-user"></i> Select Employee</div>
-                    <select class="attendance-select" id="employeeSelect">
-                        <option value="">-- Select Your Name --</option>
-                        <option value="Lisakhanya Mei">Lisakhanya Mei</option>
-                        <option value="Nkululeko Adonisi">Nkululeko Adonisi</option>
-                        <option value="Mei Mziwovuyo">Mei Mziwovuyo</option>
-                    </select>
+                    <div class="attendance-card-title"><i class="fas fa-user"></i> Employee Attendance</div>
+                    
+                    <!-- PIN-protected employee section -->
+                    <div class="employee-pin-section">
+                        <div class="employee-pin-input">
+                            <input type="password" id="employeePin" placeholder="Enter PIN to access employee list" maxlength="4" inputmode="numeric">
+                            <button onclick="verifyEmployeePin()">Unlock</button>
+                        </div>
+                        <div id="employeePinError" style="color:#dc2626; font-size:12px; display:none; margin-bottom:10px;">Incorrect PIN. Please try again.</div>
+                    </div>
+                    
+                    <div id="employeeListContainer" class="employee-list-container">
+                        <select class="attendance-select" id="employeeSelect">
+                            <option value="">-- Select Your Name --</option>
+                            <option value="Lisakhanya Mei">Lisakhanya Mei</option>
+                            <option value="Nkululeko Adonisi">Nkululeko Adonisi</option>
+                            <option value="Mei Mziwovuyo">Mei Mziwovuyo</option>
+                        </select>
+                    </div>
                     
                     <div id="currentStatusDisplay" class="status-badge-attendance status-off-attendance">
                         <i class="fas fa-clock"></i> Status: NOT CLOCKED IN
@@ -1436,6 +1562,26 @@
         </div>
     </div>
     
+    <!-- Password Modal for Cash Report -->
+    <div class="password-modal" id="cashReportModal">
+        <div class="password-modal-content">
+            <h3><i class="fas fa-lock"></i> Enter PIN for Cash Report</h3>
+            <input type="password" id="cashReportPin" placeholder="Enter 4-digit PIN" maxlength="4" inputmode="numeric">
+            <button onclick="verifyCashReportPin()">Verify Access</button>
+            <div id="cashReportPinError" class="password-error">Incorrect PIN. Please try again.</div>
+        </div>
+    </div>
+    
+    <!-- Attendance PIN Modal -->
+    <div class="attendance-pin-modal" id="attendancePinModal">
+        <div class="attendance-pin-content">
+            <h3><i class="fas fa-lock"></i> Enter PIN to Continue</h3>
+            <input type="password" id="attendancePin" placeholder="Enter 4-digit PIN" maxlength="4" inputmode="numeric">
+            <button id="verifyAttendancePinBtn">Verify Access</button>
+            <div id="attendancePinError" class="attendance-pin-error">Incorrect PIN. Please try again.</div>
+        </div>
+    </div>
+    
     <div class="payment-modal" id="paymentModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closePaymentModal()">&times;</button>
@@ -1448,9 +1594,12 @@
         const GOOGLE_SHEET_ID = '18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo';
         const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo/edit?usp=sharing';
         const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
+        const CASH_REPORT_URL = 'https://docs.google.com/spreadsheets/d/1f52fhwbgbWkH3TTRkW0PZTWqjS46KUwX/edit?usp=sharing';
         const PAYMENT_PAGE_URL = 'https://pay.yoco.com/cut-it-right-enterprise-pty-ltd';
         const ADMIN_PIN = '1234';
         const EDIT_PIN = '6263';
+        const ATTENDANCE_PIN = '6263';
+        const CASH_REPORT_PIN = '6263';
         
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json`;
         
@@ -1461,10 +1610,12 @@
         let currentJobNumber = '';
         let currentCustomerName = '';
         let adminVerified = false;
+        let employeeListUnlocked = false;
         
         // ================= ATTENDANCE DATA (LOCAL STORAGE) =================
         let attendanceRecords = [];
         let currentEmployee = '';
+        let pendingAttendanceAction = null;
         
         // ================= TAB SWITCHING =================
         function switchTab(tab) {
@@ -1477,7 +1628,9 @@
             } else {
                 document.querySelector('.tab-btn:last-child').classList.add('active');
                 document.getElementById('attendanceTab').classList.add('active');
-                loadAttendanceData();
+                if (employeeListUnlocked) {
+                    loadAttendanceData();
+                }
             }
         }
         
@@ -1514,20 +1667,133 @@
             window.open(SPREADSHEET_URL, '_blank');
         }
         
-        // Close modal when clicking outside
+        // ================= CASH REPORT PASSWORD PROTECTION =================
+        function requestCashReportAccess() {
+            const modal = document.getElementById('cashReportModal');
+            const pinInput = document.getElementById('cashReportPin');
+            const errorDiv = document.getElementById('cashReportPinError');
+            pinInput.value = '';
+            errorDiv.style.display = 'none';
+            modal.style.display = 'flex';
+            pinInput.focus();
+        }
+        
+        function verifyCashReportPin() {
+            const pin = document.getElementById('cashReportPin').value;
+            const errorDiv = document.getElementById('cashReportPinError');
+            
+            if (pin === CASH_REPORT_PIN) {
+                closeCashReportModal();
+                openCashReport();
+            } else {
+                errorDiv.style.display = 'block';
+                document.getElementById('cashReportPin').value = '';
+                document.getElementById('cashReportPin').focus();
+            }
+        }
+        
+        function closeCashReportModal() {
+            document.getElementById('cashReportModal').style.display = 'none';
+        }
+        
+        function openCashReport() {
+            window.open(CASH_REPORT_URL, '_blank');
+        }
+        
+        // ================= EMPLOYEE LIST PIN PROTECTION =================
+        function verifyEmployeePin() {
+            const pin = document.getElementById('employeePin').value;
+            const errorDiv = document.getElementById('employeePinError');
+            
+            if (pin === ATTENDANCE_PIN) {
+                employeeListUnlocked = true;
+                document.getElementById('employeeListContainer').style.display = 'block';
+                document.getElementById('employeePin').parentElement.style.display = 'none';
+                errorDiv.style.display = 'none';
+                showAttendanceMsg('Employee list unlocked', 'success');
+                loadAttendanceData();
+            } else {
+                errorDiv.style.display = 'block';
+                document.getElementById('employeePin').value = '';
+                document.getElementById('employeePin').focus();
+            }
+        }
+        
+        // ================= ATTENDANCE PIN PROTECTION =================
+        function requestAttendancePin(action) {
+            pendingAttendanceAction = action;
+            const modal = document.getElementById('attendancePinModal');
+            const pinInput = document.getElementById('attendancePin');
+            const errorDiv = document.getElementById('attendancePinError');
+            pinInput.value = '';
+            errorDiv.style.display = 'none';
+            modal.style.display = 'flex';
+            pinInput.focus();
+        }
+        
+        function verifyAttendancePin() {
+            const pin = document.getElementById('attendancePin').value;
+            const errorDiv = document.getElementById('attendancePinError');
+            
+            if (pin === ATTENDANCE_PIN) {
+                closeAttendancePinModal();
+                if (pendingAttendanceAction) {
+                    executeAttendanceAction(pendingAttendanceAction);
+                    pendingAttendanceAction = null;
+                }
+            } else {
+                errorDiv.style.display = 'block';
+                document.getElementById('attendancePin').value = '';
+                document.getElementById('attendancePin').focus();
+            }
+        }
+        
+        function closeAttendancePinModal() {
+            document.getElementById('attendancePinModal').style.display = 'none';
+        }
+        
+        function executeAttendanceAction(action) {
+            if (action === 'clockin') {
+                performClockIn();
+            } else if (action === 'clockout') {
+                performClockOut();
+            } else if (action === 'breakstart') {
+                performBreakStart();
+            } else if (action === 'breakend') {
+                performBreakEnd();
+            }
+        }
+        
+        // Close modals when clicking outside
         document.addEventListener('click', function(event) {
-            const modal = document.getElementById('passwordModal');
-            if (event.target === modal) {
+            const passwordModal = document.getElementById('passwordModal');
+            const cashModal = document.getElementById('cashReportModal');
+            const attendanceModal = document.getElementById('attendancePinModal');
+            if (event.target === passwordModal) {
                 closePasswordModal();
+            }
+            if (event.target === cashModal) {
+                closeCashReportModal();
+            }
+            if (event.target === attendanceModal) {
+                closeAttendancePinModal();
             }
         });
         
-        // Enter key support for PIN input
+        // Enter key support for PIN inputs
         document.getElementById('editPin')?.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                verifyEditPin();
-            }
+            if (e.key === 'Enter') verifyEditPin();
         });
+        
+        document.getElementById('cashReportPin')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyCashReportPin();
+        });
+        
+        document.getElementById('attendancePin')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyAttendancePin();
+        });
+        
+        document.getElementById('verifyAttendancePinBtn')?.addEventListener('click', verifyAttendancePin);
         
         // ================= INTEREST CALCULATION FUNCTIONS =================
         function parseFinancialNumber(value) {
@@ -1970,6 +2236,8 @@
         }
         
         function loadAttendanceData() {
+            if (!employeeListUnlocked) return;
+            
             const saved = localStorage.getItem('cutitright_attendance');
             if (saved) {
                 attendanceRecords = JSON.parse(saved);
@@ -1994,7 +2262,7 @@
             if (!currentEmployee) {
                 display.innerHTML = '<i class="fas fa-clock"></i> Status: NOT CLOCKED IN';
                 display.className = 'status-badge-attendance status-off-attendance';
-                document.getElementById('clockInBtn').disabled = false;
+                document.getElementById('clockInBtn').disabled = true;
                 document.getElementById('clockOutBtn').disabled = true;
                 document.getElementById('breakStartBtn').disabled = true;
                 document.getElementById('breakEndBtn').disabled = true;
@@ -2087,7 +2355,39 @@
             container.innerHTML = html;
         }
         
-        function clockIn() {
+        function requestClockIn() {
+            if (!employeeListUnlocked) {
+                showAttendanceMsg('Please unlock employee list first', 'error');
+                return;
+            }
+            requestAttendancePin('clockin');
+        }
+        
+        function requestClockOut() {
+            if (!employeeListUnlocked) {
+                showAttendanceMsg('Please unlock employee list first', 'error');
+                return;
+            }
+            requestAttendancePin('clockout');
+        }
+        
+        function requestBreakStart() {
+            if (!employeeListUnlocked) {
+                showAttendanceMsg('Please unlock employee list first', 'error');
+                return;
+            }
+            requestAttendancePin('breakstart');
+        }
+        
+        function requestBreakEnd() {
+            if (!employeeListUnlocked) {
+                showAttendanceMsg('Please unlock employee list first', 'error');
+                return;
+            }
+            requestAttendancePin('breakend');
+        }
+        
+        function performClockIn() {
             if (!currentEmployee) {
                 showAttendanceMsg('Please select your name first', 'error');
                 return;
@@ -2122,7 +2422,7 @@
             loadAttendanceData();
         }
         
-        function clockOut() {
+        function performClockOut() {
             if (!currentEmployee) return;
             
             const today = getTodayDate();
@@ -2144,7 +2444,7 @@
             loadAttendanceData();
         }
         
-        function breakStart() {
+        function performBreakStart() {
             if (!currentEmployee) return;
             
             const today = getTodayDate();
@@ -2171,7 +2471,7 @@
             loadAttendanceData();
         }
         
-        function breakEnd() {
+        function performBreakEnd() {
             if (!currentEmployee) return;
             
             const today = getTodayDate();
@@ -2290,9 +2590,9 @@
                 }
             });
             
-            let html = '<table class="attendance-history-table"><tr><th>Date</th>';
+            let html = '<table class="attendance-history-table"><table><th>Date</th>';
             employees.forEach(emp => { html += `<th>${emp.split(' ')[0]}</th>`; });
-            html += '<tr>';
+            html += '</tr>';
             
             for (const [date, empData] of Object.entries(last7Days)) {
                 html += `<tr><td>${date}</td>`;
@@ -2325,19 +2625,20 @@
         window.addEventListener('DOMContentLoaded', function() {
             loadJobData();
             loadFinancialData();
-            loadAttendanceData();
             
             setInterval(loadJobData, 2 * 60 * 1000);
             setInterval(loadFinancialData, 2 * 60 * 1000);
             
-            document.getElementById('employeeSelect').addEventListener('change', function() {
-                loadAttendanceData();
+            document.getElementById('employeeSelect')?.addEventListener('change', function() {
+                if (employeeListUnlocked) {
+                    loadAttendanceData();
+                }
             });
             
-            document.getElementById('clockInBtn').onclick = clockIn;
-            document.getElementById('clockOutBtn').onclick = clockOut;
-            document.getElementById('breakStartBtn').onclick = breakStart;
-            document.getElementById('breakEndBtn').onclick = breakEnd;
+            document.getElementById('clockInBtn').onclick = requestClockIn;
+            document.getElementById('clockOutBtn').onclick = requestClockOut;
+            document.getElementById('breakStartBtn').onclick = requestBreakStart;
+            document.getElementById('breakEndBtn').onclick = requestBreakEnd;
             
             document.getElementById('jobNumber').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') searchJob();
