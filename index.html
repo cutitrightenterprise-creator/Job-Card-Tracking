@@ -17,6 +17,8 @@
             --blue: #3b82f6;
             --blue-dark: #1d4ed8;
             --blue-light: #dbeafe;
+            --purple: #8b5cf6;
+            --purple-dark: #7c3aed;
         }
         
         * {
@@ -198,6 +200,17 @@
             box-shadow: 0 0 0 4px rgba(163, 230, 53, 0.2);
         }
         
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .btn-row .btn {
+            flex: 1;
+            margin-top: 0;
+        }
+        
         .search-btn {
             width: 100%;
             background: linear-gradient(135deg, var(--lime) 0%, var(--lime-dark) 100%);
@@ -235,12 +248,33 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            margin-top: 16px;
         }
         
         .finance-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .edit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 14px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
         }
         
         .hint {
@@ -907,7 +941,7 @@
         }
         
         .btn-admin {
-            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%);
             color: white;
         }
         
@@ -1060,6 +1094,7 @@
             .paynow-btn { font-size: 18px; padding: 16px; }
             .btn-group-attendance { flex-direction: column; }
             .stats-grid-attendance { grid-template-columns: 1fr; }
+            .btn-row { flex-direction: column; gap: 10px; }
         }
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
@@ -1099,7 +1134,12 @@
                         <input type="text" class="input-bar" id="jobNumber" placeholder="Enter job number (e.g. J1001)" autocomplete="off" oninput="this.value = this.value.toUpperCase()" autofocus>
                     </div>
                     <button class="search-btn" onclick="searchJob()"><i class="fas fa-search"></i> <span id="buttonText">SEARCH REPAIR STATUS</span></button>
-                    <button class="finance-btn" onclick="searchFinancialStatement()"><i class="fas fa-file-invoice-dollar"></i> <span id="financeButtonText">VIEW FINANCIAL STATEMENT</span></button>
+                    
+                    <div class="btn-row">
+                        <button class="finance-btn" onclick="searchFinancialStatement()"><i class="fas fa-file-invoice-dollar"></i> FINANCIAL STATEMENT</button>
+                        <button class="edit-btn" onclick="openSpreadsheet()"><i class="fas fa-edit"></i> EDIT STATUS</button>
+                    </div>
+                    
                     <div class="hint"><i class="fas fa-info-circle"></i> <span>Enter your name to view your loan statement</span></div>
                 </div>
                 
@@ -1343,6 +1383,7 @@
     <script>
         // ================= CONFIGURATION =================
         const GOOGLE_SHEET_ID = '18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo';
+        const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo/edit?usp=sharing';
         const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
         const PAYMENT_PAGE_URL = 'https://pay.yoco.com/cut-it-right-enterprise-pty-ltd';
         const ADMIN_PIN = '1234';
@@ -1374,6 +1415,11 @@
                 document.getElementById('attendanceTab').classList.add('active');
                 loadAttendanceData();
             }
+        }
+        
+        // ================= OPEN SPREADSHEET =================
+        function openSpreadsheet() {
+            window.open(SPREADSHEET_URL, '_blank');
         }
         
         // ================= INTEREST CALCULATION FUNCTIONS =================
@@ -2139,7 +2185,7 @@
             
             let html = '<table class="attendance-history-table"><tr><th>Date</th>';
             employees.forEach(emp => { html += `<th>${emp.split(' ')[0]}</th>`; });
-            html += '</tr>';
+            html += '<tr>';
             
             for (const [date, empData] of Object.entries(last7Days)) {
                 html += `<tr><td>${date}</td>`;
