@@ -3,146 +3,256 @@
 <head>
     <title>Cut It Right | Job Tracker & Employee Attendance</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔧%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         
         body {
-            background: #f0f9ff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            padding: 24px;
         }
         
         .container {
-            width: 100%;
             max-width: 500px;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(163, 230, 53, 0.15);
-            overflow: hidden;
-            border: 2px solid #d9f99d;
+            margin: 0 auto;
         }
         
+        /* Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(74, 222, 128, 0.25);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+        }
+        
+        /* Header */
         .header {
-            background: linear-gradient(135deg, #a3e635, #84cc16);
-            padding: 40px 24px;
+            background: linear-gradient(135deg, #a3e635 0%, #65a30d 100%);
+            padding: 32px 24px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+        }
+        
+        .logo-icon {
+            font-size: 48px;
+            color: white;
+            background: rgba(255,255,255,0.2);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.3);
         }
         
         .logo-text {
-            font-size: 32px;
-            font-weight: 900;
-            color: #1a2e05;
-            text-transform: uppercase;
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -0.5px;
         }
         
         .tagline {
-            color: #1a2e05;
+            color: rgba(255,255,255,0.95);
             font-size: 14px;
-            font-weight: 700;
-            margin-top: 10px;
+            font-weight: 500;
+            margin-top: 8px;
         }
         
+        /* Content */
         .content {
             padding: 24px;
         }
         
+        /* Modern Tabs */
         .tabs {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 24px;
-            background: #f7fee7;
-            padding: 8px;
-            border-radius: 16px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 60px;
         }
         
         .tab-btn {
             flex: 1;
-            padding: 12px;
+            padding: 12px 16px;
             border: none;
             background: transparent;
-            font-weight: 800;
+            font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            border-radius: 12px;
-            color: #4d7c0f;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+            color: #64748b;
+        }
+        
+        .tab-btn i {
+            margin-right: 8px;
         }
         
         .tab-btn.active {
             background: white;
-            color: #84cc16;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #65a30d;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
         
         .tab-content {
             display: none;
+            animation: fadeIn 0.3s ease;
         }
         
         .tab-content.active {
             display: block;
         }
         
-        .card {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Modern Card */
+        .modern-card {
             background: white;
-            border-radius: 16px;
-            border: 2px solid #d9f99d;
+            border-radius: 24px;
             padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .modern-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: #bef264;
         }
         
         .card-title {
             font-size: 18px;
-            font-weight: 900;
-            color: #1a2e05;
+            font-weight: 700;
+            color: #1e293b;
             margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             padding-bottom: 12px;
-            border-bottom: 2px solid #f7fee7;
+            border-bottom: 2px solid #e2e8f0;
         }
         
+        .card-title i {
+            color: #65a30d;
+        }
+        
+        /* Form Elements */
         input, select {
             width: 100%;
-            padding: 14px;
-            border: 2px solid #a3e635;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: #f8fafc;
         }
         
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
+        input:focus, select:focus {
+            outline: none;
+            border-color: #a3e635;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(163, 230, 53, 0.1);
         }
         
+        /* Modern Buttons */
         .btn {
             width: 100%;
-            padding: 16px;
+            padding: 14px 20px;
             border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 800;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            display: flex;
+            transition: all 0.3s ease;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
         }
         
-        .btn-primary { background: linear-gradient(135deg, #a3e635, #84cc16); color: #1a2e05; }
-        .btn-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
-        .btn-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
-        .btn-orange { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
-        .btn-red { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
-        .btn-green { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+        .btn-primary {
+            background: linear-gradient(135deg, #a3e635 0%, #65a30d 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(101, 163, 13, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+        
+        .btn-purple {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+        }
+        
+        .btn-outline:hover {
+            border-color: #a3e635;
+            color: #65a30d;
+        }
         
         .btn-group {
             display: flex;
@@ -150,46 +260,171 @@
             margin-bottom: 12px;
         }
         
-        .btn-attendance {
+        .btn-group .btn {
             flex: 1;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            padding: 14px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
         }
         
-        .status-badge {
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 800;
-            margin-bottom: 16px;
-            text-align: center;
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
         }
         
-        .status-active { background: #dcfce7; color: #166534; border: 1px solid #22c55e; }
-        .status-break { background: #fed7aa; color: #9a3412; border: 1px solid #f97316; }
-        .status-off { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .status-break {
+            background: #fed7aa;
+            color: #9a3412;
+            border: 1px solid #fdba74;
+        }
         
-        .history-table { width: 100%; font-size: 13px; border-collapse: collapse; }
-        .history-table th, .history-table td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #d9f99d; }
+        .status-off {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
-        .stat-card { background: white; border-radius: 12px; padding: 16px; text-align: center; }
-        .stat-value { font-size: 24px; font-weight: 900; color: #1d4ed8; }
-        .stat-label { font-size: 12px; color: #4d7c0f; font-weight: 600; }
+        /* History Table */
+        .history-table {
+            width: 100%;
+            font-size: 13px;
+            border-collapse: collapse;
+        }
         
-        .clocked-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #d9f99d; }
+        .history-table th {
+            text-align: left;
+            padding: 12px 8px;
+            color: #64748b;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
         
-        .success-msg { background: #dcfce7; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px; color: #166534; font-weight: 600; display: none; margin-bottom: 16px; }
-        .error-msg { background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 12px; color: #991b1b; font-weight: 600; display: none; margin-bottom: 16px; }
+        .history-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
         
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: #bef264;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #65a30d;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        
+        /* Clocked In List */
+        .clocked-list {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .clocked-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .clocked-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .clocked-status {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .clocked-status.break {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+        
+        .clocked-time {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        /* Admin Section */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+        
+        /* Messages */
+        .success-msg, .error-msg {
+            padding: 14px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .success-msg {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .error-msg {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        /* PIN Modal */
         .pin-modal {
             display: none;
             position: fixed;
@@ -197,7 +432,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
             z-index: 20000;
             justify-content: center;
             align-items: center;
@@ -205,149 +441,201 @@
         
         .pin-modal-content {
             background: white;
-            border-radius: 20px;
+            border-radius: 32px;
             width: 90%;
             max-width: 350px;
-            padding: 30px;
+            padding: 32px;
             text-align: center;
+            animation: slideUp 0.3s ease;
         }
         
-        .pin-modal-content h3 { margin-bottom: 20px; color: #1a2e05; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pin-modal-content h3 {
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .pin-modal-content p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        
         .pin-modal-content input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #a3e635;
-            border-radius: 12px;
-            font-size: 18px;
             text-align: center;
-            margin-bottom: 20px;
+            font-size: 20px;
+            letter-spacing: 4px;
+            margin-bottom: 24px;
         }
-        .pin-modal-content button {
-            background: linear-gradient(135deg, #a3e635, #84cc16);
-            color: #1a2e05;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            width: 100%;
+        
+        /* Footer */
+        .footer {
+            background: #f8fafc;
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
         }
-        .pin-error { color: #dc2626; font-size: 14px; margin-top: 10px; display: none; }
         
-        .footer { background: #f7fee7; padding: 28px; text-align: center; }
-        .contact-info { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-bottom: 20px; }
-        .contact-item { display: flex; align-items: center; gap: 12px; color: #4d7c0f; text-decoration: none; font-weight: 700; padding: 12px 22px; background: white; border-radius: 12px; border: 2px solid #d9f99d; }
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
         
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 16px;
+            background: white;
+            border-radius: 40px;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .contact-item:hover {
+            background: #f1f5f9;
+            color: #65a30d;
+            transform: translateY(-2px);
+            border-color: #bef264;
+        }
+        
+        /* Responsive */
         @media (max-width: 480px) {
-            .content { padding: 16px; }
+            body { padding: 16px; }
+            .content { padding: 20px; }
             .btn-group { flex-direction: column; }
-            .btn-row { flex-direction: column; gap: 10px; }
             .stats-grid { grid-template-columns: 1fr; }
+            .logo-text { font-size: 24px; }
+            .logo-icon { width: 60px; height: 60px; font-size: 32px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <div class="logo-text">CUT IT RIGHT</div>
-            <div class="tagline">LAWNMOWER & BRUSHCUTTER REPAIR SHOP</div>
-        </div>
-        
-        <div class="content">
-            <div class="tabs">
-                <button class="tab-btn active" id="jobTabBtn">🔧 Job Status</button>
-                <button class="tab-btn" id="attendanceTabBtn">⏰ Attendance</button>
+        <div class="glass-card">
+            <div class="header">
+                <div class="logo-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div class="logo-text">CUT IT RIGHT</div>
+                <div class="tagline">LAWNMOWER & BRUSHCUTTER REPAIR SHOP</div>
             </div>
             
-            <!-- JOB STATUS TAB -->
-            <div id="jobTab" class="tab-content active">
-                <div class="card">
-                    <div class="card-title"><i class="fas fa-search"></i> Track Your Repair</div>
-                    <input type="text" id="jobNumber" placeholder="Enter job number (e.g., J1001)" autocomplete="off" oninput="this.value = this.value.toUpperCase()">
-                    <button class="btn btn-primary" id="searchJobBtn"><i class="fas fa-search"></i> SEARCH REPAIR STATUS</button>
-                    
-                    <div class="btn-row">
-                        <button class="btn btn-blue" id="financialStatementBtn"><i class="fas fa-file-invoice-dollar"></i> STATEMENT</button>
-                        <button class="btn btn-purple" id="editJobBtn"><i class="fas fa-edit"></i> EDIT JOB STATUS</button>
-                    </div>
-                    
-                    <button class="btn btn-orange" id="cashReportBtn"><i class="fas fa-money-bill-wave"></i> DAILY CASH REPORT</button>
-                    
-                    <div id="jobResult" style="display:none; margin-top:16px; background:#f7fee7; border-radius:12px; padding:16px;">
-                        <p><strong>Job Number:</strong> <span id="jobNumDisplay"></span></p>
-                        <p><strong>Status:</strong> <span id="jobStatusDisplay"></span></p>
-                        <p><strong>Quotation:</strong> <span id="jobPriceDisplay"></span></p>
-                        <p><strong>Last Updated:</strong> <span id="jobDateDisplay"></span></p>
-                    </div>
-                    
-                    <button class="btn btn-primary" id="payNowBtn" style="margin-top:16px;"><i class="fas fa-credit-card"></i> PAY NOW</button>
+            <div class="content">
+                <div class="tabs">
+                    <button class="tab-btn active" id="jobTabBtn"><i class="fas fa-search"></i> Job Status</button>
+                    <button class="tab-btn" id="attendanceTabBtn"><i class="fas fa-clock"></i> Attendance</button>
                 </div>
-            </div>
-            
-            <!-- ATTENDANCE TAB -->
-            <div id="attendanceTab" class="tab-content">
-                <div id="attendanceMsg" class="success-msg"></div>
                 
-                <div class="card">
-                    <div class="card-title"><i class="fas fa-users"></i> Employee Attendance</div>
-                    
-                    <div id="employeeSection" style="display:none;">
-                        <select id="employeeSelect">
-                            <option value="">-- Select Your Name --</option>
-                            <option value="Lisakhanya Mei">Lisakhanya Mei</option>
-                            <option value="Nkululeko Adonisi">Nkululeko Adonisi</option>
-                            <option value="Mei Mziwovuyo">Mei Mziwovuyo</option>
-                        </select>
-                        
-                        <div id="statusDisplay" class="status-badge status-off">❌ NOT CLOCKED IN</div>
+                <!-- JOB STATUS TAB -->
+                <div id="jobTab" class="tab-content active">
+                    <div class="modern-card">
+                        <div class="card-title"><i class="fas fa-search"></i> Track Your Repair</div>
+                        <input type="text" id="jobNumber" placeholder="Enter job number (e.g., J1001)" autocomplete="off" oninput="this.value = this.value.toUpperCase()">
+                        <button class="btn btn-primary" id="searchJobBtn" style="margin-bottom: 16px;"><i class="fas fa-search"></i> Search Status</button>
                         
                         <div class="btn-group">
-                            <button class="btn-attendance btn-clockin" id="clockInBtn" style="background:linear-gradient(135deg,#a3e635,#84cc16); color:#1a2e05;"><i class="fas fa-sign-in-alt"></i> CLOCK IN</button>
-                            <button class="btn-attendance btn-clockout" id="clockOutBtn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:white;" disabled><i class="fas fa-sign-out-alt"></i> CLOCK OUT</button>
+                            <button class="btn btn-info" id="financialStatementBtn"><i class="fas fa-file-invoice-dollar"></i> Statement</button>
+                            <button class="btn btn-purple" id="editJobBtn"><i class="fas fa-edit"></i> Edit Jobs</button>
                         </div>
-                        <div class="btn-group">
-                            <button class="btn-attendance btn-breakstart" id="breakStartBtn" style="background:linear-gradient(135deg,#f97316,#ea580c); color:white;" disabled><i class="fas fa-coffee"></i> BREAK START</button>
-                            <button class="btn-attendance btn-breakend" id="breakEndBtn" style="background:linear-gradient(135deg,#22c55e,#16a34a); color:white;" disabled><i class="fas fa-check"></i> BREAK END</button>
+                        
+                        <button class="btn btn-warning" id="cashReportBtn"><i class="fas fa-money-bill-wave"></i> Cash Report</button>
+                        
+                        <div id="jobResult" style="display:none; margin-top: 20px; background: #f8fafc; border-radius: 20px; padding: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span style="color: #64748b;">Job Number:</span>
+                                <span style="font-weight: 700; color: #1e293b;" id="jobNumDisplay"></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span style="color: #64748b;">Status:</span>
+                                <span style="font-weight: 700; color: #65a30d;" id="jobStatusDisplay"></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <span style="color: #64748b;">Quotation:</span>
+                                <span style="font-weight: 700; color: #1e293b;" id="jobPriceDisplay"></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: #64748b;">Last Updated:</span>
+                                <span style="font-weight: 700; color: #1e293b;" id="jobDateDisplay"></span>
+                            </div>
                         </div>
+                        
+                        <button class="btn btn-primary" id="payNowBtn" style="margin-top: 20px;"><i class="fas fa-credit-card"></i> Pay Now</button>
+                    </div>
+                </div>
+                
+                <!-- ATTENDANCE TAB -->
+                <div id="attendanceTab" class="tab-content">
+                    <div id="attendanceMsg" class="success-msg"></div>
+                    
+                    <div class="modern-card">
+                        <div class="card-title"><i class="fas fa-users"></i> Employee Attendance</div>
+                        
+                        <div id="employeeSection" style="display:none;">
+                            <select id="employeeSelect">
+                                <option value="">-- Select Your Name --</option>
+                                <option value="Lisakhanya Mei">Lisakhanya Mei</option>
+                                <option value="Nkululeko Adonisi">Nkululeko Adonisi</option>
+                                <option value="Mei Mziwovuyo">Mei Mziwovuyo</option>
+                            </select>
+                            
+                            <div id="statusDisplay" class="status-badge status-off"><i class="fas fa-clock"></i> NOT CLOCKED IN</div>
+                            
+                            <div class="btn-group">
+                                <button class="btn btn-success" id="clockInBtn"><i class="fas fa-sign-in-alt"></i> Clock In</button>
+                                <button class="btn btn-danger" id="clockOutBtn" disabled><i class="fas fa-sign-out-alt"></i> Clock Out</button>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-warning" id="breakStartBtn" disabled><i class="fas fa-coffee"></i> Break Start</button>
+                                <button class="btn btn-info" id="breakEndBtn" disabled><i class="fas fa-check"></i> Break End</button>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-purple" id="unlockEmployeeBtn" style="margin-top: 16px;"><i class="fas fa-lock"></i> Unlock Employee List</button>
                     </div>
                     
-                    <button class="btn btn-purple" id="unlockEmployeeBtn" style="margin-top:16px;"><i class="fas fa-lock"></i> UNLOCK EMPLOYEE LIST</button>
-                </div>
-                
-                <div class="card">
-                    <div class="card-title"><i class="fas fa-history"></i> Today's Activity</div>
-                    <div id="todayHistory">Unlock employee list to view activity</div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-title"><i class="fas fa-calendar-week"></i> Last 7 Days</div>
-                    <div id="weekHistory">Unlock employee list to view history</div>
-                </div>
-                
-                <div class="card">
-                    <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" id="adminHeader">
-                        <div class="card-title" style="border:none; margin:0;"><i class="fas fa-chart-line"></i> Manager Dashboard</div>
-                        <i class="fas fa-chevron-down" id="adminToggleIcon"></i>
+                    <div class="modern-card">
+                        <div class="card-title"><i class="fas fa-history"></i> Today's Activity</div>
+                        <div id="todayHistory" style="color: #64748b; text-align: center; padding: 20px;">Unlock employee list to view activity</div>
                     </div>
-                    <div id="adminContent" style="display:none; margin-top:16px;">
-                        <div id="adminDashboard">
+                    
+                    <div class="modern-card">
+                        <div class="card-title"><i class="fas fa-calendar-week"></i> Last 7 Days</div>
+                        <div id="weekHistory" style="color: #64748b; text-align: center; padding: 20px;">Unlock employee list to view history</div>
+                    </div>
+                    
+                    <div class="modern-card">
+                        <div class="admin-header" id="adminHeader">
+                            <div class="card-title" style="border: none; margin: 0;"><i class="fas fa-chart-line"></i> Manager Dashboard</div>
+                            <i class="fas fa-chevron-down" id="adminToggleIcon" style="color: #64748b;"></i>
+                        </div>
+                        <div id="adminContent" style="display:none; margin-top: 16px;">
                             <div class="stats-grid" id="statsGrid"></div>
-                            <div class="card-title" style="margin-top:16px;"><i class="fas fa-users"></i> Currently Clocked In</div>
+                            <div class="card-title" style="margin-top: 16px;"><i class="fas fa-users"></i> Currently Clocked In</div>
                             <div id="clockedInList" class="clocked-list"></div>
-                            <div class="card-title" style="margin-top:16px;"><i class="fas fa-chart-bar"></i> Weekly Summary</div>
+                            <div class="card-title" style="margin-top: 16px;"><i class="fas fa-chart-bar"></i> Weekly Summary</div>
                             <div id="weeklySummary"></div>
-                            <button class="btn btn-purple" id="exportCsvBtn" style="margin-top:16px;"><i class="fas fa-download"></i> Export to CSV</button>
+                            <button class="btn btn-purple" id="exportCsvBtn" style="margin-top: 16px;"><i class="fas fa-download"></i> Export to CSV</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="footer">
-            <div class="contact-info">
-                <a href="tel:0430650097" class="contact-item"><i class="fas fa-phone-alt"></i><span>043 065 0097</span></a>
-                <a href="mailto:cutitright.info@gmail.com" class="contact-item"><i class="fas fa-envelope"></i><span>cutitright.info@gmail.com</span></a>
+            
+            <div class="footer">
+                <div class="contact-info">
+                    <a href="tel:0430650097" class="contact-item"><i class="fas fa-phone-alt"></i> 043 065 0097</a>
+                    <a href="mailto:cutitright.info@gmail.com" class="contact-item"><i class="fas fa-envelope"></i> cutitright.info@gmail.com</a>
+                </div>
             </div>
         </div>
     </div>
@@ -355,10 +643,12 @@
     <!-- PIN Modal -->
     <div class="pin-modal" id="pinModal">
         <div class="pin-modal-content">
-            <h3><i class="fas fa-lock"></i> Enter PIN</h3>
-            <input type="password" id="pinInput" placeholder="Enter 4-digit PIN" maxlength="4" inputmode="numeric">
-            <button id="verifyPinBtn">Verify Access</button>
-            <div id="pinError" class="pin-error">Incorrect PIN. Please try again.</div>
+            <i class="fas fa-lock" style="font-size: 48px; color: #65a30d; margin-bottom: 16px;"></i>
+            <h3>Authentication Required</h3>
+            <p>Please enter your PIN to continue</p>
+            <input type="password" id="pinInput" placeholder="••••" maxlength="4" inputmode="numeric">
+            <button class="btn btn-primary" id="verifyPinBtn">Verify Access</button>
+            <div id="pinError" style="color: #dc2626; font-size: 13px; margin-top: 16px; display: none;">Incorrect PIN. Please try again.</div>
         </div>
     </div>
 
@@ -389,8 +679,8 @@
         function showMessage(msg, type) {
             const msgDiv = document.getElementById('attendanceMsg');
             msgDiv.className = type === 'error' ? 'error-msg' : 'success-msg';
-            msgDiv.style.display = 'block';
-            msgDiv.innerHTML = msg;
+            msgDiv.style.display = 'flex';
+            msgDiv.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
             setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
         }
         
@@ -429,7 +719,7 @@
                 employeeListUnlocked = true;
                 document.getElementById('employeeSection').style.display = 'block';
                 document.getElementById('unlockEmployeeBtn').style.display = 'none';
-                showMessage('Employee list unlocked', 'success');
+                showMessage('Employee list unlocked successfully', 'success');
                 loadAttendanceData();
             } else if (pendingAction === 'editJob') {
                 window.open(JOB_SPREADSHEET_URL, '_blank');
@@ -437,8 +727,8 @@
                 window.open(CASH_REPORT_URL, '_blank');
             } else if (pendingAction === 'adminDashboard') {
                 adminUnlocked = true;
-                document.getElementById('adminDashboard').style.display = 'block';
-                showMessage('Admin access granted', 'success');
+                document.getElementById('adminContent').style.display = 'block';
+                showMessage('Dashboard access granted', 'success');
                 updateAdminDashboard();
             }
             pendingAction = null;
@@ -465,9 +755,9 @@
             const display = document.getElementById('statusDisplay');
             
             if (!currentEmployee) {
-                display.innerHTML = '❌ NOT CLOCKED IN';
+                display.innerHTML = '<i class="fas fa-clock"></i> NOT CLOCKED IN';
                 display.className = 'status-badge status-off';
-                document.getElementById('clockInBtn').disabled = true;
+                document.getElementById('clockInBtn').disabled = false;
                 document.getElementById('clockOutBtn').disabled = true;
                 document.getElementById('breakStartBtn').disabled = true;
                 document.getElementById('breakEndBtn').disabled = true;
@@ -481,14 +771,14 @@
             
             if (activeRecord) {
                 if (onBreak) {
-                    display.innerHTML = `☕ ON BREAK (Clocked in at ${activeRecord.clockIn})`;
+                    display.innerHTML = `<i class="fas fa-coffee"></i> ON BREAK (Clocked in at ${activeRecord.clockIn})`;
                     display.className = 'status-badge status-break';
                     document.getElementById('clockInBtn').disabled = true;
                     document.getElementById('clockOutBtn').disabled = false;
                     document.getElementById('breakStartBtn').disabled = true;
                     document.getElementById('breakEndBtn').disabled = false;
                 } else {
-                    display.innerHTML = `✅ CLOCKED IN (Since ${activeRecord.clockIn})`;
+                    display.innerHTML = `<i class="fas fa-check-circle"></i> CLOCKED IN (Since ${activeRecord.clockIn})`;
                     display.className = 'status-badge status-active';
                     document.getElementById('clockInBtn').disabled = true;
                     document.getElementById('clockOutBtn').disabled = false;
@@ -496,7 +786,7 @@
                     document.getElementById('breakEndBtn').disabled = true;
                 }
             } else {
-                display.innerHTML = '❌ NOT CLOCKED IN';
+                display.innerHTML = '<i class="fas fa-clock"></i> NOT CLOCKED IN';
                 display.className = 'status-badge status-off';
                 document.getElementById('clockInBtn').disabled = false;
                 document.getElementById('clockOutBtn').disabled = true;
@@ -512,7 +802,7 @@
         function updateTodayHistory() {
             const container = document.getElementById('todayHistory');
             if (!currentEmployee) {
-                container.innerHTML = 'Select an employee to view today\'s activity';
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #64748b;">Select an employee to view today\'s activity</div>';
                 return;
             }
             
@@ -520,7 +810,7 @@
             const todayRecords = attendanceRecords.filter(r => r.name === currentEmployee && r.date === today);
             
             if (todayRecords.length === 0) {
-                container.innerHTML = 'No activity recorded today';
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #64748b;">No activity recorded today</div>';
                 return;
             }
             
@@ -541,14 +831,14 @@
         function updateWeekHistory() {
             const container = document.getElementById('weekHistory');
             if (!currentEmployee) {
-                container.innerHTML = 'Select an employee to view history';
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #64748b;">Select an employee to view history</div>';
                 return;
             }
             
             const records = attendanceRecords.filter(r => r.name === currentEmployee).slice(-7);
             
             if (records.length === 0) {
-                container.innerHTML = 'No history found for the last 7 days';
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #64748b;">No history found for the last 7 days</div>';
                 return;
             }
             
@@ -561,7 +851,7 @@
                     <td>${r.clockOut || '-'}</td>
                 </tr>`;
             });
-            html += '</table>';
+            html += '</td>';
             container.innerHTML = html;
         }
         
@@ -689,8 +979,8 @@
             const statsHtml = `
                 <div class="stat-card"><div class="stat-value">${clockedIn}</div><div class="stat-label">Clocked In</div></div>
                 <div class="stat-card"><div class="stat-value">${onBreak}</div><div class="stat-label">On Break</div></div>
-                <div class="stat-card"><div class="stat-value">${completed}</div><div class="stat-label">Completed Today</div></div>
-                <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Total Employees</div></div>
+                <div class="stat-card"><div class="stat-value">${completed}</div><div class="stat-label">Completed</div></div>
+                <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Employees</div></div>
             `;
             document.getElementById('statsGrid').innerHTML = statsHtml;
         }
@@ -700,7 +990,7 @@
             const clockedIn = attendanceRecords.filter(r => r.date === today && r.clockIn && !r.clockOut);
             
             if (clockedIn.length === 0) {
-                document.getElementById('clockedInList').innerHTML = '<p>No employees currently clocked in</p>';
+                document.getElementById('clockedInList').innerHTML = '<div style="text-align: center; padding: 20px; color: #64748b;">No employees currently clocked in</div>';
                 return;
             }
             
@@ -708,9 +998,9 @@
             clockedIn.forEach(emp => {
                 const onBreak = emp.breakStart && !emp.breakEnd;
                 html += `<div class="clocked-item">
-                    <span><strong>${emp.name}</strong></span>
-                    <span>${onBreak ? 'On Break' : 'Active'}</span>
-                    <span>Since: ${emp.clockIn}</span>
+                    <div><span class="clocked-name">${emp.name}</span></div>
+                    <div><span class="clocked-status ${onBreak ? 'break' : ''}">${onBreak ? 'On Break' : 'Active'}</span></div>
+                    <div class="clocked-time">Since ${emp.clockIn}</div>
                 </div>`;
             });
             document.getElementById('clockedInList').innerHTML = html;
@@ -735,12 +1025,14 @@
                 }
             });
             
-            let html = '<table class="history-table"><tr><th>Date</th>';
+            let html = '<table class="history-table">';
+            html += '<tr><th>Date</th>';
             employees.forEach(emp => { html += `<th>${emp.split(' ')[0]}</th>`; });
             html += '</tr>';
             
             for (const [date, empData] of Object.entries(last7Days)) {
-                html += `<tr><td>${date}</td>`;
+                html += `<tr>
+                    <td>${date}</td>`;
                 employees.forEach(emp => {
                     const worked = empData[emp] || 0;
                     html += `<td>${worked ? '✅' : '❌'}</td>`;
