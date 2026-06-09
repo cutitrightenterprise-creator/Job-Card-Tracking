@@ -1258,7 +1258,7 @@
         // ================= CONFIGURATION =================
         const GOOGLE_SHEET_ID = '18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo';
         const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
-        const ATTENDANCE_API_URL = 'https://script.google.com/macros/s/AKfycbxTnyaHhqF9u-lfXZ9EKNau1XgKPjbWwwbJ6JUy8pkHS9JM6lZ3XryA62_Fvragxiy4/exec';
+        const ATTENDANCE_API_URL = 'https://script.google.com/macros/s/AKfycbwDBD6IfCYHtktNQq2kTF6xoaX2IKHWqDiOet28kq22rXrxbwQuG3QTrzUUmFCbPzEV/exec';
         const PAYMENT_PAGE_URL = 'https://pay.yoco.com/cut-it-right-enterprise-pty-ltd';
         const ADMIN_PIN = '1234';
         
@@ -1867,7 +1867,7 @@
                 container.innerHTML = 'No history found for the last 7 days';
                 return;
             }
-            let html = '<table class="attendance-history-table"><table><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Net Hours</th></tr>';
+            let html = '<table class="attendance-history-table"><tr><th>Date</th><th>Clock In</th><th>Clock Out</th><th>Net Hours</th></tr>';
             last7Days.slice(0, 14).forEach(r => {
                 html += `<tr><td>${r.date}</td><td>${r.clockIn || '-'}</td><td>${r.clockOut || '-'}</td><td>${r.netHours || '-'}</td></tr>`;
             });
