@@ -1790,7 +1790,7 @@
             return now.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
         
-        function updateEmployeeStatus() {
+        async function updateEmployeeStatus() {
             const select = document.getElementById('employeeSelect');
             currentEmployee = select.value;
             const display = document.getElementById('currentStatusDisplay');
@@ -1803,6 +1803,9 @@
                 document.getElementById('breakEndBtn').disabled = true;
                 return;
             }
+            
+            // Refresh data first
+            await loadAttendanceData();
             
             const today = getTodayDate();
             const todayRecords = attendanceData.filter(record => record.name === currentEmployee && record.date === today);
@@ -1878,34 +1881,41 @@
                 showAttendanceMsg('Please select your name first', 'error');
                 return;
             }
+            showAttendanceMsg(`⏰ Clocking in ${currentEmployee}...`, 'success');
             await saveAttendanceRecord('clockin');
             showAttendanceMsg(`✅ ${currentEmployee} clocked in at ${getCurrentTime()}`, 'success');
             await loadAttendanceData();
-            updateEmployeeStatus();
+            await updateEmployeeStatus();
         }
         
         async function clockOut() {
-            if (!currentEmployee) return;
+            if (!currentEmployee) {
+                showAttendanceMsg('Please select your name first', 'error');
+                return;
+            }
+            showAttendanceMsg(`⏰ Clocking out ${currentEmployee}...`, 'success');
             await saveAttendanceRecord('clockout');
             showAttendanceMsg(`✅ ${currentEmployee} clocked out at ${getCurrentTime()}`, 'success');
             await loadAttendanceData();
-            updateEmployeeStatus();
+            await updateEmployeeStatus();
         }
         
         async function breakStart() {
             if (!currentEmployee) return;
+            showAttendanceMsg(`☕ ${currentEmployee} starting break...`, 'success');
             await saveAttendanceRecord('breakstart');
             showAttendanceMsg(`☕ ${currentEmployee} started break at ${getCurrentTime()}`, 'success');
             await loadAttendanceData();
-            updateEmployeeStatus();
+            await updateEmployeeStatus();
         }
         
         async function breakEnd() {
             if (!currentEmployee) return;
+            showAttendanceMsg(`✅ ${currentEmployee} ending break...`, 'success');
             await saveAttendanceRecord('breakend');
             showAttendanceMsg(`✅ ${currentEmployee} ended break at ${getCurrentTime()}`, 'success');
             await loadAttendanceData();
-            updateEmployeeStatus();
+            await updateEmployeeStatus();
         }
         
         function showAttendanceMsg(msg, type) {
