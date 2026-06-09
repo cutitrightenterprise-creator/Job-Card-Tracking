@@ -277,6 +277,59 @@
             box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
         }
         
+        /* Password Modal */
+        .password-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 20000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .password-modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 350px;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .password-modal-content input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--lime);
+            border-radius: 12px;
+            font-size: 18px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .password-modal-content button {
+            background: linear-gradient(135deg, var(--lime), var(--lime-dark));
+            color: var(--dark);
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .password-error {
+            color: #dc2626;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+        
         .hint {
             color: var(--gray);
             font-size: 14px;
@@ -1137,7 +1190,7 @@
                     
                     <div class="btn-row">
                         <button class="finance-btn" onclick="searchFinancialStatement()"><i class="fas fa-file-invoice-dollar"></i> FINANCIAL STATEMENT</button>
-                        <button class="edit-btn" onclick="openSpreadsheet()"><i class="fas fa-edit"></i> EDIT STATUS</button>
+                        <button class="edit-btn" onclick="requestEditAccess()"><i class="fas fa-edit"></i> EDIT JOB STATUS</button>
                     </div>
                     
                     <div class="hint"><i class="fas fa-info-circle"></i> <span>Enter your name to view your loan statement</span></div>
@@ -1373,6 +1426,16 @@
         </div>
     </div>
     
+    <!-- Password Modal for Edit Button -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-modal-content">
+            <h3><i class="fas fa-lock"></i> Enter PIN</h3>
+            <input type="password" id="editPin" placeholder="Enter 4-digit PIN" maxlength="4" inputmode="numeric">
+            <button onclick="verifyEditPin()">Verify Access</button>
+            <div id="pinError" class="password-error">Incorrect PIN. Please try again.</div>
+        </div>
+    </div>
+    
     <div class="payment-modal" id="paymentModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closePaymentModal()">&times;</button>
@@ -1387,6 +1450,7 @@
         const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
         const PAYMENT_PAGE_URL = 'https://pay.yoco.com/cut-it-right-enterprise-pty-ltd';
         const ADMIN_PIN = '1234';
+        const EDIT_PIN = '6263';
         
         const SHEET_URL = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json`;
         
@@ -1417,10 +1481,53 @@
             }
         }
         
-        // ================= OPEN SPREADSHEET =================
+        // ================= PASSWORD PROTECTED EDIT BUTTON =================
+        function requestEditAccess() {
+            const modal = document.getElementById('passwordModal');
+            const pinInput = document.getElementById('editPin');
+            const errorDiv = document.getElementById('pinError');
+            pinInput.value = '';
+            errorDiv.style.display = 'none';
+            modal.style.display = 'flex';
+            pinInput.focus();
+        }
+        
+        function verifyEditPin() {
+            const pin = document.getElementById('editPin').value;
+            const errorDiv = document.getElementById('pinError');
+            
+            if (pin === EDIT_PIN) {
+                closePasswordModal();
+                openSpreadsheet();
+            } else {
+                errorDiv.style.display = 'block';
+                document.getElementById('editPin').value = '';
+                document.getElementById('editPin').focus();
+            }
+        }
+        
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+        }
+        
         function openSpreadsheet() {
             window.open(SPREADSHEET_URL, '_blank');
         }
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('passwordModal');
+            if (event.target === modal) {
+                closePasswordModal();
+            }
+        });
+        
+        // Enter key support for PIN input
+        document.getElementById('editPin')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifyEditPin();
+            }
+        });
         
         // ================= INTEREST CALCULATION FUNCTIONS =================
         function parseFinancialNumber(value) {
