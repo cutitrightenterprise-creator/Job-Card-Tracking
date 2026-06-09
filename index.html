@@ -1258,7 +1258,7 @@
         // ================= CONFIGURATION =================
         const GOOGLE_SHEET_ID = '18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo';
         const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
-        const ATTENDANCE_API_URL = 'https://script.google.com/macros/s/AKfycbwDBD6IfCYHtktNQq2kTF6xoaX2IKHWqDiOet28kq22rXrxbwQuG3QTrzUUmFCbPzEV/exec';
+        const ATTENDANCE_API_URL = 'https://script.google.com/macros/s/AKfycbzE4eVYGIVlK0g7JVl3bOVRSYW5jnrA27B2ZdWMtQYdB1bIdDCAk8SM570EFQYfKFCa/exec';
         const PAYMENT_PAGE_URL = 'https://pay.yoco.com/cut-it-right-enterprise-pty-ltd';
         const ADMIN_PIN = '1234';
         
@@ -1762,8 +1762,6 @@
             
             const record = {
                 name: currentEmployee,
-                date: getTodayDate(),
-                time: getCurrentTime(),
                 action: action,
                 timestamp: new Date().toISOString()
             };
