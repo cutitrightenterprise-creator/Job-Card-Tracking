@@ -300,59 +300,6 @@
             box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
         }
         
-        /* Password Modal for Employee List */
-        .password-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 20000;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .password-modal-content {
-            background: white;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 350px;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .password-modal-content input {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid var(--lime);
-            border-radius: 12px;
-            font-size: 18px;
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        .password-modal-content button {
-            background: linear-gradient(135deg, var(--lime), var(--lime-dark));
-            color: var(--dark);
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            width: 100%;
-        }
-        
-        .password-error {
-            color: #dc2626;
-            font-size: 14px;
-            margin-top: 10px;
-            display: none;
-        }
-        
         .hint {
             color: var(--gray);
             font-size: 14px;
@@ -1380,11 +1327,10 @@
                 <div class="attendance-card">
                     <div class="attendance-card-title"><i class="fas fa-user"></i> Employee Attendance</div>
                     
-                    <!-- PIN-protected employee section - PIN: 6263 -->
                     <div class="employee-pin-section">
                         <div class="employee-pin-input">
                             <input type="password" id="employeePin" placeholder="Enter PIN to access employee list" maxlength="4" inputmode="numeric">
-                            <button onclick="verifyEmployeePin()">Unlock</button>
+                            <button id="unlockEmployeeBtn">Unlock</button>
                         </div>
                         <div id="employeePinError" style="color:#dc2626; font-size:12px; display:none; margin-bottom:10px;">Incorrect PIN. Please try again.</div>
                     </div>
@@ -1478,6 +1424,7 @@
         let currentJobNumber = '';
         let adminVerified = false;
         let employeeListUnlocked = false;
+        let isClockedIn = false;
         
         // ================= ATTENDANCE DATA =================
         let attendanceRecords = [];
@@ -1507,25 +1454,6 @@
         
         function openCashReport() {
             window.open(CASH_REPORT_URL, '_blank');
-        }
-        
-        // ================= EMPLOYEE LIST PIN PROTECTION =================
-        function verifyEmployeePin() {
-            const pin = document.getElementById('employeePin').value;
-            const errorDiv = document.getElementById('employeePinError');
-            
-            if (pin === EMPLOYEE_PIN) {
-                employeeListUnlocked = true;
-                document.getElementById('employeeListContainer').style.display = 'block';
-                document.getElementById('employeePin').parentElement.style.display = 'none';
-                errorDiv.style.display = 'none';
-                showAttendanceMsg('Employee list unlocked', 'success');
-                loadAttendanceData();
-            } else {
-                errorDiv.style.display = 'block';
-                document.getElementById('employeePin').value = '';
-                document.getElementById('employeePin').focus();
-            }
         }
         
         // ================= JOB FUNCTIONS =================
@@ -1719,13 +1647,19 @@
                         });
                     }
                 }
+                
+                // Check current employee status
+                const today = getTodayDate();
+                const todayRecords = attendanceRecords.filter(r => r.name === currentEmployee && r.date === today);
+                const activeRecord = todayRecords.find(r => r.clockIn && !r.clockOut);
+                isClockedIn = !!activeRecord;
+                
                 updateEmployeeStatus();
                 updateTodayHistory();
                 updateWeekHistory();
                 if (adminVerified) updateAdminDashboard();
             } catch (error) {
                 console.error('Error loading attendance:', error);
-                showAttendanceMsg('Error loading data', 'error');
             }
         }
         
@@ -1754,8 +1688,6 @@
         }
         
         function updateEmployeeStatus() {
-            const select = document.getElementById('employeeSelect');
-            currentEmployee = select.value;
             const display = document.getElementById('currentStatusDisplay');
             
             if (!currentEmployee) {
@@ -1835,7 +1767,7 @@
                 container.innerHTML = 'No history found';
                 return;
             }
-            let html = '<table class="attendance-history-table"><tr><th>Date</th><th>Clock In</th><th>Clock Out</th></table>';
+            let html = '<table class="attendance-history-table"><tr><th>Date</th><th>Clock In</th><th>Clock Out</th></tr>';
             records.forEach(r => {
                 html += `<tr>
                     <td>${r.date}</td>
@@ -1843,7 +1775,7 @@
                     <td>${r.clockOut || '-'}</td>
                 </tr>`;
             });
-            html += '</tr>';
+            html += '</table>';
             container.innerHTML = html;
         }
         
@@ -1982,7 +1914,7 @@
             });
             let html = '<table class="attendance-history-table"><tr><th>Date</th>';
             employees.forEach(emp => { html += `<th>${emp.split(' ')[0]}</th>`; });
-            html += '<tr>';
+            html += '</tr>';
             for (const [date, empData] of Object.entries(last7Days)) {
                 html += `<tr><td>${date}</td>`;
                 employees.forEach(emp => {
@@ -1991,7 +1923,7 @@
                 });
                 html += '</tr>';
             }
-            html += '</table>';
+            html += '<table>';
             document.getElementById('weeklySummary').innerHTML = html;
         }
         
@@ -2009,19 +1941,44 @@
             URL.revokeObjectURL(url);
         }
         
-        // ================= INITIALIZE =================
-        window.addEventListener('DOMContentLoaded', function() {
+        // ================= EVENT LISTENERS =================
+        document.addEventListener('DOMContentLoaded', function() {
             loadFinancialData();
             
-            document.getElementById('employeeSelect')?.addEventListener('change', function() {
-                if (employeeListUnlocked) loadAttendanceData();
+            // Employee PIN unlock
+            document.getElementById('unlockEmployeeBtn').addEventListener('click', function() {
+                const pin = document.getElementById('employeePin').value;
+                const errorDiv = document.getElementById('employeePinError');
+                
+                if (pin === EMPLOYEE_PIN) {
+                    employeeListUnlocked = true;
+                    document.getElementById('employeeListContainer').style.display = 'block';
+                    document.getElementById('employeePin').parentElement.style.display = 'none';
+                    errorDiv.style.display = 'none';
+                    showAttendanceMsg('Employee list unlocked', 'success');
+                    loadAttendanceData();
+                } else {
+                    errorDiv.style.display = 'block';
+                    document.getElementById('employeePin').value = '';
+                    document.getElementById('employeePin').focus();
+                }
             });
             
-            document.getElementById('clockInBtn').onclick = clockIn;
-            document.getElementById('clockOutBtn').onclick = clockOut;
-            document.getElementById('breakStartBtn').onclick = breakStart;
-            document.getElementById('breakEndBtn').onclick = breakEnd;
+            // Employee select change
+            document.getElementById('employeeSelect').addEventListener('change', function() {
+                currentEmployee = this.value;
+                if (employeeListUnlocked && currentEmployee) {
+                    loadAttendanceData();
+                }
+            });
             
+            // Attendance buttons
+            document.getElementById('clockInBtn').addEventListener('click', clockIn);
+            document.getElementById('clockOutBtn').addEventListener('click', clockOut);
+            document.getElementById('breakStartBtn').addEventListener('click', breakStart);
+            document.getElementById('breakEndBtn').addEventListener('click', breakEnd);
+            
+            // Job search enter key
             document.getElementById('jobNumber').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') searchJob();
             });
