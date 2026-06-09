@@ -1469,7 +1469,7 @@
         const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo/edit?usp=sharing';
         const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
         const CASH_REPORT_URL = 'https://docs.google.com/spreadsheets/d/1f52fhwbgbWkH3TTRkW0PZTWqjS46KUwX/edit?usp=sharing';
-        const ATTENDANCE_API_URL = 'https://script.google.com/macros/s/AKfycbxoX4K3Z9jjOPU4uXMm6__MJKNmh-S6PSG9_shGpVlwD3XHbzLY-usF8g1X0xuO0DA/exec';
+        const ATTENDANCE_API_URL = 'https://script.google.com/macros/s/AKfycbwYvsXrxmbGhWCsbK5CPMmFMJ9yIwSPZraG6bA3DBUcsTU3yFx3h_KY0tr0hrPWxzpp/exec';
         const PAYMENT_PAGE_URL = 'https://pay.yoco.com/cut-it-right-enterprise-pty-ltd';
         const ADMIN_PIN = '1234';
         const EMPLOYEE_PIN = '6263';
@@ -1565,12 +1565,6 @@
             const num = parseFinancialNumber(value);
             if (isNaN(num)) return 'R 0.00';
             return 'R ' + num.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-        
-        function formatNumber(value) {
-            const num = parseFinancialNumber(value);
-            if (isNaN(num)) return '0';
-            return num.toLocaleString('en-ZA');
         }
         
         async function loadFinancialData() {
@@ -1819,7 +1813,12 @@
             }
             let html = '<table class="attendance-history-table"><tr><th>Clock In</th><th>Clock Out</th><th>Break Start</th><th>Break End</th></tr>';
             todayRecords.forEach(r => {
-                html += `<tr><td>${r.clockIn || '-'}</td><td>${r.clockOut || 'Still in'}</td><td>${r.breakStart || '-'}</td><td>${r.breakEnd || '-'}</td></tr>`;
+                html += `<tr>
+                    <td>${r.clockIn || '-'}</td>
+                    <td>${r.clockOut || 'Still in'}</td>
+                    <td>${r.breakStart || '-'}</td>
+                    <td>${r.breakEnd || '-'}</td>
+                </tr>`;
             });
             html += '</table>';
             container.innerHTML = html;
@@ -1836,11 +1835,15 @@
                 container.innerHTML = 'No history found';
                 return;
             }
-            let html = '<table class="attendance-history-table"><tr><th>Date</th><th>Clock In</th><th>Clock Out</th></tr>';
+            let html = '<table class="attendance-history-table"><tr><th>Date</th><th>Clock In</th><th>Clock Out</th></table>';
             records.forEach(r => {
-                html += `<tr><td>${r.date}</td><td>${r.clockIn || '-'}</td><td>${r.clockOut || '-'}</td></tr>`;
+                html += `<tr>
+                    <td>${r.date}</td>
+                    <td>${r.clockIn || '-'}</td>
+                    <td>${r.clockOut || '-'}</td>
+                </tr>`;
             });
-            html += '</table>';
+            html += '</tr>';
             container.innerHTML = html;
         }
         
@@ -1979,14 +1982,14 @@
             });
             let html = '<table class="attendance-history-table"><tr><th>Date</th>';
             employees.forEach(emp => { html += `<th>${emp.split(' ')[0]}</th>`; });
-            html += '</table>';
+            html += '<tr>';
             for (const [date, empData] of Object.entries(last7Days)) {
                 html += `<tr><td>${date}</td>`;
                 employees.forEach(emp => {
                     const worked = empData[emp] || 0;
                     html += `<td>${worked ? '✅' : '❌'}</td>`;
                 });
-                html += '<tr>';
+                html += '</tr>';
             }
             html += '</table>';
             document.getElementById('weeklySummary').innerHTML = html;
