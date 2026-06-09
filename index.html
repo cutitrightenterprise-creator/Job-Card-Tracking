@@ -1252,7 +1252,7 @@
             } else {
                 document.querySelector('.tab-btn:last-child').classList.add('active');
                 document.getElementById('attendanceTab').classList.add('active');
-                loadAttendanceData();
+                loadLocalAttendanceData();
             }
         }
         
@@ -1331,7 +1331,7 @@
             if (e.target === document.getElementById('paymentModal')) closePaymentModal();
         });
         
-        // ================= ATTENDANCE FUNCTIONS =================
+        // ================= ATTENDANCE FUNCTIONS (LOCAL STORAGE ONLY - BUTTONS ALWAYS WORK) =================
         
         function getTodayDate() {
             const today = new Date();
@@ -1343,85 +1343,51 @@
             return now.toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
         
-        async function loadAttendanceData() {
-            try {
-                const response = await fetch(ATTENDANCE_API_URL);
-                const csvText = await response.text();
-                const rows = csvText.split('\n').filter(row => row.trim() !== '');
-                
+        // Load from localStorage only - instant and reliable
+        function loadLocalAttendanceData() {
+            const saved = localStorage.getItem('cutitright_attendance');
+            if (saved) {
+                attendanceRecords = JSON.parse(saved);
+            } else {
                 attendanceRecords = [];
-                for (let i = 1; i < rows.length; i++) {
-                    const cols = parseCSVRow(rows[i]);
-                    if (cols.length >= 1 && cols[0]) {
-                        attendanceRecords.push({
-                            name: cols[0] || '',
-                            date: cols[1] || '',
-                            clockIn: cols[2] || '',
-                            clockOut: cols[3] || '',
-                            breakStart: cols[5] || '',
-                            breakEnd: cols[6] || ''
+            }
+            updateEmployeeStatus();
+            updateTodayHistory();
+            updateWeekHistory();
+            if (adminVerified) updateAdminDashboard();
+            
+            // Try to sync with Google Sheets in background (doesn't affect buttons)
+            syncToGoogleSheets();
+        }
+        
+        function saveLocalAttendanceData() {
+            localStorage.setItem('cutitright_attendance', JSON.stringify(attendanceRecords));
+        }
+        
+        // Background sync to Google Sheets - doesn't block or break buttons
+        async function syncToGoogleSheets() {
+            try {
+                const today = getTodayDate();
+                const todayRecords = attendanceRecords.filter(r => r.date === today);
+                
+                for (const record of todayRecords) {
+                    if (record.needsSync) {
+                        await fetch(ATTENDANCE_API_URL, {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                name: record.name,
+                                action: record.lastAction,
+                                timestamp: new Date().toISOString()
+                            })
                         });
+                        record.needsSync = false;
                     }
                 }
-                
-                updateEmployeeStatus();
-                updateTodayHistory();
-                updateWeekHistory();
-                if (adminVerified) updateAdminDashboard();
+                saveLocalAttendanceData();
             } catch (error) {
-                console.error('Error loading attendance:', error);
-                // Fallback to localStorage if sheet fails
-                const saved = localStorage.getItem('cutitright_attendance');
-                attendanceRecords = saved ? JSON.parse(saved) : [];
-                updateEmployeeStatus();
-                updateTodayHistory();
-                updateWeekHistory();
-            }
-        }
-        
-        function parseCSVRow(row) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
-            for (let i = 0; i < row.length; i++) {
-                const char = row[i];
-                if (char === '"' && inQuotes && row[i+1] === '"') {
-                    current += '"';
-                    i++;
-                } else if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    result.push(current);
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            result.push(current);
-            return result;
-        }
-        
-        async function saveToSheet(action) {
-            const select = document.getElementById('employeeSelect');
-            const currentEmployee = select.value;
-            
-            if (!currentEmployee) return false;
-            
-            try {
-                const response = await fetch(ATTENDANCE_API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name: currentEmployee,
-                        action: action,
-                        timestamp: new Date().toISOString()
-                    })
-                });
-                return true;
-            } catch (error) {
-                console.error('Error saving to sheet:', error);
-                return false;
+                console.log('Background sync failed - data saved locally only');
             }
         }
         
@@ -1532,7 +1498,7 @@
             container.innerHTML = html;
         }
         
-        async function clockIn() {
+        function clockIn() {
             const select = document.getElementById('employeeSelect');
             const currentEmployee = select.value;
             
@@ -1541,13 +1507,40 @@
                 return;
             }
             
-            showAttendanceMsg(`⏰ Clocking in ${currentEmployee}...`, 'success');
-            await saveToSheet('clockin');
+            const today = getTodayDate();
+            const existingRecord = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
+            
+            if (existingRecord && existingRecord.clockIn && !existingRecord.clockOut) {
+                showAttendanceMsg('You are already clocked in today!', 'error');
+                return;
+            }
+            
+            if (existingRecord) {
+                existingRecord.clockIn = getCurrentTime();
+                existingRecord.clockOut = null;
+                existingRecord.breakStart = null;
+                existingRecord.breakEnd = null;
+                existingRecord.lastAction = 'clockin';
+                existingRecord.needsSync = true;
+            } else {
+                attendanceRecords.push({
+                    name: currentEmployee,
+                    date: today,
+                    clockIn: getCurrentTime(),
+                    clockOut: null,
+                    breakStart: null,
+                    breakEnd: null,
+                    lastAction: 'clockin',
+                    needsSync: true
+                });
+            }
+            
+            saveLocalAttendanceData();
             showAttendanceMsg(`✅ ${currentEmployee} clocked in at ${getCurrentTime()}`, 'success');
-            await loadAttendanceData();
+            loadLocalAttendanceData(); // Refresh UI instantly
         }
         
-        async function clockOut() {
+        function clockOut() {
             const select = document.getElementById('employeeSelect');
             const currentEmployee = select.value;
             
@@ -1556,34 +1549,84 @@
                 return;
             }
             
-            showAttendanceMsg(`⏰ Clocking out ${currentEmployee}...`, 'success');
-            await saveToSheet('clockout');
+            const today = getTodayDate();
+            const record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
+            
+            if (!record || !record.clockIn) {
+                showAttendanceMsg('No clock in record found for today', 'error');
+                return;
+            }
+            
+            if (record.clockOut) {
+                showAttendanceMsg('You already clocked out today', 'error');
+                return;
+            }
+            
+            record.clockOut = getCurrentTime();
+            record.lastAction = 'clockout';
+            record.needsSync = true;
+            saveLocalAttendanceData();
             showAttendanceMsg(`✅ ${currentEmployee} clocked out at ${getCurrentTime()}`, 'success');
-            await loadAttendanceData();
+            loadLocalAttendanceData(); // Refresh UI instantly
         }
         
-        async function breakStart() {
+        function breakStart() {
             const select = document.getElementById('employeeSelect');
             const currentEmployee = select.value;
             
             if (!currentEmployee) return;
             
-            showAttendanceMsg(`☕ ${currentEmployee} starting break...`, 'success');
-            await saveToSheet('breakstart');
+            const today = getTodayDate();
+            const record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
+            
+            if (!record || !record.clockIn) {
+                showAttendanceMsg('You need to clock in first', 'error');
+                return;
+            }
+            
+            if (record.clockOut) {
+                showAttendanceMsg('You already clocked out today', 'error');
+                return;
+            }
+            
+            if (record.breakStart && !record.breakEnd) {
+                showAttendanceMsg('You are already on break', 'error');
+                return;
+            }
+            
+            record.breakStart = getCurrentTime();
+            record.lastAction = 'breakstart';
+            record.needsSync = true;
+            saveLocalAttendanceData();
             showAttendanceMsg(`☕ Break started at ${getCurrentTime()}`, 'success');
-            await loadAttendanceData();
+            loadLocalAttendanceData(); // Refresh UI instantly
         }
         
-        async function breakEnd() {
+        function breakEnd() {
             const select = document.getElementById('employeeSelect');
             const currentEmployee = select.value;
             
             if (!currentEmployee) return;
             
-            showAttendanceMsg(`✅ ${currentEmployee} ending break...`, 'success');
-            await saveToSheet('breakend');
+            const today = getTodayDate();
+            const record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
+            
+            if (!record || !record.breakStart) {
+                showAttendanceMsg('No break started found', 'error');
+                return;
+            }
+            
+            if (record.breakEnd) {
+                showAttendanceMsg('Break already ended', 'error');
+                return;
+            }
+            
+            record.breakEnd = getCurrentTime();
+            record.lastAction = 'breakend';
+            record.needsSync = true;
+            saveLocalAttendanceData();
             showAttendanceMsg(`✅ Break ended at ${getCurrentTime()}`, 'success');
-            await loadAttendanceData();
+            loadLocalAttendanceData(); // Refresh UI instantly
         }
         
         function showAttendanceMsg(msg, type) {
@@ -1683,7 +1726,7 @@
                 }
             });
             
-            let html = '<table class="attendance-history-table"><table><th>Date</th>';
+            let html = '<table class="attendance-history-table"><tr><th>Date</th>';
             employees.forEach(emp => { html += `<th>${emp.split(' ')[0]}</th>`; });
             html += '</tr>';
             
@@ -1718,11 +1761,11 @@
         window.addEventListener('DOMContentLoaded', function() {
             loadJobData();
             loadFinancialData();
-            loadAttendanceData();
+            loadLocalAttendanceData();
             
             // Set up button event listeners
             document.getElementById('employeeSelect').addEventListener('change', function() {
-                loadAttendanceData();
+                loadLocalAttendanceData();
             });
             
             document.getElementById('clockInBtn').onclick = clockIn;
