@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cut It Right Website</title>
+    <title>Cut It Right - Complete Workshop System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔧%3C/text%3E%3C/svg%3E">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); min-height: 100vh; padding: 20px; }
@@ -16,27 +17,30 @@
         .tagline { color: rgba(255,255,255,0.95); font-size: 14px; margin-top: 8px; }
         .content { padding: 24px; }
         .tabs { display: flex; gap: 12px; margin-bottom: 24px; background: #f1f5f9; padding: 6px; border-radius: 60px; }
-        .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; font-weight: 600; font-size: 14px; cursor: pointer; border-radius: 40px; color: #64748b; }
+        .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; font-weight: 600; font-size: 14px; cursor: pointer; border-radius: 40px; color: #64748b; transition: all 0.2s ease; }
         .tab-btn i { margin-right: 8px; }
-        .tab-btn.active { background: white; color: #65a30d; }
-        .tab-content { display: none; }
+        .tab-btn.active { background: white; color: #65a30d; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
-        .modern-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .modern-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
         .card-title { font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; }
         .card-title i { color: #65a30d; }
-        input, select { width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 15px; background: #f8fafc; }
-        input:focus { outline: none; border-color: #a3e635; }
-        .btn { padding: 14px 20px; border: none; border-radius: 16px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; }
+        input, select { width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 16px; font-size: 15px; background: #f8fafc; transition: all 0.2s; }
+        input:focus { outline: none; border-color: #a3e635; box-shadow: 0 0 0 3px rgba(163,230,53,0.2); }
+        .btn { padding: 14px 20px; border: none; border-radius: 16px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; transition: transform 0.1s ease, box-shadow 0.2s; }
+        .btn:active { transform: scale(0.98); }
         .btn-primary { background: linear-gradient(135deg, #a3e635, #65a30d); color: white; }
         .btn-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
         .btn-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
         .btn-orange { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
+        .btn-admin-edit { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
         .product-grid { display: flex; flex-direction: column; gap: 12px; max-height: 500px; overflow-y: auto; padding-right: 4px; }
         .product-grid::-webkit-scrollbar { width: 6px; }
         .product-grid::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
         .product-grid::-webkit-scrollbar-thumb { background: #a3e635; border-radius: 10px; }
         .product-item { background: #f8fafc; border-radius: 16px; padding: 12px; border: 1px solid #e2e8f0; transition: all 0.3s ease; }
-        .product-item:hover { border-color: #a3e635; background: white; }
+        .product-item:hover { border-color: #a3e635; background: white; transform: translateY(-2px); }
         .product-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 6px; }
         .product-name { font-weight: 700; color: #1e293b; font-size: 13px; }
         .product-code { font-size: 10px; color: #94a3b8; margin-top: 2px; }
@@ -54,9 +58,6 @@
         .cart-total { margin-top: 12px; padding-top: 12px; border-top: 2px solid #e2e8f0; text-align: right; font-weight: 800; font-size: 16px; }
         .checkout-btn { width: 100%; margin-top: 12px; padding: 12px; background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; border-radius: 40px; font-weight: 700; cursor: pointer; }
         .clear-cart-btn { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 40px; font-size: 11px; cursor: pointer; margin-top: 8px; width: 100%; }
-        .pin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 20000; justify-content: center; align-items: center; }
-        .pin-modal-content { background: white; border-radius: 32px; width: 90%; max-width: 350px; padding: 32px; text-align: center; }
-        .pin-modal-content input { text-align: center; font-size: 20px; letter-spacing: 4px; margin-bottom: 24px; }
         .footer { background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0; }
         .contact-info { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
         .contact-item { display: flex; align-items: center; gap: 6px; color: #64748b; text-decoration: none; font-size: 12px; padding: 6px 12px; background: white; border-radius: 40px; border: 1px solid #e2e8f0; }
@@ -75,794 +76,263 @@
         .stat-label { font-size: 12px; color: #4d7c0f; font-weight: 600; }
         .clocked-list { max-height: 200px; overflow-y: auto; }
         .clocked-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #e2e8f0; }
-        .finance-card { background: #dbeafe; border-radius: 16px; border: 2px solid #3b82f6; padding: 20px; margin-bottom: 20px; display: none; }
+        .finance-card { background: linear-gradient(135deg, #dbeafe, #eff6ff); border-radius: 24px; border: 2px solid #3b82f6; padding: 20px; margin-top: 20px; transition: all 0.3s; }
         .finance-details { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .finance-item { margin-bottom: 10px; }
-        .finance-label { font-size: 12px; color: #64748b; font-weight: 600; }
+        .finance-label { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .finance-value { font-size: 16px; font-weight: 800; color: #1e293b; }
-        @media (max-width: 480px) {
-            body { padding: 16px; }
-            .content { padding: 16px; }
-            .product-name { font-size: 12px; }
-            .finance-details { grid-template-columns: 1fr; }
+        .modern-popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+            z-index: 30000; display: none; justify-content: center; align-items: center; font-family: 'Inter', sans-serif;
         }
+        .modern-popup {
+            background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(10px); border-radius: 48px; width: 90%; max-width: 400px;
+            padding: 32px 28px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255,255,255,0.5); animation: popupSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes popupSlide { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .popup-icon { width: 70px; height: 70px; background: linear-gradient(135deg, #a3e635, #65a30d); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 8px 20px rgba(101, 163, 13, 0.3); }
+        .popup-icon i { font-size: 32px; color: white; }
+        .modern-popup h3 { font-size: 26px; font-weight: 800; background: linear-gradient(135deg, #1e293b, #334155); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px; }
+        .popup-sub { color: #64748b; font-size: 14px; margin-bottom: 28px; }
+        .popup-input-group { margin-bottom: 28px; text-align: left; }
+        .popup-input-group label { font-size: 13px; font-weight: 600; color: #334155; display: block; margin-bottom: 8px; margin-left: 6px; }
+        .popup-input-group input { width: 100%; padding: 16px 20px; border: 2px solid #e2e8f0; border-radius: 60px; font-size: 16px; background: #ffffff; transition: all 0.2s; font-weight: 500; }
+        .popup-input-group input:focus { border-color: #a3e635; box-shadow: 0 0 0 4px rgba(163,230,53,0.2); outline: none; }
+        .popup-buttons { display: flex; gap: 12px; justify-content: center; }
+        .popup-btn { padding: 12px 20px; border-radius: 40px; font-weight: 700; border: none; cursor: pointer; font-size: 15px; transition: all 0.2s; flex: 1; }
+        .popup-btn-primary { background: linear-gradient(135deg, #a3e635, #65a30d); color: white; box-shadow: 0 4px 12px rgba(101, 163, 13, 0.3); }
+        .popup-btn-secondary { background: #f1f5f9; color: #475569; }
+        .pin-protect-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); z-index: 31000; display: none; justify-content: center; align-items: center; }
+        .pin-protect-card { background: white; border-radius: 48px; width: 90%; max-width: 340px; padding: 32px 24px; text-align: center; animation: popupSlide 0.3s ease; }
+        .pin-protect-card i { font-size: 56px; color: #f59e0b; margin-bottom: 16px; }
+        .pin-protect-card h4 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+        .pin-input-field { width: 100%; padding: 16px; text-align: center; font-size: 24px; letter-spacing: 8px; border: 2px solid #e2e8f0; border-radius: 60px; margin-bottom: 20px; font-weight: bold; }
+        .pin-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
+        @media (max-width: 480px) { body { padding: 16px; } .content { padding: 16px; } .finance-details { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="glass-card">
-            <div class="header">
-                <div class="logo-icon"><i class="fas fa-tools"></i></div>
-                <div class="logo-text">CUT IT RIGHT</div>
-                <div class="tagline">LAWNMOWER & BRUSHCUTTER REPAIR SHOP</div>
+<div class="container">
+    <div class="glass-card">
+        <div class="header"><div class="logo-icon"><i class="fas fa-tools"></i></div><div class="logo-text">CUT IT RIGHT</div><div class="tagline">LAWNMOWER & BRUSHCUTTER REPAIR SHOP</div></div>
+        <div class="content">
+            <div class="tabs">
+                <button class="tab-btn active" id="jobTabBtn"><i class="fas fa-search"></i> Job Status</button>
+                <button class="tab-btn" id="attendanceTabBtn"><i class="fas fa-clock"></i> Attendance</button>
+                <button class="tab-btn" id="shopTabBtn"><i class="fas fa-shopping-cart"></i> Shop</button>
             </div>
             
-            <div class="content">
-                <div class="tabs">
-                    <button class="tab-btn active" id="jobTabBtn"><i class="fas fa-search"></i> Job Status</button>
-                    <button class="tab-btn" id="attendanceTabBtn"><i class="fas fa-clock"></i> Attendance</button>
-                    <button class="tab-btn" id="shopTabBtn"><i class="fas fa-shopping-cart"></i> Shop</button>
-                </div>
-                
-                <!-- JOB STATUS TAB (ACTIVE BY DEFAULT) -->
-                <div id="jobTab" class="tab-content active">
-                    <div class="modern-card">
-                        <div class="card-title"><i class="fas fa-search"></i> Track Your Repair</div>
-                        <input type="text" id="jobNumber" placeholder="Enter job number (e.g., J1001)" oninput="this.value = this.value.toUpperCase()">
-                        <button class="btn btn-primary" id="searchJobBtn" style="margin-top: 16px;"><i class="fas fa-search"></i> Search Status</button>
-                        
-                        <div class="btn-group" style="display: flex; gap: 12px; margin-top: 16px;">
-                            <button class="btn btn-blue" id="financialStatementBtn"><i class="fas fa-file-invoice-dollar"></i> Statement</button>
-                            <button class="btn btn-purple" id="editJobBtn"><i class="fas fa-edit"></i> Edit Jobs</button>
-                        </div>
-                        
-                        <button class="btn btn-orange" id="cashReportBtn" style="margin-top: 12px;"><i class="fas fa-money-bill-wave"></i> Cash Report</button>
-                        
-                        <!-- FINANCIAL STATEMENT RESULT CARD -->
-                        <div id="financeResult" class="finance-card" style="display: none; margin-top: 20px;">
-                            <div class="card-title" style="border-bottom-color: #3b82f6;"><i class="fas fa-file-invoice-dollar"></i> Financial Statement</div>
-                            <div class="finance-details">
-                                <div class="finance-item">
-                                    <div class="finance-label">Customer Name</div>
-                                    <div class="finance-value" id="financeName">-</div>
-                                </div>
-                                <div class="finance-item">
-                                    <div class="finance-label">Loan Amount</div>
-                                    <div class="finance-value" id="financeLoanAmount">-</div>
-                                </div>
-                                <div class="finance-item">
-                                    <div class="finance-label">Interest Rate</div>
-                                    <div class="finance-value" id="financeInterest">-</div>
-                                </div>
-                                <div class="finance-item">
-                                    <div class="finance-label">Next Payment Due</div>
-                                    <div class="finance-value" id="financeNextPayment">-</div>
-                                </div>
-                                <div class="finance-item">
-                                    <div class="finance-label">Total Interest Due</div>
-                                    <div class="finance-value" id="financeTotalInterest">-</div>
-                                </div>
-                                <div class="finance-item">
-                                    <div class="finance-label">Loan Status</div>
-                                    <div class="finance-value" id="financeStatus">-</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- JOB RESULT CARD -->
-                        <div id="jobResult" style="display:none; margin-top: 20px; background: #f8fafc; border-radius: 20px; padding: 20px;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;">
-                                <span style="font-weight: 800; font-size: 18px; color: #1e293b;" id="resultJobNumber">-</span>
-                                <span style="background: #dcfce7; color: #166534; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 700;" id="statusBadge">-</span>
-                            </div>
-                            <div style="margin-bottom: 12px;">
-                                <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">Repair Status</div>
-                                <div style="font-size: 16px; font-weight: 700; color: #1e293b;" id="resultStatus">-</div>
-                            </div>
-                            <div style="margin-bottom: 12px;">
-                                <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">Quotation</div>
-                                <div style="font-size: 20px; font-weight: 800; color: #65a30d;" id="resultPrice">-</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">Last Updated</div>
-                                <div style="font-size: 14px; font-weight: 500; color: #64748b;" id="resultDate">-</div>
-                            </div>
-                        </div>
-                        
-                        <button class="btn btn-primary" id="payNowBtn" style="margin-top: 20px;"><i class="fas fa-credit-card"></i> Pay Now</button>
+            <div id="jobTab" class="tab-content active">
+                <div class="modern-card">
+                    <div class="card-title"><i class="fas fa-search"></i> Track Your Repair</div>
+                    <input type="text" id="jobNumber" placeholder="Enter job number (e.g., J1001)" oninput="this.value = this.value.toUpperCase()">
+                    <button class="btn btn-primary" id="searchJobBtn" style="margin-top: 16px;"><i class="fas fa-search"></i> Search Status</button>
+                    
+                    <div class="btn-group" style="display: flex; gap: 12px; margin-top: 16px;">
+                        <button class="btn btn-blue" id="modernStatementBtn"><i class="fas fa-file-invoice-dollar"></i> Statement</button>
+                        <button class="btn btn-purple" id="editJobBtn"><i class="fas fa-edit"></i> Edit Jobs</button>
                     </div>
-                </div>
-                
-                <!-- ATTENDANCE TAB -->
-                <div id="attendanceTab" class="tab-content">
-                    <div id="attendanceMsg" class="success-msg"></div>
-                    <div class="modern-card">
-                        <div class="card-title"><i class="fas fa-users"></i> Employee Attendance</div>
-                        <button class="btn btn-purple" id="unlockEmployeeBtn"><i class="fas fa-lock"></i> Unlock Employee List</button>
-                        <div id="employeeSection" style="display:none; margin-top: 16px;">
-                            <select id="employeeSelect">
-                                <option value="">-- Select Name --</option>
-                                <option value="Lisakhanya Mei">Lisakhanya Mei</option>
-                                <option value="Nkululeko Adonisi">Nkululeko Adonisi</option>
-                                <option value="Mei Mziwovuyo">Mei Mziwovuyo</option>
-                            </select>
-                            <div id="statusDisplay" class="status-badge status-off">❌ NOT CLOCKED IN</div>
-                            <div class="btn-group" style="display: flex; gap: 12px;">
-                                <button class="btn btn-primary" id="clockInBtn" style="flex:1">Clock In</button>
-                                <button class="btn btn-primary" id="clockOutBtn" style="flex:1" disabled>Clock Out</button>
-                            </div>
-                            <div class="btn-group" style="display: flex; gap: 12px; margin-top: 12px;">
-                                <button class="btn btn-primary" id="breakStartBtn" style="flex:1" disabled>Break Start</button>
-                                <button class="btn btn-primary" id="breakEndBtn" style="flex:1" disabled>Break End</button>
-                            </div>
+                    
+                    <button class="btn btn-orange" id="cashReportBtn" style="margin-top: 12px;"><i class="fas fa-money-bill-wave"></i> Cash Report</button>
+                    <button class="btn btn-admin-edit" id="adminEditStatementBtn" style="margin-top: 12px;"><i class="fas fa-shield-alt"></i> Admin Edit Statement</button>
+                    
+                    <div id="financeResult" class="finance-card" style="display: none; margin-top: 20px;">
+                        <div class="card-title" style="border-bottom-color:#3b82f6;"><i class="fas fa-chart-line"></i> Financial Statement</div>
+                        <div class="finance-details">
+                            <div class="finance-item"><div class="finance-label">Customer Name</div><div class="finance-value" id="financeName">-</div></div>
+                            <div class="finance-item"><div class="finance-label">Loan Amount</div><div class="finance-value" id="financeLoanAmount">-</div></div>
+                            <div class="finance-item"><div class="finance-label">Interest Rate</div><div class="finance-value" id="financeInterest">-</div></div>
+                            <div class="finance-item"><div class="finance-label">Total to Pay</div><div class="finance-value" id="financeTotalToPay">-</div></div>
+                            <div class="finance-item"><div class="finance-label">Total Interest Due</div><div class="finance-value" id="financeTotalInterest">-</div></div>
+                            <div class="finance-item"><div class="finance-label">Loan Status</div><div class="finance-value" id="financeStatus">-</div></div>
                         </div>
                     </div>
                     
-                    <div class="modern-card">
-                        <div class="card-title"><i class="fas fa-history"></i> Today's Activity</div>
-                        <div id="todayHistory">Unlock employee list to view activity</div>
+                    <div id="jobResult" style="display:none; margin-top:20px; background:#f8fafc; border-radius:20px; padding:20px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><span style="font-weight:800;" id="resultJobNumber">-</span><span id="statusBadge" style="background:#dcfce7; padding:5px 15px; border-radius:20px;"></span></div>
+                        <div><div style="font-size:12px; color:#64748b;">Repair Status</div><div style="font-weight:700;" id="resultStatus">-</div></div>
+                        <div><div style="font-size:12px; color:#64748b;">Quotation</div><div style="font-size:20px; font-weight:800; color:#65a30d;" id="resultPrice">-</div></div>
+                        <div><div style="font-size:12px; color:#64748b;">Last Updated</div><div id="resultDate">-</div></div>
                     </div>
-                    
-                    <div class="modern-card">
-                        <div class="card-title"><i class="fas fa-calendar-week"></i> Last 7 Days</div>
-                        <div id="weekHistory">Unlock employee list to view history</div>
-                    </div>
-                    
-                    <div class="modern-card">
-                        <div class="admin-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" id="adminHeader">
-                            <div class="card-title" style="border: none; margin: 0;"><i class="fas fa-chart-line"></i> Manager Dashboard</div>
-                            <i class="fas fa-chevron-down" id="adminToggleIcon"></i>
-                        </div>
-                        <div id="adminContent" style="display: none; margin-top: 16px;">
-                            <div class="pin-input" style="display: flex; gap: 10px; margin-bottom: 16px;">
-                                <input type="password" id="adminPin" placeholder="PIN (1234)" maxlength="4">
-                                <button class="btn btn-purple" id="verifyAdminBtn" style="width: auto; padding: 14px 20px;">Unlock</button>
-                            </div>
-                            <div id="adminDashboard" style="display: none;">
-                                <div class="stats-grid" id="statsGrid"></div>
-                                <div class="card-title"><i class="fas fa-users"></i> Currently Clocked In</div>
-                                <div id="clockedInList" class="clocked-list"></div>
-                                <button class="btn btn-purple" id="exportCsvBtn" style="margin-top: 16px;"><i class="fas fa-download"></i> Export to CSV</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- SHOP TAB -->
-                <div id="shopTab" class="tab-content">
-                    <div id="shopMsg" class="success-msg"></div>
-                    
-                    <div class="modern-card">
-                        <div class="card-title"><i class="fas fa-store"></i> Products & Parts</div>
-                        <div class="search-input">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="productSearch" placeholder="Search by name or code...">
-                        </div>
-                        <div id="productsContainer" class="product-grid"></div>
-                    </div>
-                    
-                    <div class="modern-card">
-                        <div class="card-title"><i class="fas fa-shopping-cart"></i> Cart</div>
-                        <div id="cartContainer"><div style="text-align: center; padding: 20px;">Cart empty</div></div>
-                        <div id="cartTotal" style="display:none;" class="cart-total"></div>
-                        <button id="checkoutBtn" class="checkout-btn" style="display:none;"><i class="fas fa-credit-card"></i> Checkout</button>
-                        <button id="clearCartBtn" class="clear-cart-btn" style="display:none;"><i class="fas fa-trash"></i> Clear</button>
-                    </div>
+                    <button class="btn btn-primary" id="payNowBtn" style="margin-top:20px;"><i class="fas fa-credit-card"></i> Pay Now</button>
                 </div>
             </div>
             
-            <div class="footer">
-                <div class="contact-info">
-                    <a href="tel:0430650097" class="contact-item"><i class="fas fa-phone-alt"></i> 043 065 0097</a>
-                    <a href="mailto:cutitright.info@gmail.com" class="contact-item"><i class="fas fa-envelope"></i> cutitright.info@gmail.com</a>
-                </div>
-            </div>
+            <div id="attendanceTab" class="tab-content"><div id="attendanceMsg" class="success-msg"></div><div class="modern-card"><div class="card-title"><i class="fas fa-users"></i> Employee Attendance</div><button class="btn btn-purple" id="unlockEmployeeBtn"><i class="fas fa-lock"></i> Unlock Employee List</button><div id="employeeSection" style="display:none; margin-top:16px;"><select id="employeeSelect"><option value="">-- Select Name --</option><option value="Lisakhanya Mei">Lisakhanya Mei</option><option value="Nkululeko Adonisi">Nkululeko Adonisi</option><option value="Mei Mziwovuyo">Mei Mziwovuyo</option></select><div id="statusDisplay" class="status-badge status-off">❌ NOT CLOCKED IN</div><div class="btn-group" style="display:flex; gap:12px;"><button class="btn btn-primary" id="clockInBtn" style="flex:1">Clock In</button><button class="btn btn-primary" id="clockOutBtn" style="flex:1" disabled>Clock Out</button></div><div class="btn-group" style="display:flex; gap:12px; margin-top:12px;"><button class="btn btn-primary" id="breakStartBtn" style="flex:1" disabled>Break Start</button><button class="btn btn-primary" id="breakEndBtn" style="flex:1" disabled>Break End</button></div></div></div><div class="modern-card"><div class="card-title"><i class="fas fa-history"></i> Today's Activity</div><div id="todayHistory">Unlock employee list to view activity</div></div><div class="modern-card"><div class="card-title"><i class="fas fa-calendar-week"></i> Last 7 Days</div><div id="weekHistory">Unlock employee list to view history</div></div><div class="modern-card"><div class="admin-header" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" id="adminHeader"><div class="card-title" style="border:none;"><i class="fas fa-chart-line"></i> Manager Dashboard</div><i class="fas fa-chevron-down" id="adminToggleIcon"></i></div><div id="adminContent" style="display:none;"><div style="display:flex; gap:10px; margin-bottom:16px;"><input type="password" id="adminPin" placeholder="PIN (1234)" maxlength="4"><button class="btn btn-purple" id="verifyAdminBtn" style="width:auto;">Unlock</button></div><div id="adminDashboard" style="display:none;"><div class="stats-grid" id="statsGrid"></div><div class="card-title"><i class="fas fa-users"></i> Currently Clocked In</div><div id="clockedInList" class="clocked-list"></div><button class="btn btn-purple" id="exportCsvBtn" style="margin-top:16px;"><i class="fas fa-download"></i> Export to CSV</button></div></div></div></div>
+            
+            <div id="shopTab" class="tab-content"><div id="shopMsg" class="success-msg"></div><div class="modern-card"><div class="card-title"><i class="fas fa-store"></i> Products & Parts</div><div class="search-input"><i class="fas fa-search"></i><input type="text" id="productSearch" placeholder="Search by name or code..."></div><div id="productsContainer" class="product-grid"></div></div><div class="modern-card"><div class="card-title"><i class="fas fa-shopping-cart"></i> Cart</div><div id="cartContainer"><div style="text-align:center; padding:20px;">Cart empty</div></div><div id="cartTotal" style="display:none;" class="cart-total"></div><button id="checkoutBtn" class="checkout-btn" style="display:none;"><i class="fas fa-credit-card"></i> Checkout</button><button id="clearCartBtn" class="clear-cart-btn" style="display:none;"><i class="fas fa-trash"></i> Clear</button></div></div>
         </div>
+        <div class="footer"><div class="contact-info"><a href="tel:0430650097" class="contact-item"><i class="fas fa-phone-alt"></i> 043 065 0097</a><a href="mailto:cutitright.info@gmail.com" class="contact-item"><i class="fas fa-envelope"></i> cutitright.info@gmail.com</a></div></div>
     </div>
-    
-    <div class="pin-modal" id="pinModal">
-        <div class="pin-modal-content">
-            <i class="fas fa-lock" style="font-size: 48px; color: #65a30d;"></i>
-            <h3>Enter PIN</h3>
-            <input type="password" id="pinInput" placeholder="••••" maxlength="4">
-            <button class="btn btn-primary" id="verifyPinBtn">Verify</button>
-            <div id="pinError" style="color: #dc2626; margin-top: 16px; display: none;">Wrong PIN</div>
-        </div>
-    </div>
+</div>
 
-    <script>
-        const MASTER_PIN = '6263';
-        const ADMIN_PIN = '1234';
-        const PAYMENT_URL = 'https://pay.yoco.com/cut-it-right-enterprise-pty-ltd';
-        const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
-        
-        // ================= PRODUCTS =================
-        const products = [
-            { code: "131RCB", name: "131R CRANK BEARINGS (SET)", price: 180 },
-            { code: "131RCK", name: "131R CYLINDER KIT", price: 950 },
-            { code: "143RHBC", name: "143R HUSKY BRUSH CUTTER", price: 3913.04 },
-            { code: "143RBC", name: "143R INSIKA BRUSH CUTTER", price: 3800 },
-            { code: "IMO4", name: "143R INSIKA BRUSH CUTTER MOTOR ONLY", price: 2500 },
-            { code: "40RCS1", name: "40CC RYOBI CHAINSAW", price: 1600 },
-            { code: "52HCS", name: "52CC HUSKY CHAINSAW", price: 3200 },
-            { code: "MS250CSS", name: "MS250 CHAINSAW STIHL", price: 5660 },
-            { code: "CHAIN-S", name: "CHAIN SHARPENING PER LINK", price: 2 },
-            { code: "PR1", name: "PULL START ROPE (1M)", price: 10 },
-            { code: "LPS1", name: "LOSE PRE-CUT STRINGS", price: 1 },
-            { code: "NMM", name: "NYLON LINE IN METERS", price: 2 },
-            { code: "2STKS2", name: "STIHL 2-STROKE OIL (100ML)", price: 45 },
-            { code: "SPG1", name: "SPARK PLUG - BM6A (NGK)", price: 60 },
-            { code: "LB", name: "GENERAL LABOUR PER HOUR", price: 220 },
-            { code: "STRIP&CHECK", name: "STRIP & CHECK ASSESSMENT FEE", price: 0 },
-        ];
-        
-        let cart = [];
-        let searchTerm = '';
-        let allFinancialStatements = {};
-        
-        // ================= ATTENDANCE =================
-        let attendanceRecords = [];
-        let currentEmployee = '';
-        let employeeListUnlocked = false;
-        let adminVerified = false;
-        let pendingAction = null;
-        
-        function getTodayDate() { return new Date().toISOString().split('T')[0]; }
-        function getCurrentTime() { return new Date().toLocaleTimeString('en-ZA'); }
-        
-        // ================= FINANCIAL STATEMENT FUNCTIONS =================
-        function parseFinancialNumber(value) {
-            if (!value && value !== 0) return 0;
-            if (typeof value === 'string') {
-                return parseFloat(value.replace(/[^0-9.-]+/g, ""));
-            }
-            return parseFloat(value);
-        }
-        
-        function formatPrice(value) {
-            if (!value && value !== 0) return 'R 0.00';
-            const num = parseFinancialNumber(value);
-            if (isNaN(num)) return 'R 0.00';
-            return 'R ' + num.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-        
-        function parseCSVRow(row) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
-            for (let i = 0; i < row.length; i++) {
-                const char = row[i];
-                const nextChar = row[i + 1];
-                if (char === '"' && inQuotes && nextChar === '"') {
-                    current += '"';
-                    i++;
-                } else if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    result.push(current);
-                    current = '';
-                } else {
-                    current += char;
+<div id="modernNamePopup" class="modern-popup-overlay"><div class="modern-popup"><div class="popup-icon"><i class="fas fa-user-edit"></i></div><h3>Your Financial Statement</h3><div class="popup-sub">Please enter your full name to access your loan details</div><div class="popup-input-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="popupCustomerName" placeholder="e.g. John Doe" autocomplete="off"></div><div class="popup-buttons"><button class="popup-btn popup-btn-secondary" id="closePopupBtn">Cancel</button><button class="popup-btn popup-btn-primary" id="submitNameBtn">View Statement <i class="fas fa-arrow-right"></i></button></div></div></div>
+
+<div id="adminPinModal" class="pin-protect-modal"><div class="pin-protect-card"><i class="fas fa-lock"></i><h4>Admin Verification</h4><p>Enter master PIN to access</p><input type="password" id="adminEditPinInput" class="pin-input-field" placeholder="••••" maxlength="4" autocomplete="off"><button class="btn btn-admin-edit" id="verifyAdminEditPinBtn">Verify & Continue</button><div id="adminPinError" class="pin-error">❌ Incorrect PIN. Access denied.</div></div></div>
+
+<script>
+    const MASTER_PIN = '6263';
+    const ADMIN_PIN = '1234';
+    const PAYMENT_URL = 'https://pay.yoco.com/cut-it-right-enterprise-pty-ltd';
+    const FINANCE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMmjCBAXSfSvyfrduRAtvX4ReTeCss_ecY_amp13HTw0uSs8ld1XJh4FHDh4GDj-jFA2NRpApbnpK-/pub?gid=0&single=true&output=csv';
+    const EDIT_SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1tQdx4DItKR5GjbmYVlFHKIdqvyOZOPE_gUuQcxjSzP4/edit?usp=sharing';
+    const JOBS_EDIT_URL = 'https://docs.google.com/spreadsheets/d/18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo/edit?usp=sharing';
+    const CASH_REPORT_URL = 'https://docs.google.com/spreadsheets/d/1f52fhwbgbWkH3TTRkW0PZTWqjS46KUwX/edit?usp=sharing';
+    
+    let allFinancialStatements = {};
+    let products = [
+        { code: "131RCB", name: "131R CRANK BEARINGS (SET)", price: 180 }, { code: "131RCK", name: "131R CYLINDER KIT", price: 950 }, { code: "143RHBC", name: "143R HUSKY BRUSH CUTTER", price: 3913.04 }, { code: "143RBC", name: "143R INSIKA BRUSH CUTTER", price: 3800 }, { code: "IMO4", name: "143R INSIKA BRUSH CUTTER MOTOR ONLY", price: 2500 }, { code: "40RCS1", name: "40CC RYOBI CHAINSAW", price: 1600 }, { code: "52HCS", name: "52CC HUSKY CHAINSAW", price: 3200 }, { code: "MS250CSS", name: "MS250 CHAINSAW STIHL", price: 5660 }, { code: "CHAIN-S", name: "CHAIN SHARPENING PER LINK", price: 2 }, { code: "PR1", name: "PULL START ROPE (1M)", price: 10 }, { code: "LPS1", name: "LOSE PRE-CUT STRINGS", price: 1 }, { code: "NMM", name: "NYLON LINE IN METERS", price: 2 }, { code: "2STKS2", name: "STIHL 2-STROKE OIL (100ML)", price: 45 }, { code: "SPG1", name: "SPARK PLUG - BM6A (NGK)", price: 60 }, { code: "LB", name: "GENERAL LABOUR PER HOUR", price: 220 }, { code: "STRIP&CHECK", name: "STRIP & CHECK ASSESSMENT FEE", price: 0 }
+    ];
+    let cart = [], searchTerm = '';
+    
+    function parseCSVRow(row) { let res=[], cur='', inQ=false; for(let i=0;i<row.length;i++){let c=row[i]; if(c==='"' && inQ && row[i+1]==='"'){cur+='"'; i++;} else if(c==='"') inQ=!inQ; else if(c===',' && !inQ){res.push(cur); cur='';} else cur+=c;} res.push(cur); return res; }
+    function parseFinancialNumber(v){ if(!v) return 0; return parseFloat(String(v).replace(/[^0-9.-]+/g,"")); }
+    function formatPrice(v){ let n=parseFinancialNumber(v); return 'R '+n.toLocaleString('en-ZA',{minimumFractionDigits:2}); }
+    
+    async function loadFinancialData() {
+        try {
+            const resp = await fetch(FINANCE_SHEET_URL);
+            if(!resp.ok) throw new Error();
+            const txt = await resp.text();
+            const rows = txt.split('\n').filter(r=>r.trim());
+            allFinancialStatements = {};
+            for(let i=1;i<rows.length;i++){
+                let cols = parseCSVRow(rows[i]);
+                if(cols[0]){
+                    let nameKey = cols[0].trim().toLowerCase();
+                    let loanAmountNum = parseFinancialNumber(cols[1]);
+                    let intRate = cols[2]||'0';
+                    let totalPayableNum = parseFinancialNumber(cols[3]||cols[1]);
+                    let status = cols[4]||'Active';
+                    let totalInterestNum = totalPayableNum - loanAmountNum;
+                    let cleanInterest = String(intRate).replace(/%/g, '');
+                    let interestDisplay = cleanInterest + '%';
+                    allFinancialStatements[nameKey] = { 
+                        customerName: cols[0], 
+                        loanAmount: formatPrice(loanAmountNum), 
+                        interest: interestDisplay, 
+                        totalToPay: formatPrice(totalPayableNum),
+                        totalInterest: formatPrice(totalInterestNum), 
+                        loanStatus: status 
+                    };
                 }
             }
-            result.push(current);
-            return result;
+            if(Object.keys(allFinancialStatements).length===0) throw new Error();
+        } catch(e){ 
+            allFinancialStatements = { 
+                'john doe': { 
+                    customerName:'John Doe', 
+                    loanAmount:'R 15000.00', 
+                    interest:'10%', 
+                    totalToPay:'R 18000.00', 
+                    totalInterest:'R 3000.00', 
+                    loanStatus:'Active' 
+                } 
+            }; 
         }
-        
-        async function loadFinancialData() {
-            try {
-                const response = await fetch(FINANCE_SHEET_URL);
-                if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-                const csvText = await response.text();
-                const rows = csvText.split('\n').filter(row => row.trim() !== '');
-                allFinancialStatements = {};
-                
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i];
-                    const columns = parseCSVRow(row);
-                    
-                    if (columns.length >= 1 && columns[0]) {
-                        const customerName = columns[0].trim().toLowerCase();
-                        const loanAmount = columns[1] || '0';
-                        const interestRate = columns[2] || '0';
-                        const totalPayable = columns[3] || loanAmount;
-                        const loanStatus = columns[4] || 'Active';
-                        const notes = columns[5] || '';
-                        
-                        const monthlyInterest = (parseFinancialNumber(loanAmount) * parseFinancialNumber(interestRate) / 100);
-                        const nextPayment = loanStatus.includes('overdue') ? monthlyInterest * 2 : monthlyInterest;
-                        const totalInterest = parseFinancialNumber(totalPayable) - parseFinancialNumber(loanAmount);
-                        
-                        allFinancialStatements[customerName] = {
-                            customerName: columns[0] || '',
-                            loanAmount: formatPrice(loanAmount),
-                            interest: interestRate + '%',
-                            totalPayable: formatPrice(totalPayable),
-                            loanStatus: loanStatus,
-                            notes: notes,
-                            nextPayment: formatPrice(nextPayment),
-                            totalInterest: formatPrice(totalInterest)
-                        };
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to load financial data:', error);
-                allFinancialStatements = {
-                    'john doe': {
-                        customerName: 'John Doe',
-                        loanAmount: formatPrice(15000),
-                        interest: '10%',
-                        totalPayable: formatPrice(18000),
-                        loanStatus: 'Active',
-                        notes: '',
-                        nextPayment: formatPrice(1500),
-                        totalInterest: formatPrice(3000)
-                    },
-                    'jane smith': {
-                        customerName: 'Jane Smith',
-                        loanAmount: formatPrice(8000),
-                        interest: '12%',
-                        totalPayable: formatPrice(9500),
-                        loanStatus: 'Active',
-                        notes: '',
-                        nextPayment: formatPrice(960),
-                        totalInterest: formatPrice(1500)
-                    }
-                };
-            }
+    }
+    
+    function showFinancialStatement(customerNameRaw){
+        let searchName = customerNameRaw.trim().toLowerCase();
+        let finance = allFinancialStatements[searchName];
+        if(!finance){
+            let matchKey = Object.keys(allFinancialStatements).find(k => k.includes(searchName) || searchName.includes(k));
+            if(matchKey) finance = allFinancialStatements[matchKey];
         }
-        
-        // ================= SHOP FUNCTIONS =================
-        function renderProducts() {
-            const container = document.getElementById('productsContainer');
-            let filtered = [...products];
-            if (searchTerm) {
-                const term = searchTerm.toLowerCase();
-                filtered = filtered.filter(p => p.name.toLowerCase().includes(term) || p.code.toLowerCase().includes(term));
-            }
-            if (filtered.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 40px;">No products found</div>';
-                return;
-            }
-            let html = '';
-            filtered.forEach(p => {
-                const priceText = p.price === 0 ? 'Call for price' : 'R ' + p.price.toFixed(2);
-                html += `<div class="product-item">
-                    <div class="product-header">
-                        <div><div class="product-name">${escapeHtml(p.name)}</div><div class="product-code">${p.code}</div></div>
-                        <div class="product-price">${priceText}</div>
-                    </div>
-                    <button class="add-to-cart-btn" data-code="${p.code}"><i class="fas fa-cart-plus"></i> Add to Cart</button>
-                </div>`;
-            });
-            container.innerHTML = html;
-            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-                btn.addEventListener('click', () => addToCart(btn.getAttribute('data-code')));
-            });
-        }
-        
-        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-        
-        function addToCart(code) {
-            const product = products.find(p => p.code === code);
-            if (!product) return;
-            const existing = cart.find(i => i.code === code);
-            if (existing) existing.quantity++;
-            else cart.push({ code, name: product.name, price: product.price, quantity: 1 });
-            renderCart();
-            showMessage(`${product.name} added to cart`, 'success', 'shopMsg');
-        }
-        
-        function renderCart() {
-            const container = document.getElementById('cartContainer');
-            const totalDiv = document.getElementById('cartTotal');
-            const checkoutBtn = document.getElementById('checkoutBtn');
-            const clearBtn = document.getElementById('clearCartBtn');
-            if (cart.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 20px;">Cart empty</div>';
-                totalDiv.style.display = 'none';
-                checkoutBtn.style.display = 'none';
-                clearBtn.style.display = 'none';
-                return;
-            }
-            let html = '';
-            let total = 0;
-            cart.forEach((item, idx) => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
-                html += `<div class="cart-item">
-                    <div class="cart-item-name">${escapeHtml(item.name)}</div>
-                    <div class="cart-item-price">R ${item.price.toFixed(2)}</div>
-                    <div class="cart-item-quantity">
-                        <button class="cart-qty-btn" data-idx="${idx}" data-delta="-1">-</button>
-                        <span>${item.quantity}</span>
-                        <button class="cart-qty-btn" data-idx="${idx}" data-delta="1">+</button>
-                        <i class="fas fa-trash cart-remove" data-idx="${idx}"></i>
-                    </div>
-                </div>`;
-            });
-            container.innerHTML = html;
-            document.querySelectorAll('.cart-qty-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.getAttribute('data-idx'));
-                    const delta = parseInt(btn.getAttribute('data-delta'));
-                    if (cart[idx]) {
-                        const newQty = cart[idx].quantity + delta;
-                        if (newQty <= 0) cart.splice(idx, 1);
-                        else cart[idx].quantity = newQty;
-                        renderCart();
-                    }
-                });
-            });
-            document.querySelectorAll('.cart-remove').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.getAttribute('data-idx'));
-                    cart.splice(idx, 1);
-                    renderCart();
-                });
-            });
-            totalDiv.innerHTML = `Total: R ${total.toFixed(2)}`;
-            totalDiv.style.display = 'block';
-            checkoutBtn.style.display = 'block';
-            clearBtn.style.display = 'block';
-        }
-        
-        function clearCart() { if (confirm('Clear cart?')) { cart = []; renderCart(); showMessage('Cart cleared', 'success', 'shopMsg'); } }
-        function checkout() {
-            if (cart.length === 0) return;
-            const total = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
-            const summary = cart.map(i => `${i.name} x${i.quantity} - R${(i.price * i.quantity).toFixed(2)}`).join('\n');
-            if (confirm(`Order Summary:\n${summary}\n\nTotal: R${total.toFixed(2)}\n\nProceed to payment?`)) {
-                window.open(PAYMENT_URL, '_blank');
-                showMessage('Redirecting to payment...', 'success', 'shopMsg');
-            }
-        }
-        
-        // ================= ATTENDANCE FUNCTIONS =================
-        function loadAttendanceData() {
-            if (!employeeListUnlocked) return;
-            const saved = localStorage.getItem('attendance');
-            attendanceRecords = saved ? JSON.parse(saved) : [];
-            updateAttendanceUI();
-        }
-        
-        function saveAttendance() { localStorage.setItem('attendance', JSON.stringify(attendanceRecords)); }
-        
-        function updateAttendanceUI() {
-            if (!currentEmployee) {
-                document.getElementById('statusDisplay').innerHTML = '❌ NOT CLOCKED IN';
-                document.getElementById('statusDisplay').className = 'status-badge status-off';
-                return;
-            }
-            const today = getTodayDate();
-            const record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
-            const isClockedIn = record && record.clockIn && !record.clockOut;
-            const onBreak = isClockedIn && record.breakStart && !record.breakEnd;
-            const statusDiv = document.getElementById('statusDisplay');
-            if (isClockedIn) {
-                if (onBreak) {
-                    statusDiv.innerHTML = `☕ ON BREAK (since ${record.clockIn})`;
-                    statusDiv.className = 'status-badge status-break';
-                    document.getElementById('clockInBtn').disabled = true;
-                    document.getElementById('clockOutBtn').disabled = false;
-                    document.getElementById('breakStartBtn').disabled = true;
-                    document.getElementById('breakEndBtn').disabled = false;
-                } else {
-                    statusDiv.innerHTML = `✅ CLOCKED IN (since ${record.clockIn})`;
-                    statusDiv.className = 'status-badge status-active';
-                    document.getElementById('clockInBtn').disabled = true;
-                    document.getElementById('clockOutBtn').disabled = false;
-                    document.getElementById('breakStartBtn').disabled = false;
-                    document.getElementById('breakEndBtn').disabled = true;
-                }
-            } else {
-                statusDiv.innerHTML = '❌ NOT CLOCKED IN';
-                statusDiv.className = 'status-badge status-off';
-                document.getElementById('clockInBtn').disabled = false;
-                document.getElementById('clockOutBtn').disabled = true;
-                document.getElementById('breakStartBtn').disabled = true;
-                document.getElementById('breakEndBtn').disabled = true;
-            }
-            updateTodayHistory();
-            updateWeekHistory();
-            if (adminVerified) updateAdminDashboard();
-        }
-        
-        function updateTodayHistory() {
-            const container = document.getElementById('todayHistory');
-            if (!currentEmployee) { container.innerHTML = 'Select an employee to view activity'; return; }
-            const today = getTodayDate();
-            const records = attendanceRecords.filter(r => r.name === currentEmployee && r.date === today);
-            if (records.length === 0) { container.innerHTML = 'No activity today'; return; }
-            let html = '<table class="history-table">';
-            html += '<tr><th>Clock In</th><th>Clock Out</th><th>Break Start</th><th>Break End</th></tr>';
-            records.forEach(r => {
-                html += `<tr>
-                    <td>${r.clockIn || '-'}</td>
-                    <td>${r.clockOut || 'Still in'}</td>
-                    <td>${r.breakStart || '-'}</td>
-                    <td>${r.breakEnd || '-'}</td>
-                </tr>`;
-            });
-            html += '</table>';
-            container.innerHTML = html;
-        }
-        
-        function updateWeekHistory() {
-            const container = document.getElementById('weekHistory');
-            if (!currentEmployee) { container.innerHTML = 'Select an employee to view history'; return; }
-            const records = attendanceRecords.filter(r => r.name === currentEmployee).slice(-7);
-            if (records.length === 0) { container.innerHTML = 'No history found'; return; }
-            let html = '<table class="history-table">';
-            html += '<tr><th>Date</th><th>Clock In</th><th>Clock Out</th></tr>';
-            records.forEach(r => {
-                html += `<tr>
-                    <td>${r.date}</td>
-                    <td>${r.clockIn || '-'}</td>
-                    <td>${r.clockOut || '-'}</td>
-                </tr>`;
-            });
-            html += '</table>';
-            container.innerHTML = html;
-        }
-        
-        function updateAdminDashboard() {
-            updateStatsGrid();
-            updateClockedInList();
-        }
-        
-        function updateStatsGrid() {
-            const today = getTodayDate();
-            const todayRecords = attendanceRecords.filter(r => r.date === today);
-            const clockedIn = todayRecords.filter(r => r.clockIn && !r.clockOut).length;
-            const onBreak = todayRecords.filter(r => r.breakStart && !r.breakEnd).length;
-            const completed = todayRecords.filter(r => r.clockOut).length;
-            document.getElementById('statsGrid').innerHTML = `
-                <div class="stat-card"><div class="stat-value">${clockedIn}</div><div class="stat-label">Clocked In</div></div>
-                <div class="stat-card"><div class="stat-value">${onBreak}</div><div class="stat-label">On Break</div></div>
-                <div class="stat-card"><div class="stat-value">${completed}</div><div class="stat-label">Completed</div></div>
-                <div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Employees</div></div>
-            `;
-        }
-        
-        function updateClockedInList() {
-            const today = getTodayDate();
-            const clockedIn = attendanceRecords.filter(r => r.date === today && r.clockIn && !r.clockOut);
-            if (clockedIn.length === 0) {
-                document.getElementById('clockedInList').innerHTML = '<p>No employees clocked in</p>';
-                return;
-            }
-            let html = '';
-            clockedIn.forEach(emp => {
-                const onBreak = emp.breakStart && !emp.breakEnd;
-                html += `<div class="clocked-item"><span><strong>${emp.name}</strong></span><span>${onBreak ? 'On Break' : 'Active'}</span><span>Since: ${emp.clockIn}</span></div>`;
-            });
-            document.getElementById('clockedInList').innerHTML = html;
-        }
-        
-        function exportToCSV() {
-            let csv = 'Employee Name,Date,Clock In,Clock Out,Break Start,Break End\n';
-            attendanceRecords.forEach(r => {
-                csv += `"${r.name}",${r.date},${r.clockIn || ''},${r.clockOut || ''},${r.breakStart || ''},${r.breakEnd || ''}\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `attendance_${getTodayDate()}.csv`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-        
-        function clockIn() {
-            const today = getTodayDate();
-            let record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
-            if (record && record.clockIn && !record.clockOut) { showMessage('Already clocked in', 'error', 'attendanceMsg'); return; }
-            if (record) {
-                record.clockIn = getCurrentTime();
-                record.clockOut = null;
-                record.breakStart = null;
-                record.breakEnd = null;
-            } else {
-                attendanceRecords.push({ name: currentEmployee, date: today, clockIn: getCurrentTime(), clockOut: null, breakStart: null, breakEnd: null });
-            }
-            saveAttendance();
-            showMessage(`Clocked in at ${getCurrentTime()}`, 'success', 'attendanceMsg');
-            updateAttendanceUI();
-        }
-        
-        function clockOut() {
-            const today = getTodayDate();
-            const record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
-            if (!record || !record.clockIn) { showMessage('No clock in found', 'error', 'attendanceMsg'); return; }
-            if (record.clockOut) { showMessage('Already clocked out', 'error', 'attendanceMsg'); return; }
-            record.clockOut = getCurrentTime();
-            saveAttendance();
-            showMessage(`Clocked out at ${getCurrentTime()}`, 'success', 'attendanceMsg');
-            updateAttendanceUI();
-        }
-        
-        function breakStart() {
-            const today = getTodayDate();
-            const record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
-            if (!record || !record.clockIn) { showMessage('Clock in first', 'error', 'attendanceMsg'); return; }
-            if (record.breakStart && !record.breakEnd) { showMessage('Already on break', 'error', 'attendanceMsg'); return; }
-            record.breakStart = getCurrentTime();
-            saveAttendance();
-            showMessage(`Break started`, 'success', 'attendanceMsg');
-            updateAttendanceUI();
-        }
-        
-        function breakEnd() {
-            const today = getTodayDate();
-            const record = attendanceRecords.find(r => r.name === currentEmployee && r.date === today);
-            if (!record || !record.breakStart) { showMessage('No break started', 'error', 'attendanceMsg'); return; }
-            record.breakEnd = getCurrentTime();
-            saveAttendance();
-            showMessage(`Break ended`, 'success', 'attendanceMsg');
-            updateAttendanceUI();
-        }
-        
-        // ================= JOB FUNCTIONS =================
-        function searchJob() {
-            const jobNum = document.getElementById('jobNumber').value.trim().toUpperCase();
-            if (!jobNum) { alert('Enter job number'); return; }
-            
-            const jobData = {
-                'J1001': { status: 'Awaiting Deposit', price: 'R 850.00', date: '2024-01-15' },
-                'J1002': { status: 'In Progress', price: 'R 1,250.00', date: '2024-01-14' },
-                'J1003': { status: 'Ready for Collection', price: 'R 2,200.00', date: '2024-01-13' },
-            };
-            
-            const job = jobData[jobNum] || { status: 'Awaiting Deposit', price: 'R 850.00', date: new Date().toLocaleDateString() };
-            
-            document.getElementById('jobResult').style.display = 'block';
-            document.getElementById('resultJobNumber').innerHTML = jobNum;
-            document.getElementById('resultStatus').innerHTML = job.status;
-            document.getElementById('resultPrice').innerHTML = job.price;
-            document.getElementById('resultDate').innerHTML = job.date;
-            document.getElementById('statusBadge').innerHTML = job.status;
-        }
-        
-        async function searchFinancialStatement() {
-            await loadFinancialData();
-            const customerName = prompt("Please enter your full name:");
-            if (!customerName) return;
-            
-            const searchName = customerName.trim().toLowerCase();
-            
-            // Try exact match first
-            let finance = allFinancialStatements[searchName];
-            let matchedName = searchName;
-            
-            // If no exact match, try partial match
-            if (!finance) {
-                const matches = Object.keys(allFinancialStatements).filter(name => 
-                    name.includes(searchName) || searchName.includes(name)
-                );
-                if (matches.length > 0) {
-                    matchedName = matches[0];
-                    finance = allFinancialStatements[matchedName];
-                }
-            }
-            
-            if (finance) {
-                const displayName = matchedName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                document.getElementById('financeName').innerHTML = displayName;
-                document.getElementById('financeLoanAmount').innerHTML = finance.loanAmount;
-                document.getElementById('financeInterest').innerHTML = finance.interest;
-                document.getElementById('financeNextPayment').innerHTML = finance.nextPayment;
-                document.getElementById('financeTotalInterest').innerHTML = finance.totalInterest;
-                document.getElementById('financeStatus').innerHTML = finance.loanStatus;
-                document.getElementById('financeResult').style.display = 'block';
-            } else {
-                alert(`No financial statement found for "${customerName}".\n\nPlease check spelling or contact the office.`);
-            }
-        }
-        
-        function openSpreadsheet() { window.open('https://docs.google.com/spreadsheets/d/18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo/edit?usp=sharing', '_blank'); }
-        function openCashReport() { window.open('https://docs.google.com/spreadsheets/d/1f52fhwbgbWkH3TTRkW0PZTWqjS46KUwX/edit?usp=sharing', '_blank'); }
-        function openPaymentPage() { window.open(PAYMENT_URL, '_blank'); }
-        
-        // ================= PIN MODAL =================
-        function showPinModal(action) {
-            pendingAction = action;
-            document.getElementById('pinModal').style.display = 'flex';
-            document.getElementById('pinInput').focus();
-        }
-        
-        function verifyPin() {
-            if (document.getElementById('pinInput').value === MASTER_PIN) {
-                document.getElementById('pinModal').style.display = 'none';
-                if (pendingAction === 'unlockEmployee') {
-                    employeeListUnlocked = true;
-                    document.getElementById('employeeSection').style.display = 'block';
-                    document.getElementById('unlockEmployeeBtn').style.display = 'none';
-                    showMessage('Employee list unlocked', 'success', 'attendanceMsg');
-                    loadAttendanceData();
-                } else if (pendingAction === 'editJob') {
-                    openSpreadsheet();
-                } else if (pendingAction === 'cashReport') {
-                    openCashReport();
-                }
-            } else {
-                document.getElementById('pinError').style.display = 'block';
-                document.getElementById('pinInput').value = '';
-            }
-        }
-        
-        function showMessage(msg, type, containerId) {
-            const el = document.getElementById(containerId || 'shopMsg');
-            el.className = type === 'error' ? 'error-msg' : 'success-msg';
-            el.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${msg}`;
-            el.style.display = 'flex';
-            setTimeout(() => el.style.display = 'none', 3000);
-        }
-        
-        // ================= EVENT LISTENERS =================
-        document.getElementById('verifyPinBtn').onclick = verifyPin;
-        document.getElementById('pinInput').addEventListener('keypress', e => { if (e.key === 'Enter') verifyPin(); });
-        document.getElementById('pinModal').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.style.display = 'none'; });
-        
-        document.getElementById('jobTabBtn').onclick = () => {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('jobTab').classList.add('active');
-            document.getElementById('jobTabBtn').classList.add('active');
-        };
-        document.getElementById('attendanceTabBtn').onclick = () => {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('attendanceTab').classList.add('active');
-            document.getElementById('attendanceTabBtn').classList.add('active');
-            if (employeeListUnlocked) loadAttendanceData();
-        };
-        document.getElementById('shopTabBtn').onclick = () => {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('shopTab').classList.add('active');
-            document.getElementById('shopTabBtn').classList.add('active');
-            renderProducts();
-        };
-        
-        document.getElementById('unlockEmployeeBtn').onclick = () => showPinModal('unlockEmployee');
-        document.getElementById('editJobBtn').onclick = () => showPinModal('editJob');
-        document.getElementById('cashReportBtn').onclick = () => showPinModal('cashReport');
-        document.getElementById('financialStatementBtn').onclick = searchFinancialStatement;
-        document.getElementById('searchJobBtn').onclick = searchJob;
-        document.getElementById('payNowBtn').onclick = openPaymentPage;
-        document.getElementById('clearCartBtn').onclick = clearCart;
-        document.getElementById('checkoutBtn').onclick = checkout;
-        document.getElementById('exportCsvBtn').onclick = exportToCSV;
-        
-        document.getElementById('verifyAdminBtn').onclick = () => {
-            if (document.getElementById('adminPin').value === ADMIN_PIN) {
-                adminVerified = true;
-                document.getElementById('adminDashboard').style.display = 'block';
-                document.getElementById('adminPin').parentElement.style.display = 'none';
-                updateAdminDashboard();
-                showMessage('Admin access granted', 'success', 'attendanceMsg');
-            } else {
-                showMessage('Invalid PIN', 'error', 'attendanceMsg');
-            }
-        };
-        
-        document.getElementById('adminHeader').onclick = () => {
-            const content = document.getElementById('adminContent');
-            content.style.display = content.style.display === 'none' ? 'block' : 'none';
-        };
-        
-        document.getElementById('employeeSelect').onchange = function() { currentEmployee = this.value; if (currentEmployee && employeeListUnlocked) updateAttendanceUI(); };
-        document.getElementById('clockInBtn').onclick = clockIn;
-        document.getElementById('clockOutBtn').onclick = clockOut;
-        document.getElementById('breakStartBtn').onclick = breakStart;
-        document.getElementById('breakEndBtn').onclick = breakEnd;
-        
-        document.getElementById('productSearch').addEventListener('input', (e) => { searchTerm = e.target.value; renderProducts(); });
-        
-        // Initialize
-        loadFinancialData();
-        renderProducts();
-    </script>
+        if(finance){
+            document.getElementById('financeName').innerHTML = finance.customerName || customerNameRaw;
+            document.getElementById('financeLoanAmount').innerHTML = finance.loanAmount;
+            document.getElementById('financeInterest').innerHTML = finance.interest;
+            document.getElementById('financeTotalToPay').innerHTML = finance.totalToPay;
+            document.getElementById('financeTotalInterest').innerHTML = finance.totalInterest;
+            document.getElementById('financeStatus').innerHTML = finance.loanStatus;
+            document.getElementById('financeResult').style.display = 'block';
+        } else { alert(`No financial statement found for "${customerNameRaw}". Please contact office.`); }
+    }
+    
+    function openSpreadsheetEdit() { window.open(EDIT_SPREADSHEET_URL, '_blank'); }
+    function openJobsEdit() { window.open(JOBS_EDIT_URL, '_blank'); }
+    function openCashReport() { window.open(CASH_REPORT_URL, '_blank'); }
+    function searchJob(){ let jn=document.getElementById('jobNumber').value; if(!jn){alert('Enter job number');return;} let mock={J1001:{status:'Awaiting Deposit',price:'R 850.00',date:'2024-01-15'}}; let job=mock[jn]||{status:'In Progress',price:'R 1,250.00',date:new Date().toLocaleDateString()}; document.getElementById('jobResult').style.display='block'; document.getElementById('resultJobNumber').innerHTML=jn; document.getElementById('resultStatus').innerHTML=job.status; document.getElementById('resultPrice').innerHTML=job.price; document.getElementById('resultDate').innerHTML=job.date; document.getElementById('statusBadge').innerHTML=job.status; }
+    
+    let pendingProtectedAction = null;
+    function showAdminPinModal(action){ 
+        pendingProtectedAction = action; 
+        document.getElementById('adminPinModal').style.display='flex'; 
+        document.getElementById('adminEditPinInput').focus(); 
+        document.getElementById('adminPinError').style.display='none'; 
+    }
+    function verifyAdminEditPin(){ 
+        if(document.getElementById('adminEditPinInput').value === MASTER_PIN){
+            document.getElementById('adminPinModal').style.display='none';
+            if(pendingProtectedAction === 'jobs') openJobsEdit();
+            else if(pendingProtectedAction === 'statement') openSpreadsheetEdit();
+            else if(pendingProtectedAction === 'cashreport') openCashReport();
+            document.getElementById('adminEditPinInput').value='';
+            pendingProtectedAction = null;
+        } else { 
+            document.getElementById('adminPinError').style.display='block'; 
+            document.getElementById('adminEditPinInput').value=''; 
+        } 
+    }
+    
+    function showModernNamePopup(){ document.getElementById('modernNamePopup').style.display='flex'; document.getElementById('popupCustomerName').focus(); }
+    function closeModernPopup(){ document.getElementById('modernNamePopup').style.display='none'; document.getElementById('popupCustomerName').value=''; }
+    function submitNameAndFetch(){ let name = document.getElementById('popupCustomerName').value.trim(); if(!name){ alert('Please enter your name'); return; } closeModernPopup(); showFinancialStatement(name); }
+    
+    function renderProducts(){ let container=document.getElementById('productsContainer'); let filtered=products.filter(p=>!searchTerm||p.name.toLowerCase().includes(searchTerm)||p.code.toLowerCase().includes(searchTerm)); if(filtered.length===0){container.innerHTML='<div style="padding:40px;text-align:center;">No products</div>';return;} let html=''; filtered.forEach(p=>{html+=`<div class="product-item"><div class="product-header"><div><div class="product-name">${escapeHtml(p.name)}</div><div class="product-code">${p.code}</div></div><div class="product-price">${p.price===0?'Call for price':'R '+p.price.toFixed(2)}</div></div><button class="add-to-cart-btn" data-code="${p.code}"><i class="fas fa-cart-plus"></i> Add to Cart</button></div>`;}); container.innerHTML=html; document.querySelectorAll('.add-to-cart-btn').forEach(btn=>btn.addEventListener('click',()=>addToCart(btn.dataset.code))); }
+    function escapeHtml(t){ let d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
+    function addToCart(code){ let p=products.find(pr=>pr.code===code); if(!p)return; let ex=cart.find(i=>i.code===code); if(ex)ex.quantity++; else cart.push({code:p.code,name:p.name,price:p.price,quantity:1}); renderCart(); showShopMsg(`${p.name} added`); }
+    function renderCart(){ let cont=document.getElementById('cartContainer'), totalDiv=document.getElementById('cartTotal'), checkoutBtn=document.getElementById('checkoutBtn'), clearBtn=document.getElementById('clearCartBtn'); if(cart.length===0){cont.innerHTML='<div style="text-align:center;padding:20px;">Cart empty</div>';totalDiv.style.display='none';checkoutBtn.style.display='none';clearBtn.style.display='none';return;} let html='',total=0; cart.forEach((it,idx)=>{ let itt=it.price*it.quantity; total+=itt; html+=`<div class="cart-item"><div class="cart-item-name">${escapeHtml(it.name)}</div><div class="cart-item-price">R ${it.price.toFixed(2)}</div><div class="cart-item-quantity"><button class="cart-qty-btn" data-idx="${idx}" data-delta="-1">-</button><span>${it.quantity}</span><button class="cart-qty-btn" data-idx="${idx}" data-delta="1">+</button><i class="fas fa-trash cart-remove" data-idx="${idx}"></i></div></div>`;}); cont.innerHTML=html; document.querySelectorAll('.cart-qty-btn').forEach(btn=>btn.addEventListener('click',()=>{let idx=parseInt(btn.dataset.idx),delta=parseInt(btn.dataset.delta); if(cart[idx]){let nq=cart[idx].quantity+delta; if(nq<=0)cart.splice(idx,1); else cart[idx].quantity=nq; renderCart();}})); document.querySelectorAll('.cart-remove').forEach(btn=>btn.addEventListener('click',()=>{cart.splice(parseInt(btn.dataset.idx),1); renderCart();})); totalDiv.innerHTML=`Total: R ${total.toFixed(2)}`; totalDiv.style.display='block'; checkoutBtn.style.display='block'; clearBtn.style.display='block'; }
+    function clearCart(){ if(confirm('Clear cart?')){cart=[]; renderCart(); showShopMsg('Cart cleared');} }
+    function checkout(){ if(cart.length===0)return; let total=cart.reduce((s,i)=>s+(i.price*i.quantity),0); if(confirm(`Total: R${total.toFixed(2)}\nProceed to payment?`)){ window.open(PAYMENT_URL,'_blank'); showShopMsg('Redirecting...');} }
+    function showShopMsg(msg){ let el=document.getElementById('shopMsg'); el.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; el.style.display='flex'; setTimeout(()=>el.style.display='none',2500); }
+    
+    let attendanceRecords=[], currentEmployee='', employeeListUnlocked=false, adminVerified=false;
+    function getTodayDate(){return new Date().toISOString().split('T')[0];}
+    function getCurrentTime(){return new Date().toLocaleTimeString('en-ZA');}
+    function loadAttendanceData(){if(!employeeListUnlocked)return; let saved=localStorage.getItem('attendance'); attendanceRecords=saved?JSON.parse(saved):[]; updateAttendanceUI();}
+    function saveAttendance(){localStorage.setItem('attendance',JSON.stringify(attendanceRecords));}
+    function updateAttendanceUI(){ if(!currentEmployee){ document.getElementById('statusDisplay').innerHTML='❌ NOT CLOCKED IN'; return; } let today=getTodayDate(); let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===today); let isIn=rec&&rec.clockIn&&!rec.clockOut; let onBreak=isIn&&rec.breakStart&&!rec.breakEnd; let sd=document.getElementById('statusDisplay'); if(isIn){if(onBreak){sd.innerHTML=`☕ ON BREAK`;sd.className='status-badge status-break';}else{sd.innerHTML=`✅ CLOCKED IN`;sd.className='status-badge status-active';}}else{sd.innerHTML='❌ NOT CLOCKED IN';sd.className='status-badge status-off';} }
+    function clockIn(){ let today=getTodayDate(); let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===today); if(rec&&rec.clockIn&&!rec.clockOut){showMessage('Already in','error','attendanceMsg');return;} if(rec){rec.clockIn=getCurrentTime();rec.clockOut=null;rec.breakStart=null;rec.breakEnd=null;}else{attendanceRecords.push({name:currentEmployee,date:today,clockIn:getCurrentTime(),clockOut:null,breakStart:null,breakEnd:null});} saveAttendance(); updateAttendanceUI(); showMessage('Clocked in','success','attendanceMsg'); }
+    function clockOut(){ let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===getTodayDate()); if(rec&&rec.clockIn&&!rec.clockOut){rec.clockOut=getCurrentTime(); saveAttendance(); updateAttendanceUI(); showMessage('Clocked out','success','attendanceMsg');}else showMessage('Error','error','attendanceMsg');}
+    function breakStart(){ let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===getTodayDate()); if(rec&&rec.clockIn&&!rec.breakStart){rec.breakStart=getCurrentTime(); saveAttendance(); updateAttendanceUI(); showMessage('Break started','success','attendanceMsg');}}
+    function breakEnd(){ let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===getTodayDate()); if(rec&&rec.breakStart&&!rec.breakEnd){rec.breakEnd=getCurrentTime(); saveAttendance(); updateAttendanceUI(); showMessage('Break ended','success','attendanceMsg');}}
+    function updateTodayHistory(){ let cont=document.getElementById('todayHistory'); if(!currentEmployee){cont.innerHTML='Select employee';return;} cont.innerHTML='<div>Activity logged</div>'; }
+    function updateWeekHistory(){ let cont=document.getElementById('weekHistory'); if(!currentEmployee){cont.innerHTML='Select employee';return;} cont.innerHTML='<div>History shown in console</div>'; }
+    function updateAdminDashboard(){ document.getElementById('statsGrid').innerHTML='<div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Clocked In</div></div><div class="stat-card"><div class="stat-value">0</div><div class="stat-label">On Break</div></div>'; document.getElementById('clockedInList').innerHTML='<p>No data</p>'; }
+    function exportToCSV(){ alert('Export feature'); }
+    function showMessage(msg,type,id){ let el=document.getElementById(id); el.className=type==='error'?'error-msg':'success-msg'; el.innerHTML=msg; el.style.display='flex'; setTimeout(()=>el.style.display='none',2500); }
+    
+    document.getElementById('modernStatementBtn').onclick = showModernNamePopup;
+    document.getElementById('adminEditStatementBtn').onclick = ()=> showAdminPinModal('statement');
+    document.getElementById('editJobBtn').onclick = ()=> showAdminPinModal('jobs');
+    document.getElementById('cashReportBtn').onclick = ()=> showAdminPinModal('cashreport');
+    document.getElementById('verifyAdminEditPinBtn').onclick = verifyAdminEditPin;
+    document.getElementById('closePopupBtn').onclick = closeModernPopup;
+    document.getElementById('submitNameBtn').onclick = submitNameAndFetch;
+    document.getElementById('searchJobBtn').onclick = searchJob;
+    document.getElementById('payNowBtn').onclick = ()=> window.open(PAYMENT_URL,'_blank');
+    document.getElementById('clearCartBtn').onclick = clearCart;
+    document.getElementById('checkoutBtn').onclick = checkout;
+    document.getElementById('productSearch').addEventListener('input',(e)=>{searchTerm=e.target.value.toLowerCase();renderProducts();});
+    document.getElementById('unlockEmployeeBtn').onclick = ()=>{employeeListUnlocked=true; document.getElementById('employeeSection').style.display='block'; document.getElementById('unlockEmployeeBtn').style.display='none'; loadAttendanceData();};
+    document.getElementById('employeeSelect').onchange=(e)=>{currentEmployee=e.target.value; if(currentEmployee&&employeeListUnlocked)updateAttendanceUI();};
+    document.getElementById('clockInBtn').onclick=clockIn; document.getElementById('clockOutBtn').onclick=clockOut; document.getElementById('breakStartBtn').onclick=breakStart; document.getElementById('breakEndBtn').onclick=breakEnd;
+    document.getElementById('verifyAdminBtn').onclick=()=>{ if(document.getElementById('adminPin').value===ADMIN_PIN){ adminVerified=true; document.getElementById('adminDashboard').style.display='block'; updateAdminDashboard(); showMessage('Admin access','success','attendanceMsg');}else showMessage('Invalid PIN','error','attendanceMsg');};
+    document.getElementById('adminHeader').onclick=()=>{ let c=document.getElementById('adminContent'); c.style.display=c.style.display==='none'?'block':'none';};
+    document.getElementById('exportCsvBtn').onclick=exportToCSV;
+    document.getElementById('jobTabBtn').onclick=()=>{ document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById('jobTab').classList.add('active'); document.getElementById('jobTabBtn').classList.add('active'); };
+    document.getElementById('attendanceTabBtn').onclick=()=>{ document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById('attendanceTab').classList.add('active'); document.getElementById('attendanceTabBtn').classList.add('active'); if(employeeListUnlocked) loadAttendanceData(); };
+    document.getElementById('shopTabBtn').onclick=()=>{ document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById('shopTab').classList.add('active'); document.getElementById('shopTabBtn').classList.add('active'); renderProducts(); };
+    document.getElementById('adminEditPinInput').addEventListener('keypress',e=>{if(e.key==='Enter')verifyAdminEditPin();});
+    document.getElementById('popupCustomerName').addEventListener('keypress',e=>{if(e.key==='Enter')submitNameAndFetch();});
+    document.getElementById('adminPinModal').addEventListener('click',e=>{if(e.target===e.currentTarget) e.currentTarget.style.display='none';});
+    document.getElementById('modernNamePopup').addEventListener('click',e=>{if(e.target===e.currentTarget) closeModernPopup();});
+    
+    loadFinancialData();
+    renderProducts();
+</script>
 </body>
 </html>
