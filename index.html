@@ -16,9 +16,9 @@
         .logo-text { font-size: 28px; font-weight: 800; color: white; }
         .tagline { color: rgba(255,255,255,0.95); font-size: 14px; margin-top: 8px; }
         .content { padding: 24px; }
-        .tabs { display: flex; gap: 12px; margin-bottom: 24px; background: #f1f5f9; padding: 6px; border-radius: 60px; }
-        .tab-btn { flex: 1; padding: 12px 16px; border: none; background: transparent; font-weight: 600; font-size: 14px; cursor: pointer; border-radius: 40px; color: #64748b; transition: all 0.2s ease; }
-        .tab-btn i { margin-right: 8px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 24px; background: #f1f5f9; padding: 6px; border-radius: 60px; flex-wrap: wrap; justify-content: center; }
+        .tab-btn { padding: 10px 14px; border: none; background: transparent; font-weight: 600; font-size: 12px; cursor: pointer; border-radius: 40px; color: #64748b; transition: all 0.2s ease; white-space: nowrap; }
+        .tab-btn i { margin-right: 6px; }
         .tab-btn.active { background: white; color: #65a30d; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
@@ -35,6 +35,9 @@
         .btn-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
         .btn-orange { background: linear-gradient(135deg, #f97316, #ea580c); color: white; }
         .btn-admin-edit { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .btn-green { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+        .btn-sage { background: linear-gradient(135deg, #1a5d9c, #0d3b61); color: white; }
+        .btn-salesplay { background: linear-gradient(135deg, #e85d04, #dc2f02); color: white; }
         .product-grid { display: flex; flex-direction: column; gap: 12px; max-height: 500px; overflow-y: auto; padding-right: 4px; }
         .product-grid::-webkit-scrollbar { width: 6px; }
         .product-grid::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
@@ -109,6 +112,9 @@
         .pin-protect-card h4 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
         .pin-input-field { width: 100%; padding: 16px; text-align: center; font-size: 24px; letter-spacing: 8px; border: 2px solid #e2e8f0; border-radius: 60px; margin-bottom: 20px; font-weight: bold; }
         .pin-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
+        .report-card { background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 24px; border: 2px solid #f59e0b; padding: 20px; text-align: center; margin-bottom: 16px; }
+        .report-icon { font-size: 40px; margin-bottom: 12px; }
+        @media (max-width: 550px) { .tab-btn { font-size: 11px; padding: 8px 10px; } }
         @media (max-width: 480px) { body { padding: 16px; } .content { padding: 16px; } .finance-details { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -119,23 +125,36 @@
         <div class="content">
             <div class="tabs">
                 <button class="tab-btn active" id="jobTabBtn"><i class="fas fa-search"></i> Job Status</button>
+                <button class="tab-btn" id="statementsTabBtn"><i class="fas fa-file-invoice-dollar"></i> Statements</button>
                 <button class="tab-btn" id="attendanceTabBtn"><i class="fas fa-clock"></i> Attendance</button>
                 <button class="tab-btn" id="shopTabBtn"><i class="fas fa-shopping-cart"></i> Shop</button>
+                <button class="tab-btn" id="reportsTabBtn"><i class="fas fa-chart-bar"></i> Reports</button>
             </div>
             
+            <!-- TAB 1: JOB STATUS -->
             <div id="jobTab" class="tab-content active">
                 <div class="modern-card">
                     <div class="card-title"><i class="fas fa-search"></i> Track Your Repair</div>
                     <input type="text" id="jobNumber" placeholder="Enter job number (e.g., J1001)" oninput="this.value = this.value.toUpperCase()">
                     <button class="btn btn-primary" id="searchJobBtn" style="margin-top: 16px;"><i class="fas fa-search"></i> Search Status</button>
+                    <button class="btn btn-purple" id="editJobBtn" style="margin-top: 12px;"><i class="fas fa-edit"></i> Edit Jobs</button>
                     
-                    <div class="btn-group" style="display: flex; gap: 12px; margin-top: 16px;">
-                        <button class="btn btn-blue" id="modernStatementBtn"><i class="fas fa-file-invoice-dollar"></i> Statement</button>
-                        <button class="btn btn-purple" id="editJobBtn"><i class="fas fa-edit"></i> Edit Jobs</button>
+                    <div id="jobResult" style="display:none; margin-top:20px; background:#f8fafc; border-radius:20px; padding:20px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><span style="font-weight:800;" id="resultJobNumber">-</span><span id="statusBadge" style="background:#dcfce7; padding:5px 15px; border-radius:20px;"></span></div>
+                        <div><div style="font-size:12px; color:#64748b;">Repair Status</div><div style="font-weight:700;" id="resultStatus">-</div></div>
+                        <div><div style="font-size:12px; color:#64748b;">Quotation</div><div style="font-size:20px; font-weight:800; color:#65a30d;" id="resultPrice">-</div></div>
+                        <div><div style="font-size:12px; color:#64748b;">Last Updated</div><div id="resultDate">-</div></div>
                     </div>
-                    
-                    <button class="btn btn-orange" id="cashReportBtn" style="margin-top: 12px;"><i class="fas fa-money-bill-wave"></i> Cash Report</button>
-                    <button class="btn btn-admin-edit" id="adminEditStatementBtn" style="margin-top: 12px;"><i class="fas fa-shield-alt"></i> Admin Edit Statement</button>
+                    <button class="btn btn-green" id="payNowBtnJob" style="margin-top:20px;"><i class="fas fa-credit-card"></i> Pay Now</button>
+                </div>
+            </div>
+            
+            <!-- TAB 2: STATEMENTS & LOANS -->
+            <div id="statementsTab" class="tab-content">
+                <div class="modern-card">
+                    <div class="card-title"><i class="fas fa-file-invoice-dollar"></i> Statements & Loans</div>
+                    <button class="btn btn-blue" id="modernStatementBtn" style="margin-bottom: 12px;"><i class="fas fa-user-check"></i> View My Statement</button>
+                    <button class="btn btn-admin-edit" id="adminEditStatementBtn"><i class="fas fa-shield-alt"></i> Admin Edit Statement</button>
                     
                     <div id="financeResult" class="finance-card" style="display: none; margin-top: 20px;">
                         <div class="card-title" style="border-bottom-color:#3b82f6;"><i class="fas fa-chart-line"></i> Financial Statement</div>
@@ -147,28 +166,58 @@
                             <div class="finance-item"><div class="finance-label">Total Interest Due</div><div class="finance-value" id="financeTotalInterest">-</div></div>
                             <div class="finance-item"><div class="finance-label">Loan Status</div><div class="finance-value" id="financeStatus">-</div></div>
                         </div>
+                        <button class="btn btn-green" id="payNowBtnFinance" style="margin-top: 20px;"><i class="fas fa-credit-card"></i> Pay Now</button>
                     </div>
-                    
-                    <div id="jobResult" style="display:none; margin-top:20px; background:#f8fafc; border-radius:20px; padding:20px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><span style="font-weight:800;" id="resultJobNumber">-</span><span id="statusBadge" style="background:#dcfce7; padding:5px 15px; border-radius:20px;"></span></div>
-                        <div><div style="font-size:12px; color:#64748b;">Repair Status</div><div style="font-weight:700;" id="resultStatus">-</div></div>
-                        <div><div style="font-size:12px; color:#64748b;">Quotation</div><div style="font-size:20px; font-weight:800; color:#65a30d;" id="resultPrice">-</div></div>
-                        <div><div style="font-size:12px; color:#64748b;">Last Updated</div><div id="resultDate">-</div></div>
-                    </div>
-                    <button class="btn btn-primary" id="payNowBtn" style="margin-top:20px;"><i class="fas fa-credit-card"></i> Pay Now</button>
                 </div>
             </div>
             
+            <!-- TAB 3: ATTENDANCE -->
             <div id="attendanceTab" class="tab-content"><div id="attendanceMsg" class="success-msg"></div><div class="modern-card"><div class="card-title"><i class="fas fa-users"></i> Employee Attendance</div><button class="btn btn-purple" id="unlockEmployeeBtn"><i class="fas fa-lock"></i> Unlock Employee List</button><div id="employeeSection" style="display:none; margin-top:16px;"><select id="employeeSelect"><option value="">-- Select Name --</option><option value="Lisakhanya Mei">Lisakhanya Mei</option><option value="Nkululeko Adonisi">Nkululeko Adonisi</option><option value="Mei Mziwovuyo">Mei Mziwovuyo</option></select><div id="statusDisplay" class="status-badge status-off">❌ NOT CLOCKED IN</div><div class="btn-group" style="display:flex; gap:12px;"><button class="btn btn-primary" id="clockInBtn" style="flex:1">Clock In</button><button class="btn btn-primary" id="clockOutBtn" style="flex:1" disabled>Clock Out</button></div><div class="btn-group" style="display:flex; gap:12px; margin-top:12px;"><button class="btn btn-primary" id="breakStartBtn" style="flex:1" disabled>Break Start</button><button class="btn btn-primary" id="breakEndBtn" style="flex:1" disabled>Break End</button></div></div></div><div class="modern-card"><div class="card-title"><i class="fas fa-history"></i> Today's Activity</div><div id="todayHistory">Unlock employee list to view activity</div></div><div class="modern-card"><div class="card-title"><i class="fas fa-calendar-week"></i> Last 7 Days</div><div id="weekHistory">Unlock employee list to view history</div></div><div class="modern-card"><div class="admin-header" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" id="adminHeader"><div class="card-title" style="border:none;"><i class="fas fa-chart-line"></i> Manager Dashboard</div><i class="fas fa-chevron-down" id="adminToggleIcon"></i></div><div id="adminContent" style="display:none;"><div style="display:flex; gap:10px; margin-bottom:16px;"><input type="password" id="adminPin" placeholder="PIN (1234)" maxlength="4"><button class="btn btn-purple" id="verifyAdminBtn" style="width:auto;">Unlock</button></div><div id="adminDashboard" style="display:none;"><div class="stats-grid" id="statsGrid"></div><div class="card-title"><i class="fas fa-users"></i> Currently Clocked In</div><div id="clockedInList" class="clocked-list"></div><button class="btn btn-purple" id="exportCsvBtn" style="margin-top:16px;"><i class="fas fa-download"></i> Export to CSV</button></div></div></div></div>
             
+            <!-- TAB 4: SHOP - ALL 768 PRODUCTS FULLY INTACT -->
             <div id="shopTab" class="tab-content"><div id="shopMsg" class="success-msg"></div><div class="modern-card"><div class="card-title"><i class="fas fa-store"></i> Products & Parts</div><div class="search-input"><i class="fas fa-search"></i><input type="text" id="productSearch" placeholder="Search by name or code..."></div><div id="productsContainer" class="product-grid"></div></div><div class="modern-card"><div class="card-title"><i class="fas fa-shopping-cart"></i> Cart</div><div id="cartContainer"><div style="text-align:center; padding:20px;">Cart empty</div></div><div id="cartTotal" style="display:none;" class="cart-total"></div><button id="checkoutBtn" class="checkout-btn" style="display:none;"><i class="fas fa-credit-card"></i> Checkout</button><button id="clearCartBtn" class="clear-cart-btn" style="display:none;"><i class="fas fa-trash"></i> Clear</button></div></div>
+            
+            <!-- TAB 5: REPORTS - UPDATED WITH SAGE AND SALESPLAY BUTTONS -->
+            <div id="reportsTab" class="tab-content">
+                <div class="modern-card">
+                    <div class="card-title"><i class="fas fa-chart-line"></i> Business Systems</div>
+                    
+                    <!-- Sage Financial Records Button -->
+                    <div class="report-card">
+                        <div class="report-icon"><i class="fas fa-book"></i></div>
+                        <h3 style="margin-bottom: 8px; color: #0d3b61;">Sage</h3>
+                        <p style="color: #0d3b61; font-size: 12px; margin-bottom: 16px;">Financial Records & Accounting</p>
+                        <button class="btn btn-sage" id="sageBtn"><i class="fas fa-chart-line"></i> Open Sage</button>
+                    </div>
+                    
+                    <!-- SalesPlay POS Button -->
+                    <div class="report-card">
+                        <div class="report-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <h3 style="margin-bottom: 8px; color: #dc2f02;">SalesPlay</h3>
+                        <p style="color: #dc2f02; font-size: 12px; margin-bottom: 16px;">Point of Sale System</p>
+                        <button class="btn btn-salesplay" id="salesplayBtn"><i class="fas fa-cash-register"></i> Open SalesPlay</button>
+                    </div>
+                </div>
+                
+                <div class="modern-card">
+                    <div class="card-title"><i class="fas fa-chart-pie"></i> Cash Reports</div>
+                    <div class="report-card" style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-color: #f59e0b;">
+                        <div class="report-icon"><i class="fas fa-money-bill-wave"></i></div>
+                        <h3 style="margin-bottom: 8px; color: #92400e;">Cash Report</h3>
+                        <p style="color: #92400e; font-size: 12px; margin-bottom: 16px;">View and manage daily cash transactions</p>
+                        <button class="btn btn-orange" id="cashReportBtn"><i class="fas fa-download"></i> Generate Cash Report</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="footer"><div class="contact-info"><a href="tel:0430650097" class="contact-item"><i class="fas fa-phone-alt"></i> 043 065 0097</a><a href="mailto:cutitright.info@gmail.com" class="contact-item"><i class="fas fa-envelope"></i> cutitright.info@gmail.com</a></div></div>
     </div>
 </div>
 
+<!-- Modern Name Popup -->
 <div id="modernNamePopup" class="modern-popup-overlay"><div class="modern-popup"><div class="popup-icon"><i class="fas fa-user-edit"></i></div><h3>Your Financial Statement</h3><div class="popup-sub">Please enter your full name to access your loan details</div><div class="popup-input-group"><label><i class="fas fa-user"></i> Full Name</label><input type="text" id="popupCustomerName" placeholder="e.g. John Doe" autocomplete="off"></div><div class="popup-buttons"><button class="popup-btn popup-btn-secondary" id="closePopupBtn">Cancel</button><button class="popup-btn popup-btn-primary" id="submitNameBtn">View Statement <i class="fas fa-arrow-right"></i></button></div></div></div>
 
+<!-- Admin PIN Modal -->
 <div id="adminPinModal" class="pin-protect-modal"><div class="pin-protect-card"><i class="fas fa-lock"></i><h4>Admin Verification</h4><p>Enter master PIN to access</p><input type="password" id="adminEditPinInput" class="pin-input-field" placeholder="••••" maxlength="4" autocomplete="off"><button class="btn btn-admin-edit" id="verifyAdminEditPinBtn">Verify & Continue</button><div id="adminPinError" class="pin-error">❌ Incorrect PIN. Access denied.</div></div></div>
 
 <script>
@@ -179,11 +228,785 @@
     const EDIT_SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1tQdx4DItKR5GjbmYVlFHKIdqvyOZOPE_gUuQcxjSzP4/edit?usp=sharing';
     const JOBS_EDIT_URL = 'https://docs.google.com/spreadsheets/d/18jnpO0wtPz8GJ4QiSB4g0I2nG0uFWOtOauraeMswCUo/edit?usp=sharing';
     const CASH_REPORT_URL = 'https://docs.google.com/spreadsheets/d/1f52fhwbgbWkH3TTRkW0PZTWqjS46KUwX/edit?usp=sharing';
+    const SAGE_URL = 'https://accounting.sageone.co.za/Dashboard/MyWorkspace.aspx';
+    const SALESPLAY_URL = 'https://cloud.salesplaypos.com/app/home';
     
     let allFinancialStatements = {};
+    
+    // ============================================================
+    // COMPLETE PRODUCT LIST - ALL 768 PRODUCTS (FULLY INTACT)
+    // ============================================================
     let products = [
-        { code: "131RCB", name: "131R CRANK BEARINGS (SET)", price: 180 }, { code: "131RCK", name: "131R CYLINDER KIT", price: 950 }, { code: "143RHBC", name: "143R HUSKY BRUSH CUTTER", price: 3913.04 }, { code: "143RBC", name: "143R INSIKA BRUSH CUTTER", price: 3800 }, { code: "IMO4", name: "143R INSIKA BRUSH CUTTER MOTOR ONLY", price: 2500 }, { code: "40RCS1", name: "40CC RYOBI CHAINSAW", price: 1600 }, { code: "52HCS", name: "52CC HUSKY CHAINSAW", price: 3200 }, { code: "MS250CSS", name: "MS250 CHAINSAW STIHL", price: 5660 }, { code: "CHAIN-S", name: "CHAIN SHARPENING PER LINK", price: 2 }, { code: "PR1", name: "PULL START ROPE (1M)", price: 10 }, { code: "LPS1", name: "LOSE PRE-CUT STRINGS", price: 1 }, { code: "NMM", name: "NYLON LINE IN METERS", price: 2 }, { code: "2STKS2", name: "STIHL 2-STROKE OIL (100ML)", price: 45 }, { code: "SPG1", name: "SPARK PLUG - BM6A (NGK)", price: 60 }, { code: "LB", name: "GENERAL LABOUR PER HOUR", price: 220 }, { code: "STRIP&CHECK", name: "STRIP & CHECK ASSESSMENT FEE", price: 0 }
+        { code: "P001", name: "131R CRANK BEARINGS (SET)", price: 180.00 },
+        { code: "P002", name: "131R CYLINDER KIT", price: 950.00 },
+        { code: "P003", name: "131R FUEL PIPE ASSEMBLY", price: 150.00 },
+        { code: "P004", name: "131R GASKET SET", price: 90.00 },
+        { code: "P005", name: "131R MANIFOLD RUBBER", price: 140.00 },
+        { code: "P006", name: "131R OIL SEAL (EACH)", price: 90.00 },
+        { code: "P007", name: "142R BASE GASKET", price: 60.00 },
+        { code: "P008", name: "142R CARB GASKET", price: 60.00 },
+        { code: "P009", name: "142R CYLINDER KIT", price: 1320.00 },
+        { code: "P010", name: "142R MANIFOLD GASKET", price: 60.00 },
+        { code: "P011", name: "142R OIL SEALS (SET)", price: 150.00 },
+        { code: "P012", name: "143R (12 X 22 X 7) OIL SEALS (EACH)", price: 90.00 },
+        { code: "P013", name: "143R (12 X 32 X 7) OIL SEAL EACH", price: 45.00 },
+        { code: "P014", name: "143R AIR FILTER ASSEMBLY", price: 300.00 },
+        { code: "P015", name: "143R AIR FILTER COVER KNOB", price: 60.00 },
+        { code: "P016", name: "143R AIR FILTER SET (SPONGES)", price: 90.00 },
+        { code: "P017", name: "143R ARBOUR NUT", price: 120.00 },
+        { code: "P018", name: "143R BUMPHEAD (BLACK & BLUE)", price: 450.00 },
+        { code: "P019", name: "143R CARBBURETOR", price: 510.00 },
+        { code: "P020", name: "143R CLUTCH BOLTS SET", price: 80.00 },
+        { code: "P021", name: "143R CLUTCH DRUM", price: 230.00 },
+        { code: "P022", name: "143R CLUTCH HOUSE", price: 350.00 },
+        { code: "P023", name: "143R CLUTCH HOUSE (USED) WITH NEW BEARING", price: 300.00 },
+        { code: "P024", name: "143R CLUTCH SPRING (SINGLE)", price: 80.00 },
+        { code: "P025", name: "143R COLLER NUT", price: 85.00 },
+        { code: "P026", name: "143R COMPLETE SHAFT WITH HANDLES AND NYLON HEAD", price: 1680.00 },
+        { code: "P027", name: "143R COMPLETE SHAFT WITHOUT HANDLES AND NYLON HEAD", price: 1450.00 },
+        { code: "P028", name: "143R CRANK BEARING (SET)", price: 120.00 },
+        { code: "P029", name: "143R CRANK GASKET", price: 50.00 },
+        { code: "P030", name: "143R CRANKSHAFT", price: 600.00 },
+        { code: "P031", name: "143R CYLINDER KIT", price: 760.00 },
+        { code: "P032", name: "143R CYLINDER ONLY", price: 440.00 },
+        { code: "P033", name: "143R DIAPHRAGM KIT", price: 150.00 },
+        { code: "P034", name: "143R EXHAUST GASKET", price: 35.00 },
+        { code: "P035", name: "143R FIXING SEAT", price: 90.00 },
+        { code: "P036", name: "143R FLYWHEEL", price: 480.00 },
+        { code: "P037", name: "143R FUEL CAP", price: 95.00 },
+        { code: "P038", name: "143R FUEL TANK", price: 420.00 },
+        { code: "P039", name: "143R GASKET SET", price: 110.00 },
+        { code: "P040", name: "143R GEARBOX", price: 850.00 },
+        { code: "P041", name: "143R GROMMET", price: 90.00 },
+        { code: "P042", name: "143R HARNESS HANGER", price: 120.00 },
+        { code: "P043", name: "143R HUSKY BRUSH CUTTER", price: 3913.04 },
+        { code: "P044", name: "143R IGNITION COIL", price: 340.00 },
+        { code: "P045", name: "143R INNER SHAFT", price: 395.00 },
+        { code: "P046", name: "143R INSIKA BRUSH CUTTER (HEAVY-DUTY)", price: 3800.00 },
+        { code: "P047", name: "143R INSIKA BRUSH CUTTER MOTOR ONLY", price: 2500.00 },
+        { code: "P048", name: "143R LEFT HEAND", price: 95.00 },
+        { code: "P049", name: "143R MANIFOLD RUBBER", price: 95.00 },
+        { code: "P050", name: "143R MUFFLER", price: 300.00 },
+        { code: "P051", name: "143R NGUNI COMPLETE BRUSH CUTTER", price: 3500.00 },
+        { code: "P052", name: "143R NGUNI MOTOR ONLY", price: 2500.00 },
+        { code: "P053", name: "143R OUTER SHAFT", price: 420.00 },
+        { code: "P054", name: "143R PISTON KIT", price: 290.00 },
+        { code: "P055", name: "143R PISTON RINGS", price: 95.00 },
+        { code: "P056", name: "143R PLASTIC COVER", price: 250.00 },
+        { code: "P057", name: "143R PULL START COLLAR", price: 50.00 },
+        { code: "P058", name: "143R PULL STARTER (BOW)", price: 300.00 },
+        { code: "P059", name: "143R PULL STARTER (WIRE)", price: 300.00 },
+        { code: "P060", name: "143R ROLLER BEARING", price: 145.00 },
+        { code: "P061", name: "143R STARTER CUP ROUND", price: 95.00 },
+        { code: "P062", name: "143R STARTER CUP SQUARE", price: 95.00 },
+        { code: "P063", name: "143R STILLETTO MOTOR ONLY", price: 2500.00 },
+        { code: "P064", name: "143R TANAKA COMPLETE BRUSH CUTTER (HEAVY-DUTY)", price: 3799.00 },
+        { code: "P065", name: "143R THROTTLE TRIGGER ASSEMBLY", price: 300.00 },
+        { code: "P066", name: "143R-CLUTCH SHOE", price: 150.00 },
+        { code: "P067", name: "143R-FLY WHEEL KEY", price: 80.00 },
+        { code: "P068", name: "143R-PISTON SUPPOTERS", price: 45.00 },
+        { code: "P069", name: "143RFUEL PIPE ASSEMBLY", price: 90.00 },
+        { code: "P070", name: "150MM COMBINATION PLIER", price: 150.00 },
+        { code: "P071", name: "156 HONDA OIL CAP", price: 210.00 },
+        { code: "P072", name: "2 STROKE 5L STIHL (RED)", price: 559.99 },
+        { code: "P073", name: "2 STROKE TANAKA (1L)", price: 140.00 },
+        { code: "P074", name: "2-STROKE FUCHS 200ML", price: 45.00 },
+        { code: "P075", name: "2-STROKE OIL FUCHS (500ML)", price: 55.00 },
+        { code: "P076", name: "2.0MM X 100M (ROUND DONUT ROLL)", price: 135.00 },
+        { code: "P077", name: "2.4MM X 2KG X 280M COMPLETE ROLL (SQUARE ORANGE)", price: 500.00 },
+        { code: "P078", name: "2.5MM X 10M (ROUND DONUT ROLL)", price: 15.00 },
+        { code: "P079", name: "2.5MM X 180M (MEROON)", price: 390.00 },
+        { code: "P080", name: "2.5MM X 2KG X 315M COMPLETE ROLL (ROUND WHITE)", price: 450.00 },
+        { code: "P081", name: "2.7MM X 10M READY ROLL (SQAURE ORANGE)", price: 40.00 },
+        { code: "P082", name: "2.7MM X 15M (ROUND DONUT ROLL)", price: 50.00 },
+        { code: "P083", name: "2.7MM X 2KG COMPLETE ROLL (ROUND RED)", price: 450.00 },
+        { code: "P084", name: "2.8MM X 2KG X 160M (SQUARE ORANGE)", price: 540.00 },
+        { code: "P085", name: "2.8MM X 2KG X 265M COMPLETE ROLL (ROUND WHITE)", price: 510.00 },
+        { code: "P086", name: "20 INCH X 325 X 058 X 76 LINKS (52CC/ 45CC CHAINSAW)", price: 490.00 },
+        { code: "P087", name: "200 X 4.0MM X 3/8 CHAINSAW FILE", price: 45.00 },
+        { code: "P088", name: "200 X 4.8MM X 325 CHAINSAW FILE", price: 35.00 },
+        { code: "P089", name: "200 X 5.2MM X 3/8 CHAINSAW FILE", price: 45.00 },
+        { code: "P090", name: "20L RAW PETROL", price: 500.00 },
+        { code: "P091", name: "25CC CYLINDER KIT", price: 680.00 },
+        { code: "P092", name: "25CC PETROL HEDGE TRIMMER STILLETTO HT250 630MM BLADE", price: 3800.00 },
+        { code: "P093", name: "25CC PISTON ONLY", price: 320.00 },
+        { code: "P094", name: "26CC CLUTCH SHOE", price: 240.00 },
+        { code: "P095", name: "26CC PULL START", price: 320.00 },
+        { code: "P096", name: "26MM CLUTCH HOUSE (7 SPLINE)", price: 480.00 },
+        { code: "P097", name: "26MM CLUTCH HOUSE (9 SPLINE)", price: 460.00 },
+        { code: "P098", name: "26MM OUTER SHAFT FITS", price: 380.00 },
+        { code: "P099", name: "288XP CLUTCH DRUM( FITS 281,394XP)", price: 420.00 },
+        { code: "P100", name: "28MM CLUTCH HOUSE (9 SPLINE)", price: 480.00 },
+        { code: "P101", name: "28MM OUTER SHAFT", price: 390.00 },
+        { code: "P102", name: "2STROKE 100ML HUSQVARNA", price: 29.99 },
+        { code: "P103", name: "3 POINT PLUG (BLACK)", price: 60.00 },
+        { code: "P104", name: "3 POINT PLUG (RED)", price: 95.00 },
+        { code: "P105", name: "3 POINT PLUG (WHITE)", price: 60.00 },
+        { code: "P106", name: "3.0MM X 10M (SQUARE DONUT ROLL)", price: 50.00 },
+        { code: "P107", name: "3.0MM X 10M (TWISTED DONUT ROLL)", price: 60.00 },
+        { code: "P108", name: "3.0MM X 2KG X 245M COMPLETE ROLL (ROUND YELLOW)", price: 530.00 },
+        { code: "P109", name: "3.5MM PRE CUT (100 PIECES)", price: 90.00 },
+        { code: "P110", name: "3.5MM X 2KG X 160M (ROUND MAROON)", price: 540.00 },
+        { code: "P111", name: "3.5MM X 2KG X 160M (TWISTED LIME COLOR)", price: 495.00 },
+        { code: "P112", name: "3.OMM X 2KG COMPLETE ROLL (ROUND RED)", price: 480.00 },
+        { code: "P113", name: "3/8 CHAIN LINK (PER SET)", price: 60.00 },
+        { code: "P114", name: "3/8 X 043 X 50DL 14 INCH GUIDE BAR (STIHL) - MS170", price: 620.00 },
+        { code: "P115", name: "3/8 X 063 X 56DL 15 INCH GUIDE BAR (STIHL)", price: 400.00 },
+        { code: "P116", name: "3/8 X O63 X 64DL 18 INCH GUIDE BAR", price: 400.00 },
+        { code: "P117", name: "3/8X0.0043X44DL - 12 INCH", price: 620.00 },
+        { code: "P118", name: "325 CHAIN LINK (PER SET)", price: 60.00 },
+        { code: "P119", name: "325 X 058 X 76DL GUIDE BAR 20 INCH", price: 420.00 },
+        { code: "P120", name: "325 X 063 X 56DL 14 INCH GUIDE BAR", price: 695.00 },
+        { code: "P121", name: "33CC (12 X 22 X 7) OIL SEAL EACH", price: 75.00 },
+        { code: "P122", name: "33CC AIR FILTER ASSEMBLY", price: 220.00 },
+        { code: "P123", name: "33CC CLUTCH HOUSING", price: 380.00 },
+        { code: "P124", name: "33CC CRANK GASKET", price: 40.00 },
+        { code: "P125", name: "33CC CYLINDER KIT", price: 720.00 },
+        { code: "P126", name: "33CC CYLINDER ONLY", price: 575.00 },
+        { code: "P127", name: "33CC EXHAUST GASKET", price: 40.00 },
+        { code: "P128", name: "33CC FLYWHEEL", price: 420.00 },
+        { code: "P129", name: "33CC FUEL TANK", price: 320.00 },
+        { code: "P130", name: "33CC GASKET SET", price: 82.61 },
+        { code: "P131", name: "33CC IGNITION COIL", price: 495.00 },
+        { code: "P132", name: "33CC MANIFOLD GASKET", price: 40.00 },
+        { code: "P133", name: "33CC MUFFLER", price: 360.00 },
+        { code: "P134", name: "33CC PISTON KIT", price: 365.00 },
+        { code: "P135", name: "33CC PISTON RINGS", price: 95.00 },
+        { code: "P136", name: "33CC ROLLER BEARING", price: 85.00 },
+        { code: "P137", name: "350 HUSKY CLUTCH SHOES CHAINSAW", price: 380.00 },
+        { code: "P138", name: "38CC CHAINSAW PULL START", price: 475.00 },
+        { code: "P139", name: "4-STROKE INLET FUEL FILTER", price: 60.00 },
+        { code: "P140", name: "40CC RYOBI CHAINSAW", price: 1600.00 },
+        { code: "P141", name: "43CC (15 X 30 X 7) OIL SEAL EACH", price: 60.00 },
+        { code: "P142", name: "43CC 7 SPLINE GEARBOX X 26MM", price: 750.00 },
+        { code: "P143", name: "43CC ADENDORFF COMPLETE BRUSHCUTTER (HOME-USE)", price: 3000.00 },
+        { code: "P144", name: "43CC ADENDORFF MOTOR ONLY", price: 1699.00 },
+        { code: "P145", name: "43CC AIR FILTER ASSEMBLY", price: 220.00 },
+        { code: "P146", name: "43CC AIR FILTER SPONGE", price: 60.00 },
+        { code: "P147", name: "43CC AIR FILTER SPONGE (ROUND)", price: 45.00 },
+        { code: "P148", name: "43CC ARBOUR NUT", price: 95.00 },
+        { code: "P149", name: "43CC BLADE GUIDE (26MM)", price: 180.00 },
+        { code: "P150", name: "43CC BLADE GUIDE (28MM)", price: 199.00 },
+        { code: "P151", name: "43CC BLADE GUIDE (PLASTIC)", price: 120.00 },
+        { code: "P152", name: "43CC BUSHM HOG MOTOR ONLY", price: 1500.00 },
+        { code: "P153", name: "43CC CARBURETOR", price: 475.00 },
+        { code: "P154", name: "43CC CLUTCH BOLTS SET", price: 80.00 },
+        { code: "P155", name: "43CC CLUTCH DRUM ONLY", price: 180.00 },
+        { code: "P156", name: "43CC CLUTCH SHOE", price: 200.00 },
+        { code: "P157", name: "43CC CLUTCH SPRING (SINGLE)", price: 60.00 },
+        { code: "P158", name: "43CC CLUTCH WASHER (SINGLE)", price: 15.00 },
+        { code: "P159", name: "43CC COLLER NUT", price: 45.00 },
+        { code: "P160", name: "43CC COMPLETE SHAFT ASSEMBLY", price: 1450.00 },
+        { code: "P161", name: "43CC CRANK BEARING SET", price: 120.00 },
+        { code: "P162", name: "43CC CRANK CASE COMPLETE", price: 740.00 },
+        { code: "P163", name: "43CC CYLINDER KIT", price: 695.00 },
+        { code: "P164", name: "43CC CYLINDER ONLY", price: 490.00 },
+        { code: "P165", name: "43CC DIAPHRAGM KIT", price: 135.00 },
+        { code: "P166", name: "43CC DIAPHRAGM ONLY", price: 80.00 },
+        { code: "P167", name: "43CC EXHAUST COVER", price: 65.00 },
+        { code: "P168", name: "43CC FLY WHEEL", price: 490.00 },
+        { code: "P169", name: "43CC FLYWHEEL COVER", price: 130.00 },
+        { code: "P170", name: "43CC FLYWHEEL KEY", price: 60.00 },
+        { code: "P171", name: "43CC FUEL CAP", price: 90.00 },
+        { code: "P172", name: "43CC FUEL PIPE ASSEMBLY", price: 90.00 },
+        { code: "P173", name: "43CC FUEL TANK GROMMET", price: 60.00 },
+        { code: "P174", name: "43CC FUEL TANK HOLDER", price: 160.00 },
+        { code: "P175", name: "43CC FUEL TANK SUPPORT RUBBERS", price: 20.00 },
+        { code: "P176", name: "43CC FUEL TANK(T2)", price: 210.00 },
+        { code: "P177", name: "43CC GASKET SET", price: 90.00 },
+        { code: "P178", name: "43CC GEARBOX 9 SPLINE X 26MM", price: 760.00 },
+        { code: "P179", name: "43CC GEARBOX 9 SPLINE X 28MM", price: 760.00 },
+        { code: "P180", name: "43CC GEARBOX CUP X 9 SPLINE", price: 85.00 },
+        { code: "P181", name: "43CC GLADE MOTOR ONLY", price: 2799.00 },
+        { code: "P182", name: "43CC GRIP HAND HANDLE", price: 30.00 },
+        { code: "P183", name: "43CC HANDLE SPRING", price: 30.00 },
+        { code: "P184", name: "43CC HARNESS HANGER", price: 110.00 },
+        { code: "P185", name: "43CC IGNITION COIL", price: 200.00 },
+        { code: "P186", name: "43CC IGNITION COIL ON/OFF WIRES", price: 45.00 },
+        { code: "P187", name: "43CC INNER SHAFT", price: 320.00 },
+        { code: "P188", name: "43CC INNER SHAFT GEARBOX GEAR", price: 390.00 },
+        { code: "P189", name: "43CC INNER SHAFT RUBBER", price: 60.00 },
+        { code: "P190", name: "43CC INSIKA BRUSH CUTTER (HEAVY-DUTY)", price: 2500.00 },
+        { code: "P191", name: "43CC INSIKA BRUSH CUTTER (HOME-USE)", price: 2200.00 },
+        { code: "P192", name: "43CC INSIKA BRUSH CUTTER MOTOR ONLY", price: 1700.00 },
+        { code: "P193", name: "43CC LEFT HAND", price: 95.00 },
+        { code: "P194", name: "43CC MANIFOLD RUBBER", price: 110.00 },
+        { code: "P195", name: "43CC MUFFLER", price: 340.00 },
+        { code: "P196", name: "43CC MUFFLER COVER", price: 90.00 },
+        { code: "P197", name: "43CC NYLON HEAD SPRING", price: 60.00 },
+        { code: "P198", name: "43CC OUTER SHAFT ASSEMBLY", price: 620.00 },
+        { code: "P199", name: "43CC OUTER SHAFT COVER (SPONGE)", price: 45.00 },
+        { code: "P200", name: "43CC PISTON KIT", price: 235.00 },
+        { code: "P201", name: "43CC PISTON ONLY", price: 200.00 },
+        { code: "P202", name: "43CC PISTON RINGS", price: 95.00 },
+        { code: "P203", name: "43CC PRIMER BULB", price: 45.00 },
+        { code: "P204", name: "43CC PULL START (BOW)", price: 210.00 },
+        { code: "P205", name: "43CC PULL START (WIRE)", price: 210.00 },
+        { code: "P206", name: "43CC PULL START PAWL", price: 45.00 },
+        { code: "P207", name: "43CC REWIND SPRING", price: 180.00 },
+        { code: "P208", name: "43CC ROLLER BEARING", price: 90.00 },
+        { code: "P209", name: "43CC RUBBER WASHER", price: 15.00 },
+        { code: "P210", name: "43CC RYOBI BRUSH CUTTER (HOME-USE)", price: 2300.00 },
+        { code: "P211", name: "43CC RYOBI SPLIT COMPLETE SHAFT WITH INNER DRIVE SHAFT", price: 1350.00 },
+        { code: "P212", name: "43CC STARTER CUP ROUND", price: 60.00 },
+        { code: "P213", name: "43CC STATER PULLY / ROTOR", price: 86.96 },
+        { code: "P214", name: "43CC STOP SWITCH BUTTON WITH WIRES", price: 110.00 },
+        { code: "P215", name: "43CC THROTTLE TRIGGER ASSEMBLY", price: 270.00 },
+        { code: "P216", name: "43CC TOP COVER / CYLINDER COVER", price: 95.00 },
+        { code: "P217", name: "43CC TOP COVER 02", price: 50.00 },
+        { code: "P218", name: "43CC TRIGGER THROTTLE UNIT", price: 35.00 },
+        { code: "P219", name: "43CC TRIMTECH BRUSH CUTTER (HOME-USE)", price: 2300.00 },
+        { code: "P220", name: "43CC TRIMTECH MOTOR ONLY", price: 1500.00 },
+        { code: "P221", name: "45CC & 52CC CARB FOR CHAINSAWS", price: 560.00 },
+        { code: "P222", name: "45CC BASE GASKET", price: 50.00 },
+        { code: "P223", name: "45CC BRAKE ASSEMBLY", price: 480.00 },
+        { code: "P224", name: "45CC CHAIN ADJUSTER", price: 50.00 },
+        { code: "P225", name: "45CC CLUTCH SHOE", price: 182.61 },
+        { code: "P226", name: "45CC DIAPHRAGM KIT", price: 200.00 },
+        { code: "P227", name: "45CC FUEL TANK VENT", price: 50.00 },
+        { code: "P228", name: "45CC HYPER TOUGH CHAINSAW", price: 1700.00 },
+        { code: "P229", name: "45CC IGNITION COIL", price: 380.00 },
+        { code: "P230", name: "45CC LUBE OIL PIPE", price: 60.87 },
+        { code: "P231", name: "45CC MAN-SLEEVE", price: 45.00 },
+        { code: "P232", name: "45CC MANIFOLD COVER", price: 200.00 },
+        { code: "P233", name: "45CC MANIFOLD RUBBER", price: 130.00 },
+        { code: "P234", name: "45CC OIL PUMP", price: 230.00 },
+        { code: "P235", name: "45CC PULL START", price: 380.00 },
+        { code: "P236", name: "45CC STRAMM CHAINSAW", price: 2500.00 },
+        { code: "P237", name: "50CC TANAKA CHAINSAW", price: 3599.00 },
+        { code: "P238", name: "52CC AIR FILTER (CHAINSAW)", price: 60.87 },
+        { code: "P239", name: "52CC AIR FILTER (ROUND/SQUARE)", price: 80.00 },
+        { code: "P240", name: "52CC BASE GASKET CHAINSAW", price: 50.00 },
+        { code: "P241", name: "52CC CHAIN COVER ASSEMBLY", price: 510.00 },
+        { code: "P242", name: "52CC CHAINSAW CLUTCH SHOE", price: 200.00 },
+        { code: "P243", name: "52CC CLUTCH DRUM CHAINSAW", price: 295.00 },
+        { code: "P244", name: "52CC CYLINDER KIT", price: 695.00 },
+        { code: "P245", name: "52CC CYLINDER KIT CHAINSAW", price: 600.00 },
+        { code: "P246", name: "52CC CYLINDER ONLY", price: 440.00 },
+        { code: "P247", name: "52CC FUEL CAP (CHAINSAW)", price: 110.00 },
+        { code: "P248", name: "52CC GASKET SET ( CHAINSAW)", price: 70.00 },
+        { code: "P249", name: "52CC HUSKY BRUSHCUTTER", price: 3199.00 },
+        { code: "P250", name: "52CC HUSKY CHAINSAW", price: 3200.00 },
+        { code: "P251", name: "52CC HUSKY MOTOR ONLY", price: 2199.00 },
+        { code: "P252", name: "52CC HYPER TOUGH (MOTOR ONLY)", price: 1800.00 },
+        { code: "P253", name: "52CC HYPER TOUGH BRUSH CUTTER", price: 2500.00 },
+        { code: "P254", name: "52CC INSIKA CHAINSAW", price: 2499.00 },
+        { code: "P255", name: "52CC PISTON KIT", price: 230.00 },
+        { code: "P256", name: "52CC PISTON RINGS", price: 90.00 },
+        { code: "P257", name: "52CC POWER PRO CHAINSAW", price: 3199.00 },
+        { code: "P258", name: "52CC ROLLER BEARING", price: 120.00 },
+        { code: "P259", name: "52CC STILLETTO BRUSHCUTTER", price: 3200.00 },
+        { code: "P260", name: "52CC STILLETTO CHAINSAW", price: 3199.00 },
+        { code: "P261", name: "52CC TANAKA CHAINSAW", price: 3200.00 },
+        { code: "P262", name: "52CC WILLOW CHAINSAW", price: 3000.00 },
+        { code: "P263", name: "52CC WORM GEAR", price: 120.00 },
+        { code: "P264", name: "541RS INSIKA MOTOR ONLY", price: 2500.00 },
+        { code: "P265", name: "541RS PULL STARTER", price: 330.00 },
+        { code: "P266", name: "541RS WILLOW BRUSH CUTTER", price: 4500.00 },
+        { code: "P267", name: "5MM X 100M ROLL", price: 750.00 },
+        { code: "P268", name: "60CC HYPER TOUGH CHAINSAW", price: 710.00 },
+        { code: "P269", name: "61CC AIR FILTER", price: 190.00 },
+        { code: "P270", name: "61CC BASE GASKET", price: 30.00 },
+        { code: "P271", name: "61CC BRAKE COVER", price: 420.00 },
+        { code: "P272", name: "61CC CARBURATTOR", price: 599.99 },
+        { code: "P273", name: "61CC CHAIN ADJUSTER ASSEMBLY", price: 95.00 },
+        { code: "P274", name: "61CC CHAINSAW", price: 5300.00 },
+        { code: "P275", name: "61CC CLUTCH SHOE", price: 330.00 },
+        { code: "P276", name: "61CC CYLINDER KIT", price: 1295.00 },
+        { code: "P277", name: "61CC MUFFLER BRACKET & BOLTS", price: 280.00 },
+        { code: "P278", name: "61CC PISTON KIT", price: 480.00 },
+        { code: "P279", name: "61CC WILLOW CHAINSAW", price: 6000.00 },
+        { code: "P280", name: "62CC AIR FILTER", price: 165.00 },
+        { code: "P281", name: "62CC CYLINDER KIT", price: 800.00 },
+        { code: "P282", name: "62CC GASKET SET", price: 80.00 },
+        { code: "P283", name: "7X19X6 BEARING 607", price: 80.00 },
+        { code: "P284", name: "7X22X7 BEARING 608", price: 60.00 },
+        { code: "P285", name: "7X24X8 BEARING 609", price: 60.00 },
+        { code: "P286", name: "9-PIECE HEX KEY SET", price: 94.99 },
+        { code: "P287", name: "9X26X5 BEARING 629", price: 60.00 },
+        { code: "P288", name: "AE500 (15 X 35 X 7) OIL SEAL EACH", price: 95.00 },
+        { code: "P289", name: "AE500 BASE GASKET", price: 60.00 },
+        { code: "P290", name: "AE500 CLUTCH SHOE", price: 260.00 },
+        { code: "P291", name: "AE500 CRANK SHAFT", price: 1500.00 },
+        { code: "P292", name: "AE500 FUEL TANK", price: 700.00 },
+        { code: "P293", name: "AE500 GASKET SET", price: 110.00 },
+        { code: "P294", name: "AE500 LEVER THROTTLE TRIGGER", price: 250.00 },
+        { code: "P295", name: "AE500 PISTON ONLY", price: 420.00 },
+        { code: "P296", name: "AIR COMPRESSOR GENERAL LABOUR PER HOUR", price: 320.00 },
+        { code: "P297", name: "AIR COMPRESSOR TOP GASKET", price: 35.00 },
+        { code: "P298", name: "AIR FILTER COVER BREATHER PIPE", price: 250.00 },
+        { code: "P299", name: "AIR FILTER SPONGE", price: 40.00 },
+        { code: "P300", name: "ALLEN KEY (SIZE 5)", price: 50.00 },
+        { code: "P301", name: "ALLEN KEY HEX (SIZE4)", price: 45.00 },
+        { code: "P302", name: "APRON HEAVY DUTY PVC - BLUE", price: 110.00 },
+        { code: "P303", name: "BARRON T-SHIRT ALL SIZES", price: 250.00 },
+        { code: "P304", name: "BASE GASKET 143R", price: 30.00 },
+        { code: "P305", name: "BATTERY CHARGING", price: 45.00 },
+        { code: "P306", name: "BEARING 6000Z", price: 80.00 },
+        { code: "P307", name: "BEARING 6202", price: 90.00 },
+        { code: "P308", name: "BIG GENERATOR GENERAL LABOUR PER HOUR", price: 460.00 },
+        { code: "P309", name: "BLACK BULL MAN TABLETS", price: 60.00 },
+        { code: "P310", name: "BLADE 2T 70x250x1.4 x 25MM HOLE", price: 170.00 },
+        { code: "P311", name: "BLADE 3T X 255 X 1.4 X 25MM HOLE", price: 130.00 },
+        { code: "P312", name: "BLADE AND BOLT FOR LAWNMOWER", price: 150.00 },
+        { code: "P313", name: "BLADE GUIDE BRACKET", price: 120.00 },
+        { code: "P314", name: "BLADE GUIDE HOLDER", price: 85.00 },
+        { code: "P315", name: "BLOW COMPRESSOR GUN 100MM", price: 80.00 },
+        { code: "P316", name: "BOILER SUITE (NAVY COLOUR)", price: 450.00 },
+        { code: "P317", name: "BOLTS", price: 13.00 },
+        { code: "P318", name: "BOSS ASSEMBLY 139CC LAWNMOWER", price: 305.00 },
+        { code: "P319", name: "BOSS ASSEMBLY LAWNMOWER", price: 180.00 },
+        { code: "P320", name: "BRASS EYELET (each)", price: 30.00 },
+        { code: "P321", name: "BRASS SPIT PIN", price: 30.00 },
+        { code: "P322", name: "BRUSH CUTTER GENERAL LABOUR PER HOUR", price: 340.00 },
+        { code: "P323", name: "BRUSH CUTTER SHAFT COVER", price: 45.00 },
+        { code: "P324", name: "BRUSH CUTTER STEEL WHEEL", price: 290.00 },
+        { code: "P325", name: "BRUSH SET (01)", price: 90.00 },
+        { code: "P326", name: "BRUSH SET (02)", price: 90.00 },
+        { code: "P327", name: "BRUSH SET (03)", price: 90.00 },
+        { code: "P328", name: "BRUSH SET (04)", price: 90.00 },
+        { code: "P329", name: "BRUSH SET (05)", price: 140.00 },
+        { code: "P330", name: "BRUSH SET (06)", price: 100.00 },
+        { code: "P331", name: "BRUSH SET (07)", price: 90.00 },
+        { code: "P332", name: "BRUSH SET (08)", price: 90.00 },
+        { code: "P333", name: "BRUSH SET (09)", price: 90.00 },
+        { code: "P334", name: "BRUSH SET (10)", price: 130.00 },
+        { code: "P335", name: "BRUSH SET (11)", price: 90.00 },
+        { code: "P336", name: "BRUSH SET (12)", price: 90.00 },
+        { code: "P337", name: "BRUSH SET (13)", price: 90.00 },
+        { code: "P338", name: "BRUSH SET (14)", price: 90.00 },
+        { code: "P339", name: "BRUSH SET (15)", price: 135.00 },
+        { code: "P340", name: "BRUSH SET (16)", price: 90.00 },
+        { code: "P341", name: "BRUSHCUTTER HARNESS (HARD PLASTIC)", price: 350.00 },
+        { code: "P342", name: "BRUSHCUTTER HARNESS (SINGLE STRAP)", price: 150.00 },
+        { code: "P343", name: "BRUSHCUTTER HARNESS (SOFT SPONGE)", price: 250.00 },
+        { code: "P344", name: "BUMB HEAD - 43CC", price: 300.00 },
+        { code: "P345", name: "BUMB HEAD STIHL - FS510C", price: 640.00 },
+        { code: "P346", name: "BUMP HEAD - FS280", price: 540.00 },
+        { code: "P347", name: "BUMP HEAD (BLACK) ADENDORFF", price: 300.00 },
+        { code: "P348", name: "BUMP HEAD (BLACK)-FS250", price: 510.00 },
+        { code: "P349", name: "BUMP HEAD (ROVER-BLACK)-43CC", price: 350.00 },
+        { code: "P350", name: "BUMP HEAD FS235 STIHL", price: 520.00 },
+        { code: "P351", name: "BUMP HEAD KIT (BLACK&BLUE-43CC)", price: 240.00 },
+        { code: "P352", name: "BUMP HEAD ORANGE - 43CC", price: 180.00 },
+        { code: "P353", name: "BUMPHEAD (BLACK&BLUE FOR 43CC B/CUTTERS", price: 190.00 },
+        { code: "P354", name: "BUMPHEAD (ORANGE&SILVER) 43CC", price: 400.00 },
+        { code: "P355", name: "BX525 BASE GASKET", price: 60.00 },
+        { code: "P356", name: "BX525 CARB HUSQVARNA BLOWER", price: 620.00 },
+        { code: "P357", name: "BX525 CYLINDER KIT HUSQVARNA", price: 1250.00 },
+        { code: "P358", name: "BX525 GASKET SET HUSQVARNA BLOWER", price: 120.00 },
+        { code: "P359", name: "C CLIP 01 (SMALL)", price: 10.00 },
+        { code: "P360", name: "C-CLIP (SIZE 10)", price: 10.00 },
+        { code: "P361", name: "C-CLIP (SIZE 14)", price: 10.00 },
+        { code: "P362", name: "CAPACITOR 20UF", price: 180.00 },
+        { code: "P363", name: "CAPACITOR 30UF", price: 210.00 },
+        { code: "P364", name: "CAPACITOR 40UF", price: 300.00 },
+        { code: "P365", name: "CARB CLEANER 350ML", price: 110.00 },
+        { code: "P366", name: "CARB CLEANER 500ML", price: 90.00 },
+        { code: "P367", name: "CARB CLEANING COST", price: 80.00 },
+        { code: "P368", name: "CARBON BRUSH HOLDR (12MM)", price: 10.00 },
+        { code: "P369", name: "CHAIN (3/8 X 050 X 44DL)", price: 290.00 },
+        { code: "P370", name: "CHAIN (3/8 X 050 X 52DL)", price: 385.00 },
+        { code: "P371", name: "CHAIN (3/8 X 050 X 57DL)", price: 360.00 },
+        { code: "P372", name: "CHAIN (3/8 X 050 X 66DL)", price: 420.00 },
+        { code: "P373", name: "CHAIN (3/8 X 063 X 56DL)", price: 390.00 },
+        { code: "P374", name: "CHAIN (3/8 X 063 X 57DL)", price: 370.00 },
+        { code: "P375", name: "CHAIN (3/8 X 063 X 64DL)", price: 320.00 },
+        { code: "P376", name: "CHAIN (3/8 X 063 X 84DL)", price: 450.00 },
+        { code: "P377", name: "CHAIN (3/8 X058X50DL)", price: 320.00 },
+        { code: "P378", name: "CHAIN (3/8X063X60DL)", price: 380.00 },
+        { code: "P379", name: "CHAIN (325 X 050 X 64DL)", price: 376.00 },
+        { code: "P380", name: "CHAIN (325 X 058 X 64DL)", price: 310.00 },
+        { code: "P381", name: "CHAIN (325 X 058 X 72DL)", price: 360.00 },
+        { code: "P382", name: "CHAIN (325 X 058 X 76DL)", price: 340.00 },
+        { code: "P383", name: "CHAIN (325 X 56DL) FITS MS250", price: 350.00 },
+        { code: "P384", name: "CHAIN LINKING LABOUR", price: 90.00 },
+        { code: "P385", name: "CHAIN SHARPENING PER LINK", price: 2.00 },
+        { code: "P386", name: "CHAINSAW CHAIN SHARPNER", price: 1985.00 },
+        { code: "P387", name: "CHAINSAW GENERAL LABOUR PER HOUR", price: 340.00 },
+        { code: "P388", name: "CHAINSAW SPROCKET (325/7)", price: 120.00 },
+        { code: "P389", name: "CHAO JIMENGNAN MAN TABLETS", price: 45.00 },
+        { code: "P390", name: "CHOKE LEVER - UNIVERSAL", price: 65.00 },
+        { code: "P391", name: "CHUCK KEY DRILLER (10MM)", price: 40.00 },
+        { code: "P392", name: "CHUCK KEY DRILLER (13MM)", price: 80.00 },
+        { code: "P393", name: "CLUTCH SPRING (SINGLE)", price: 45.00 },
+        { code: "P394", name: "COMPLETE CARB (NEW TYPE)", price: 620.00 },
+        { code: "P395", name: "COMPLETE MUFFLER/EXHAUST GX390", price: 850.00 },
+        { code: "P396", name: "COMPRESSOR AIR HOSE (1M)", price: 80.00 },
+        { code: "P397", name: "CUTTER KNIFE 18 MM", price: 190.00 },
+        { code: "P398", name: "CYLINDER KIT REPLACEMENT", price: 190.00 },
+        { code: "P399", name: "DECARBONISATION OF EXHAUST PORT", price: 120.00 },
+        { code: "P400", name: "DIESEL ENGINE OIL (15W-40)", price: 60.00 },
+        { code: "P401", name: "DONUT ROLL 3.0MM X 15M", price: 50.00 },
+        { code: "P402", name: "DOT SAFETY BOOTS", price: 450.00 },
+        { code: "P403", name: "DOT SAFETY BOOTS LONG (BLACK)", price: 680.00 },
+        { code: "P404", name: "DRILL SMALL GEAR (SINGLE)", price: 130.00 },
+        { code: "P405", name: "DRILL/GRINDER GENERAL LABOUR PER HOUR", price: 120.00 },
+        { code: "P406", name: "EAR MUFFS (RED COLOR)", price: 65.00 },
+        { code: "P407", name: "EAR PLUG", price: 45.00 },
+        { code: "P408", name: "EB-500 GEAR SHAFT", price: 320.00 },
+        { code: "P409", name: "EB260 INSIKA BLOWER", price: 2800.00 },
+        { code: "P410", name: "EB430 INSIKA BROWER", price: 3500.00 },
+        { code: "P411", name: "ELECTRIC CABLE PER METER (1.5MM)", price: 20.00 },
+        { code: "P412", name: "ELECTRIC CABLE PER METER (2.5MM)", price: 30.00 },
+        { code: "P413", name: "ELECTRIC CABLE PER METER (O.5MM)", price: 30.00 },
+        { code: "P414", name: "ELECTRIC GATE INSPECTION INCLUDING TRANSPORTATION FEE", price: 320.00 },
+        { code: "P415", name: "EY20 CARB ROBIN", price: 350.00 },
+        { code: "P416", name: "EYELET U SHAPED", price: 35.00 },
+        { code: "P417", name: "F15AMPS X 250V", price: 25.00 },
+        { code: "P418", name: "FACE SHIELD WITH MASH ONLY", price: 210.00 },
+        { code: "P419", name: "FIXING SEAT RUBBER - PAIR", price: 25.00 },
+        { code: "P420", name: "FIXING SEAT RUBBER - PAIR", price: 65.00 },
+        { code: "P421", name: "FS 85 CYLINDER KIT", price: 965.00 },
+        { code: "P422", name: "FS160 CYLINDER KIT", price: 850.00 },
+        { code: "P423", name: "FS160 CYLINDER ONLY", price: 519.00 },
+        { code: "P424", name: "FS160 MANIFOLD GASKET", price: 20.00 },
+        { code: "P425", name: "FS160 MUFFLER", price: 340.00 },
+        { code: "P426", name: "FS160 PISTON KIT", price: 300.00 },
+        { code: "P427", name: "FS160 PISTON RINGS", price: 110.00 },
+        { code: "P428", name: "FS230 BASE GASKET", price: 50.00 },
+        { code: "P429", name: "FS230 BLADE GUIDE", price: 220.00 },
+        { code: "P430", name: "FS230 COMPLETE CARB", price: 1100.00 },
+        { code: "P431", name: "FS230 CYLINDER KIT", price: 1890.00 },
+        { code: "P432", name: "FS230 GASKET SET", price: 260.00 },
+        { code: "P433", name: "FS230 IGNITION COIL", price: 1250.00 },
+        { code: "P434", name: "FS230 PISTON KIT", price: 780.00 },
+        { code: "P435", name: "FS230 PISTON RINGS (EACH)", price: 250.00 },
+        { code: "P436", name: "FS230 STIHL BRUSH CUTTER", price: 4800.00 },
+        { code: "P437", name: "FS250 (12 X 22 X 7) OIL SEAL EACH", price: 80.00 },
+        { code: "P438", name: "FS250 AIR FILTER", price: 90.00 },
+        { code: "P439", name: "FS250 AIR FILTER COVER", price: 210.00 },
+        { code: "P440", name: "FS250 ARBOUR NUT", price: 120.00 },
+        { code: "P441", name: "FS250 BASE GASKET", price: 50.00 },
+        { code: "P442", name: "FS250 CHOKE KNOB", price: 80.00 },
+        { code: "P443", name: "FS250 CLUTCH DRUM", price: 290.00 },
+        { code: "P444", name: "FS250 CLUTCH HOUSE", price: 450.00 },
+        { code: "P445", name: "FS250 CLUTCH SHOE", price: 250.00 },
+        { code: "P446", name: "FS250 CLUTCH SPRING", price: 40.00 },
+        { code: "P447", name: "FS250 COLLER NUT", price: 65.00 },
+        { code: "P448", name: "FS250 COMPLETE CARB (OLD TYPE)", price: 400.00 },
+        { code: "P449", name: "FS250 COMPLETE SHAFT", price: 2500.00 },
+        { code: "P450", name: "FS250 CYLINDER KIT", price: 950.00 },
+        { code: "P451", name: "FS250 CYLINDER ONLY", price: 460.00 },
+        { code: "P452", name: "FS250 DIAPHRAGM KIT", price: 145.00 },
+        { code: "P453", name: "FS250 EXHAUST", price: 320.00 },
+        { code: "P454", name: "FS250 FLYWHEEL NGUNI TYPE", price: 380.00 },
+        { code: "P455", name: "FS250 FUEL CAP", price: 140.00 },
+        { code: "P456", name: "FS250 FUEL HOSE SET", price: 150.00 },
+        { code: "P457", name: "FS250 FUEL PIPE (INLET) WITH GROMMET", price: 45.00 },
+        { code: "P458", name: "FS250 GASKET SET", price: 140.00 },
+        { code: "P459", name: "FS250 GEARBOX", price: 1300.00 },
+        { code: "P460", name: "FS250 GEARBOX (LESS)", price: 890.00 },
+        { code: "P461", name: "FS250 GEARBOX PLATE", price: 110.00 },
+        { code: "P462", name: "FS250 GEARBOX SHAFT GEAR (BOTTOM)", price: 195.00 },
+        { code: "P463", name: "FS250 HANDLE BAR", price: 210.00 },
+        { code: "P464", name: "FS250 HANDLE BAR MOUNT STIHL", price: 320.00 },
+        { code: "P465", name: "FS250 HARNESS HANGER", price: 390.00 },
+        { code: "P466", name: "FS250 IGNITION COIL", price: 400.00 },
+        { code: "P467", name: "FS250 MANIFOLD RUBBER", price: 95.00 },
+        { code: "P468", name: "FS250 MUFFLER GASKET", price: 35.00 },
+        { code: "P469", name: "FS250 NGUNI MOTOR ONLY", price: 3000.00 },
+        { code: "P470", name: "FS250 OUTER SHAFT", price: 410.00 },
+        { code: "P471", name: "FS250 PAWL SET", price: 90.00 },
+        { code: "P472", name: "FS250 PISTON KIT", price: 350.00 },
+        { code: "P473", name: "FS250 PISTON RINGS", price: 120.00 },
+        { code: "P474", name: "FS250 PRIMER BULB", price: 120.00 },
+        { code: "P475", name: "FS250 PULL START", price: 375.00 },
+        { code: "P476", name: "FS250 REWIND SPRING", price: 210.00 },
+        { code: "P477", name: "FS250 ROLLER BEARING", price: 120.00 },
+        { code: "P478", name: "FS250 ROPE ROTOR/STARTER PULLY", price: 65.00 },
+        { code: "P479", name: "FS250 SPUR BAVEL GEARBOX GEAR", price: 250.00 },
+        { code: "P480", name: "FS250 STIHL BRUSH CUTTER", price: 7680.00 },
+        { code: "P481", name: "FS250 THOTTLE TRIGGER CABLE", price: 360.00 },
+        { code: "P482", name: "FS250 THROTTLE TRIGGER ASSEMBLY", price: 640.00 },
+        { code: "P483", name: "FS250 TOP COVER", price: 390.00 },
+        { code: "P484", name: "FS250- CRANK BEARINGS (SET)", price: 160.00 },
+        { code: "P485", name: "FS250/FS120 CARB GASKET", price: 40.00 },
+        { code: "P486", name: "FS260 AIR FILTER", price: 140.00 },
+        { code: "P487", name: "FS280 (0 X 0 X 0) OIL SEAL EACH", price: 80.00 },
+        { code: "P488", name: "FS280 (12 X 32 X 7) OIL SEAL EACH", price: 95.00 },
+        { code: "P489", name: "FS280 AIR FILTER AUX", price: 95.00 },
+        { code: "P490", name: "FS280 AIR FILTER CASE", price: 21.00 },
+        { code: "P491", name: "FS280 AIR FILTER PLASTIC COVER", price: 150.00 },
+        { code: "P492", name: "FS280 ARBOUR NUT", price: 120.00 },
+        { code: "P493", name: "FS280 BASE GASKET", price: 30.00 },
+        { code: "P494", name: "FS280 CARBURETOR", price: 530.00 },
+        { code: "P495", name: "FS280 CHOKE KNOBE", price: 95.00 },
+        { code: "P496", name: "FS280 CLUTCH DRUM", price: 210.00 },
+        { code: "P497", name: "FS280 CLUTCH SHOE", price: 280.00 },
+        { code: "P498", name: "FS280 CLUTCH SRING", price: 90.00 },
+        { code: "P499", name: "FS280 COLLAR NUT", price: 75.00 },
+        { code: "P500", name: "FS280 CRANK BEARING", price: 180.00 },
+        { code: "P501", name: "FS280 CRANK GASKET", price: 40.00 },
+        { code: "P502", name: "FS280 CRANK SHAFT", price: 780.00 },
+        { code: "P503", name: "FS280 CYLINDER KIT", price: 800.00 },
+        { code: "P504", name: "FS280 DIAPHRAGM KIT", price: 160.00 },
+        { code: "P505", name: "FS280 FLYWHEEL", price: 650.00 },
+        { code: "P506", name: "FS280 FUEL CAP", price: 140.00 },
+        { code: "P507", name: "FS280 GASKET SET", price: 75.00 },
+        { code: "P508", name: "FS280 GEARBOX", price: 1380.00 },
+        { code: "P509", name: "FS280 GEARBOX PLATE/CUP", price: 120.00 },
+        { code: "P510", name: "FS280 GREASE NUT", price: 60.00 },
+        { code: "P511", name: "FS280 GUARD WASHER", price: 35.00 },
+        { code: "P512", name: "FS280 HANDLE BAR", price: 340.00 },
+        { code: "P513", name: "FS280 IGINITION COIL", price: 395.00 },
+        { code: "P514", name: "FS280 INNER SHAFT", price: 320.00 },
+        { code: "P515", name: "FS280 MAN.SLEEVE", price: 60.00 },
+        { code: "P516", name: "FS280 MANIFOLD RUBBER", price: 120.00 },
+        { code: "P517", name: "FS280 MUFFLER", price: 340.00 },
+        { code: "P518", name: "FS280 MUFFLER BOLTS", price: 25.00 },
+        { code: "P519", name: "FS280 OUTER SFHAFT", price: 480.00 },
+        { code: "P520", name: "FS280 PAWL SET", price: 90.00 },
+        { code: "P521", name: "FS280 PISTON KIT", price: 340.00 },
+        { code: "P522", name: "FS280 PISTON RINGS", price: 90.00 },
+        { code: "P523", name: "FS280 PULL STARTER", price: 320.00 },
+        { code: "P524", name: "FS280 ROLLER BEARING", price: 80.00 },
+        { code: "P525", name: "FS280 ROPE ROTOR", price: 80.00 },
+        { code: "P526", name: "FS280 SPUR BAVEL GEARBOX GEAR", price: 360.00 },
+        { code: "P527", name: "FS280 THROTTLE TRIGGER ASSEMBLE", price: 380.00 },
+        { code: "P528", name: "FS280 THROTTLE TRIGGER CABLE", price: 260.00 },
+        { code: "P529", name: "FS280 THRUST PLATE", price: 280.00 },
+        { code: "P530", name: "FS280 TOP COVER", price: 150.00 },
+        { code: "P531", name: "FS280-REWIND SPRING", price: 160.00 },
+        { code: "P532", name: "FS291 BRUSH CUTTER STIHL", price: 0.00 },
+        { code: "P533", name: "FS3001 STIHL BRUSH CUTTER", price: 3750.00 },
+        { code: "P534", name: "FS38 BRUSH CUTTER STIHL", price: 2500.00 },
+        { code: "P535", name: "FS450 AIR FILTER COVER", price: 395.00 },
+        { code: "P536", name: "FS450 BASE GASKET", price: 50.00 },
+        { code: "P537", name: "FS450 CRANKSHAFT STIHL", price: 950.00 },
+        { code: "P538", name: "FS450 CYLINDER KIT", price: 1250.00 },
+        { code: "P539", name: "FS450 CYLINDER ONLY", price: 800.00 },
+        { code: "P540", name: "FS450 PISTON KIT", price: 410.00 },
+        { code: "P541", name: "FS450 PISTON RINGS", price: 120.00 },
+        { code: "P542", name: "FS450 PULL START", price: 620.00 },
+        { code: "P543", name: "FS450 ROLLER BEARING", price: 120.00 },
+        { code: "P544", name: "FS450 THROTTLE CABLE(STIHL)", price: 490.00 },
+        { code: "P545", name: "FS450 THROTTLE HANDLE", price: 870.00 },
+        { code: "P546", name: "FS450-CARBURATOR", price: 850.00 },
+        { code: "P547", name: "FS450-CLUTCH HOUSE", price: 450.00 },
+        { code: "P548", name: "FS450/FS400/FS480 PISTON ONLY 42MM", price: 370.00 },
+        { code: "P549", name: "FS460 PISTON RINGS", price: 240.00 },
+        { code: "P550", name: "FS500 AIR FILTER ASSEMBLY", price: 240.00 },
+        { code: "P551", name: "FS500 COMPLETE CARB", price: 1200.00 },
+        { code: "P552", name: "FS500 CYLINDER KIT", price: 2800.00 },
+        { code: "P553", name: "FS500 DIAPHRAGM KIT", price: 160.00 },
+        { code: "P554", name: "FS500 EXHAUST GASKET", price: 40.00 },
+        { code: "P555", name: "FS500 PISTON KIT 44MM", price: 620.00 },
+        { code: "P556", name: "FS500 PISTON ONLY -44MM", price: 480.00 },
+        { code: "P557", name: "FS500 PISTON RINGS (EACH) - 44MM X 1.2MM", price: 200.00 },
+        { code: "P558", name: "FS500 PISTON RINGS (EACH) - 46MM X 1.2MM", price: 180.00 },
+        { code: "P559", name: "FS500 ROLLER BEARING", price: 120.00 },
+        { code: "P560", name: "FS500/510 IGNITION COIL", price: 1650.00 },
+        { code: "P561", name: "FS510C CARB STIHL", price: 1680.00 },
+        { code: "P562", name: "FS85 CARBURETOR", price: 820.00 },
+        { code: "P563", name: "FS85 CRANK GASKET", price: 60.00 },
+        { code: "P564", name: "FS85 DIAPHRAGM KIT", price: 350.00 },
+        { code: "P565", name: "FS85 OIL SEAL (12X22X5)", price: 45.00 },
+        { code: "P566", name: "FS85 OIL SEAL SET", price: 180.00 },
+        { code: "P567", name: "FS85 PISTON KIT", price: 530.00 },
+        { code: "P568", name: "FS85 PISTON RINGS", price: 280.00 },
+        { code: "P569", name: "FS85 THROTTLE CABLE ONLY", price: 180.00 },
+        { code: "P570", name: "FUEL CONTAINER 5L", price: 30.00 },
+        { code: "P571", name: "FUEL FILTER - LARGE (43CC,143R...)", price: 90.00 },
+        { code: "P572", name: "FUEL FILTER -SMALL (43CC,143R...)", price: 45.00 },
+        { code: "P573", name: "FUEL FUNNEL WITH STRAINER", price: 10.00 },
+        { code: "P574", name: "FUEL LINE(30CM) GENERATOR", price: 40.00 },
+        { code: "P575", name: "FUEL SHUT OFF VALVE (M10X1.25 HOLE SIZE)", price: 150.00 },
+        { code: "P576", name: "FUEL TANK REPLACEMENT KIT", price: 180.00 },
+        { code: "P577", name: "G1300P CON ROD", price: 380.00 },
+        { code: "P578", name: "G1300P EXHAUST VALVE", price: 350.00 },
+        { code: "P579", name: "G1300P VALVE SPRING WITH VALVE SEAT", price: 380.00 },
+        { code: "P580", name: "G1300P VALVE STEM SEAL", price: 110.00 },
+        { code: "P581", name: "GEARBOX GEAR (LONG BOTTOM GEAR)", price: 120.00 },
+        { code: "P582", name: "GEARBOX GEAR (ROUND INSIDE GEAR)", price: 150.00 },
+        { code: "P583", name: "GEARBOX GREASE (200ML)", price: 75.00 },
+        { code: "P584", name: "GEARBOX GREASE (250ML)", price: 60.00 },
+        { code: "P585", name: "GEARBOX GREASE (500ML)", price: 180.00 },
+        { code: "P586", name: "GEARBOX GREASE (5g)", price: 15.00 },
+        { code: "P587", name: "GEARBOX GREASING WORKSHOP", price: 20.00 },
+        { code: "P588", name: "GENERAL LABOUR PER HOUR", price: 220.00 },
+        { code: "P589", name: "GENERATOR AVR 2KW", price: 450.00 },
+        { code: "P590", name: "GENERATOR AVR 5KW (W-140MM)", price: 480.00 },
+        { code: "P591", name: "GENERATOR BRUSHES", price: 410.00 },
+        { code: "P592", name: "GENERATOR CAPACITOR (16UF", price: 150.00 },
+        { code: "P593", name: "GENERATOR FUEL FILTER (TANK TOP)", price: 120.00 },
+        { code: "P594", name: "GENERATOR HANDLE WITH ROPE 5.0 X 1.5M", price: 60.00 },
+        { code: "P595", name: "GENERATOR IGNITION KEY", price: 80.00 },
+        { code: "P596", name: "GENERATOR RAW FUEL 1L", price: 40.00 },
+        { code: "P597", name: "GENERATOR ROPE (PULL START ROPE) - 3MM X 1.5M", price: 15.00 },
+        { code: "P598", name: "GENERATOR ROPE(PULL START) ROPE) - 4MM X 1.5M", price: 10.00 },
+        { code: "P599", name: "GLASSES - BLACK", price: 50.00 },
+        { code: "P600", name: "GLASSES - WHITE", price: 50.00 },
+        { code: "P601", name: "GLASSES - YELLOW", price: 50.00 },
+        { code: "P602", name: "GRADE B (6201) RUBBER SEAL BALL BEARING", price: 90.00 },
+        { code: "P603", name: "GRINDER SWITCH BUTTON", price: 60.00 },
+        { code: "P604", name: "GS120 EXHAIST VALVE", price: 160.00 },
+        { code: "P605", name: "GUID BAR 24 INCH", price: 479.99 },
+        { code: "P606", name: "GUIDE BAR 16 INCH X 40CM STIHL", price: 620.00 },
+        { code: "P607", name: "GUIDE BAR 20 INCH (3/8 X 063 X 72DL)", price: 450.00 },
+        { code: "P608", name: "GX100 AIR FILTER UNIT", price: 180.00 },
+        { code: "P609", name: "GX100 EXHAUST VALVE", price: 250.00 },
+        { code: "P610", name: "GX100 GASKET SET", price: 180.00 },
+        { code: "P611", name: "GX100 IGNITION COIL", price: 500.00 },
+        { code: "P612", name: "GX100 INLET VALVE", price: 250.00 },
+        { code: "P613", name: "GX100 OIL CAP", price: 90.00 },
+        { code: "P614", name: "GX100 PISTON KIT", price: 620.00 },
+        { code: "P615", name: "GX100 PISTON RINGS SET", price: 180.00 },
+        { code: "P616", name: "GX100 PULL STARTER RAMMER GX100R8", price: 460.00 },
+        { code: "P617", name: "GX120 AIR FILTER/GX110", price: 110.00 },
+        { code: "P618", name: "GX120 DIAPHRAGM KIT", price: 185.00 },
+        { code: "P619", name: "GX120 FUEL CAP", price: 80.00 },
+        { code: "P620", name: "GX120 PISTON RING SET", price: 195.00 },
+        { code: "P621", name: "GX160 AIR CLEANER GASKET", price: 45.00 },
+        { code: "P622", name: "GX160 AIR FILTER", price: 210.00 },
+        { code: "P623", name: "GX160 AIR FILTER HOUSING", price: 210.00 },
+        { code: "P624", name: "GX160 CARB", price: 700.00 },
+        { code: "P625", name: "GX160 CARB GASKET", price: 45.00 },
+        { code: "P626", name: "GX160 CRANK BEARING SET (6205)", price: 100.00 },
+        { code: "P627", name: "GX160 CRANKCASE", price: 1420.00 },
+        { code: "P628", name: "GX160 CYLINDER HEAD", price: 600.00 },
+        { code: "P629", name: "GX160 DIPSTICK", price: 95.00 },
+        { code: "P630", name: "GX160 EXHAUST VALVE", price: 60.00 },
+        { code: "P631", name: "GX160 FUEL CAP GX110/GX200/160F/168F/168F-1", price: 90.00 },
+        { code: "P632", name: "GX160 GASKET SET", price: 180.00 },
+        { code: "P633", name: "GX160 GASKET VALVE COVER", price: 65.00 },
+        { code: "P634", name: "GX160 GOVERNOR SPRING (THICK)", price: 160.00 },
+        { code: "P635", name: "GX160 GOVERNOR SPRING (THIN)", price: 120.00 },
+        { code: "P636", name: "GX160 INTAKE VALVE", price: 60.00 },
+        { code: "P637", name: "GX160 MUFFLER GASKET", price: 30.00 },
+        { code: "P638", name: "GX160 PISTON KIT", price: 450.00 },
+        { code: "P639", name: "GX160 PISTON RINGS SET", price: 180.00 },
+        { code: "P640", name: "GX160 PULL START", price: 460.00 },
+        { code: "P641", name: "GX160 PULL STARTER PAWL PLASTIC", price: 150.00 },
+        { code: "P642", name: "GX160 PULL STARTER PAWL STEEL & PLASTIC", price: 190.00 },
+        { code: "P643", name: "GX160 PULL STARTER PAWL STEEL ONLY", price: 215.00 },
+        { code: "P644", name: "GX160 REWIND SPRING", price: 160.00 },
+        { code: "P645", name: "GX160 ROD GOVERNOR", price: 80.00 },
+        { code: "P646", name: "GX160 STARTER PAWL", price: 95.00 },
+        { code: "P647", name: "GX160 VALVE KIT", price: 320.00 },
+        { code: "P648", name: "GX160-ENGINE MOUNTINGS", price: 100.00 },
+        { code: "P649", name: "GX160-PUSH ROD GUIDE PLATE", price: 100.00 },
+        { code: "P650", name: "GX160-WATER PUMP VALVE", price: 200.00 },
+        { code: "P651", name: "GX240 PULL START (GX270)", price: 600.00 },
+        { code: "P652", name: "GX240/270 EXHAUST VALVE", price: 210.00 },
+        { code: "P653", name: "GX240/270 INLET VALVE", price: 180.00 },
+        { code: "P654", name: "GX360 PULL START", price: 500.00 },
+        { code: "P655", name: "GX390 AIR FILTER HOUSING", price: 650.00 },
+        { code: "P656", name: "GX390 AIR FILTER HOUSING 2", price: 520.00 },
+        { code: "P657", name: "GX390 AIR FILTER SPONGE ASSEMBLY", price: 180.00 },
+        { code: "P658", name: "GX390 CARB (LARGE)", price: 800.00 },
+        { code: "P659", name: "GX390 CARB GASKET", price: 30.00 },
+        { code: "P660", name: "GX390 CARBURETOR NEEDLE GX270/GX340", price: 60.00 },
+        { code: "P661", name: "GX390 CRANK BEARING SET (6207)", price: 100.00 },
+        { code: "P662", name: "GX390 CYLINDER HEAD GASKET", price: 65.00 },
+        { code: "P663", name: "GX390 EXHAUST VALVE HONDA", price: 85.00 },
+        { code: "P664", name: "GX390 FUEL CAP GX160/GX200/GX240/GX270", price: 110.00 },
+        { code: "P665", name: "GX390 GASKET AIR CLEANER", price: 30.00 },
+        { code: "P666", name: "GX390 GASKET SET HONDA", price: 190.00 },
+        { code: "P667", name: "GX390 GASKET VALVE COVER HEAD", price: 30.00 },
+        { code: "P668", name: "GX390 GOVERNOR SPRING (LONG)", price: 160.00 },
+        { code: "P669", name: "GX390 IGNITION COIL", price: 350.00 },
+        { code: "P670", name: "GX390 MANIFOLD GASKET", price: 30.00 },
+        { code: "P671", name: "GX390 OIL SEAL SET (35X52X7)", price: 150.00 },
+        { code: "P672", name: "GX390 PISTON KIT", price: 560.00 },
+        { code: "P673", name: "GX390 PISTON RING SET (88MM)", price: 210.00 },
+        { code: "P674", name: "GX390 PULL START", price: 620.00 },
+        { code: "P675", name: "GX390 PUSH ROD GUIDE PLATE", price: 60.00 },
+        { code: "P676", name: "GX390 REWIND SPRING", price: 180.00 },
+        { code: "P677", name: "GX390 ROCKER PIVOT BOLT", price: 60.00 },
+        { code: "P678", name: "GX390 VALVE ROCKER ARM SET", price: 240.00 },
+        { code: "P679", name: "GX390-FUEL TANK JOINT HONDAGX160/GX200/GX270", price: 36.80 },
+        { code: "P680", name: "GX690 OIL FILTER", price: 690.00 },
+        { code: "P681", name: "H120CD", price: 520.00 },
+        { code: "P682", name: "HEAD PROTECTION SHIELD (CAP FITTED)", price: 80.00 },
+        { code: "P683", name: "HEX KEY SIZE 4", price: 60.00 },
+        { code: "P684", name: "HEX KEY SIZE 5", price: 70.00 },
+        { code: "P685", name: "HIGH PROFILE ALUMINIUM HEAD UNIVERSAL", price: 190.00 },
+        { code: "P686", name: "HIGH PROFILE HEAD KNOB (BLACK)", price: 75.00 },
+        { code: "P687", name: "HOSE CLAMP 13MM-23MM", price: 10.00 },
+        { code: "P688", name: "HT LID (30CM)", price: 45.00 },
+        { code: "P689", name: "HUSKY MOTOR (52CC)", price: 2300.00 },
+        { code: "P690", name: "INDUSTRIAL SOCKET (DOUBLE SOCKET/PLUG)", price: 280.00 },
+        { code: "P691", name: "INKABI 43CC MOTOR ONLY", price: 1700.00 },
+        { code: "P692", name: "INNER SHAFT FS250 STIHL", price: 320.00 },
+        { code: "P693", name: "INTAKE VALVE HONDA GX390", price: 85.00 },
+        { code: "P694", name: "JOB CARD", price: 0.00 },
+        { code: "P695", name: "JOB CARD DEPOSITS", price: 0.00 },
+        { code: "P696", name: "LABOUR LANWMOWER PER HOUR", price: 420.00 },
+        { code: "P697", name: "LAWNMOWER BACK WHEEL (8 INCHES)", price: 250.00 },
+        { code: "P698", name: "LAWNMOWER BLADE 139CC", price: 350.00 },
+        { code: "P699", name: "LAWNMOWER THROTTLE CABLE", price: 340.00 },
+        { code: "P700", name: "LAWNMOWER UNIVERSAL BLADE", price: 90.00 },
+        { code: "P701", name: "LAWNMOWER UNIVERSAL ON/OFF SWITCH", price: 320.00 },
+        { code: "P702", name: "LEAF RAKE", price: 30.00 },
+        { code: "P703", name: "LIME SAFETY CAP (BRANDED)", price: 190.00 },
+        { code: "P704", name: "LOCK NUT M4", price: 6.00 },
+        { code: "P705", name: "LOCK NUT M4", price: 8.00 },
+        { code: "P706", name: "LONG SILVER EYELET (each)", price: 40.00 },
+        { code: "P707", name: "LOSE PRE-CUT STRINGS", price: 1.00 },
+        { code: "P708", name: "LOW PROFILE ALUMINIUM HEAD UNIVERSAL", price: 170.00 },
+        { code: "P709", name: "LUBE OIL 1L", price: 75.00 },
+        { code: "P710", name: "LUBE OIL 2L", price: 179.00 },
+        { code: "P711", name: "LUBE OIL 500ML", price: 45.00 },
+        { code: "P712", name: "LUBE OIL EXPRESS 5L", price: 389.99 },
+        { code: "P713", name: "LUBE OIL TKY 5L", price: 295.00 },
+        { code: "P714", name: "M10 RETHREADING INCLU LABOUR", price: 170.00 },
+        { code: "P715", name: "M16-RETHREADING", price: 290.00 },
+        { code: "P716", name: "M5 RETHREADING INCLU LABOUR", price: 90.00 },
+        { code: "P717", name: "M6 RETHREADING INCLU LABOUR", price: 110.00 },
+        { code: "P718", name: "M8 RETHREADING INCLU LABOUR", price: 135.00 },
+        { code: "P719", name: "MANUAL HIGH PROFILE (BLACK)-43CC", price: 350.00 },
+        { code: "P720", name: "MANUAL HIGH PROFILE ADENDORFF", price: 320.00 },
+        { code: "P721", name: "MANUAL LOW PROFILE (BLACK)-43CC", price: 290.00 },
+        { code: "P722", name: "MESH FACE SHIELD (ORANGE)", price: 240.00 },
+        { code: "P723", name: "MIXED FUEL 5L", price: 160.00 },
+        { code: "P724", name: "MOTORBIKE BULB 12VX10W/282", price: 60.00 },
+        { code: "P725", name: "MS038 CYLINDER KIT STIHL CHAINSAW (52MM)", price: 950.00 },
+        { code: "P726", name: "MS170 AIR FILTER", price: 55.00 },
+        { code: "P727", name: "MS170 CARB", price: 650.00 },
+        { code: "P728", name: "MS170 CLUTCH DRUM KIT", price: 720.00 },
+        { code: "P729", name: "MS170 FUEL TANK", price: 450.00 },
+        { code: "P730", name: "MS170 OIL SEALS SET", price: 180.00 },
+        { code: "P731", name: "MS170 PISTON KIT", price: 380.00 },
+        { code: "P732", name: "MS170 PISTON RINGS SET", price: 210.00 },
+        { code: "P733", name: "MS170 TOP COVER", price: 410.00 },
+        { code: "P734", name: "MS172 CHAINSAW", price: 4100.00 },
+        { code: "P735", name: "MS180 CYLINDER KIT", price: 650.00 },
+        { code: "P736", name: "MS250 AIR FILTER", price: 80.00 },
+        { code: "P737", name: "MS250 CARBURETOR", price: 680.00 },
+        { code: "P738", name: "MS250 CHAIN ADJUSTER SET", price: 420.00 },
+        { code: "P739", name: "MS250 CHAINSAW STIHL", price: 5660.00 },
+        { code: "P740", name: "MS250 CLUTCH DRUM WASHER", price: 60.00 },
+        { code: "P741", name: "MS250 CLUTCH DRUM WITH SPROCKET", price: 420.00 },
+        { code: "P742", name: "MS250 E-CLUTCH DRUM CLIP", price: 35.00 },
+        { code: "P743", name: "MS250 IGNITION COIL STIHL", price: 600.00 },
+        { code: "P744", name: "MS250 MUFFLER", price: 390.00 },
+        { code: "P745", name: "MS250 OIL PUMP", price: 250.00 },
+        { code: "P746", name: "MS250 PAWL (SINGLE)", price: 45.00 },
+        { code: "P747", name: "MS250 PULL START", price: 420.00 },
+        { code: "P748", name: "MS250 RIM SPROCKET", price: 210.00 },
+        { code: "P749", name: "MS250 SPROCKET COVER", price: 250.00 },
+        { code: "P750", name: "MS250 WORM GEAR", price: 180.00 },
+        { code: "P751", name: "MS310 PULL START C/S", price: 600.00 },
+        { code: "P752", name: "MS361 CARB", price: 800.00 },
+        { code: "P753", name: "MS361 CLUTCH SHOE", price: 280.00 },
+        { code: "P754", name: "MS361 CLUTCH SPRINGS", price: 120.00 },
+        { code: "P755", name: "MS361 CYLINDER ONLY", price: 670.00 },
+        { code: "P756", name: "MS361 OIL SEALS (SET)", price: 120.00 },
+        { code: "P757", name: "MS361 PISTON KIT", price: 395.00 },
+        { code: "P758", name: "MS361 PISTON RINGS", price: 120.00 },
+        { code: "P759", name: "MS361 PULL START", price: 590.00 },
+        { code: "P760", name: "MS380 FUEL CAP", price: 180.00 },
+        { code: "P761", name: "MS381 AIR FILTER ASSEMBLY", price: 120.00 },
+        { code: "P762", name: "MS381 ANTI VIBRATION RUBBER SET", price: 200.00 },
+        { code: "P763", name: "MS381 BAR NUT (EACH)", price: 45.00 },
+        { code: "P764", name: "MS381 BAR STUDS", price: 125.00 },
+        { code: "P765", name: "MS381 BASE GASKET", price: 60.00 },
+        { code: "P766", name: "MS381 BRAKE BAND", price: 120.00 },
+        { code: "P767", name: "MS381 BRAKE STRAP PIN", price: 80.00 },
+        { code: "P768", name: "MS381 C-CLIP", price: 25.00 }
     ];
+    
     let cart = [], searchTerm = '';
     
     function parseCSVRow(row) { let res=[], cur='', inQ=false; for(let i=0;i<row.length;i++){let c=row[i]; if(c==='"' && inQ && row[i+1]==='"'){cur+='"'; i++;} else if(c==='"') inQ=!inQ; else if(c===',' && !inQ){res.push(cur); cur='';} else cur+=c;} res.push(cur); return res; }
@@ -254,6 +1077,9 @@
     function openSpreadsheetEdit() { window.open(EDIT_SPREADSHEET_URL, '_blank'); }
     function openJobsEdit() { window.open(JOBS_EDIT_URL, '_blank'); }
     function openCashReport() { window.open(CASH_REPORT_URL, '_blank'); }
+    function openPaymentPage() { window.open(PAYMENT_URL, '_blank'); }
+    function openSage() { window.open(SAGE_URL, '_blank'); }
+    function openSalesPlay() { window.open(SALESPLAY_URL, '_blank'); }
     function searchJob(){ let jn=document.getElementById('jobNumber').value; if(!jn){alert('Enter job number');return;} let mock={J1001:{status:'Awaiting Deposit',price:'R 850.00',date:'2024-01-15'}}; let job=mock[jn]||{status:'In Progress',price:'R 1,250.00',date:new Date().toLocaleDateString()}; document.getElementById('jobResult').style.display='block'; document.getElementById('resultJobNumber').innerHTML=jn; document.getElementById('resultStatus').innerHTML=job.status; document.getElementById('resultPrice').innerHTML=job.price; document.getElementById('resultDate').innerHTML=job.date; document.getElementById('statusBadge').innerHTML=job.status; }
     
     let pendingProtectedAction = null;
@@ -281,12 +1107,12 @@
     function closeModernPopup(){ document.getElementById('modernNamePopup').style.display='none'; document.getElementById('popupCustomerName').value=''; }
     function submitNameAndFetch(){ let name = document.getElementById('popupCustomerName').value.trim(); if(!name){ alert('Please enter your name'); return; } closeModernPopup(); showFinancialStatement(name); }
     
-    function renderProducts(){ let container=document.getElementById('productsContainer'); let filtered=products.filter(p=>!searchTerm||p.name.toLowerCase().includes(searchTerm)||p.code.toLowerCase().includes(searchTerm)); if(filtered.length===0){container.innerHTML='<div style="padding:40px;text-align:center;">No products</div>';return;} let html=''; filtered.forEach(p=>{html+=`<div class="product-item"><div class="product-header"><div><div class="product-name">${escapeHtml(p.name)}</div><div class="product-code">${p.code}</div></div><div class="product-price">${p.price===0?'Call for price':'R '+p.price.toFixed(2)}</div></div><button class="add-to-cart-btn" data-code="${p.code}"><i class="fas fa-cart-plus"></i> Add to Cart</button></div>`;}); container.innerHTML=html; document.querySelectorAll('.add-to-cart-btn').forEach(btn=>btn.addEventListener('click',()=>addToCart(btn.dataset.code))); }
+    function renderProducts(){ let container=document.getElementById('productsContainer'); let filtered=products.filter(p=>!searchTerm||p.name.toLowerCase().includes(searchTerm)||p.code.toLowerCase().includes(searchTerm)); if(filtered.length===0){container.innerHTML='<div style="padding:40px;text-align:center;">No products found</div>';return;} let html=''; filtered.forEach(p=>{let priceText = p.price === 0 ? 'Call for price' : 'R ' + p.price.toFixed(2); html+=`<div class="product-item"><div class="product-header"><div><div class="product-name">${escapeHtml(p.name)}</div><div class="product-code">${p.code}</div></div><div class="product-price">${priceText}</div></div><button class="add-to-cart-btn" data-code="${p.code}"><i class="fas fa-cart-plus"></i> Add to Cart</button></div>`;}); container.innerHTML=html; document.querySelectorAll('.add-to-cart-btn').forEach(btn=>btn.addEventListener('click',()=>addToCart(btn.dataset.code))); }
     function escapeHtml(t){ let d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
-    function addToCart(code){ let p=products.find(pr=>pr.code===code); if(!p)return; let ex=cart.find(i=>i.code===code); if(ex)ex.quantity++; else cart.push({code:p.code,name:p.name,price:p.price,quantity:1}); renderCart(); showShopMsg(`${p.name} added`); }
+    function addToCart(code){ let p=products.find(pr=>pr.code===code); if(!p)return; let ex=cart.find(i=>i.code===code); if(ex)ex.quantity++; else cart.push({code:p.code,name:p.name,price:p.price,quantity:1}); renderCart(); showShopMsg(`${p.name} added to cart`); }
     function renderCart(){ let cont=document.getElementById('cartContainer'), totalDiv=document.getElementById('cartTotal'), checkoutBtn=document.getElementById('checkoutBtn'), clearBtn=document.getElementById('clearCartBtn'); if(cart.length===0){cont.innerHTML='<div style="text-align:center;padding:20px;">Cart empty</div>';totalDiv.style.display='none';checkoutBtn.style.display='none';clearBtn.style.display='none';return;} let html='',total=0; cart.forEach((it,idx)=>{ let itt=it.price*it.quantity; total+=itt; html+=`<div class="cart-item"><div class="cart-item-name">${escapeHtml(it.name)}</div><div class="cart-item-price">R ${it.price.toFixed(2)}</div><div class="cart-item-quantity"><button class="cart-qty-btn" data-idx="${idx}" data-delta="-1">-</button><span>${it.quantity}</span><button class="cart-qty-btn" data-idx="${idx}" data-delta="1">+</button><i class="fas fa-trash cart-remove" data-idx="${idx}"></i></div></div>`;}); cont.innerHTML=html; document.querySelectorAll('.cart-qty-btn').forEach(btn=>btn.addEventListener('click',()=>{let idx=parseInt(btn.dataset.idx),delta=parseInt(btn.dataset.delta); if(cart[idx]){let nq=cart[idx].quantity+delta; if(nq<=0)cart.splice(idx,1); else cart[idx].quantity=nq; renderCart();}})); document.querySelectorAll('.cart-remove').forEach(btn=>btn.addEventListener('click',()=>{cart.splice(parseInt(btn.dataset.idx),1); renderCart();})); totalDiv.innerHTML=`Total: R ${total.toFixed(2)}`; totalDiv.style.display='block'; checkoutBtn.style.display='block'; clearBtn.style.display='block'; }
     function clearCart(){ if(confirm('Clear cart?')){cart=[]; renderCart(); showShopMsg('Cart cleared');} }
-    function checkout(){ if(cart.length===0)return; let total=cart.reduce((s,i)=>s+(i.price*i.quantity),0); if(confirm(`Total: R${total.toFixed(2)}\nProceed to payment?`)){ window.open(PAYMENT_URL,'_blank'); showShopMsg('Redirecting...');} }
+    function checkout(){ if(cart.length===0)return; let total=cart.reduce((s,i)=>s+(i.price*i.quantity),0); if(confirm(`Order Total: R${total.toFixed(2)}\nProceed to payment?`)){ window.open(PAYMENT_URL,'_blank'); showShopMsg('Redirecting to payment...');} }
     function showShopMsg(msg){ let el=document.getElementById('shopMsg'); el.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; el.style.display='flex'; setTimeout(()=>el.style.display='none',2500); }
     
     let attendanceRecords=[], currentEmployee='', employeeListUnlocked=false, adminVerified=false;
@@ -295,37 +1121,73 @@
     function loadAttendanceData(){if(!employeeListUnlocked)return; let saved=localStorage.getItem('attendance'); attendanceRecords=saved?JSON.parse(saved):[]; updateAttendanceUI();}
     function saveAttendance(){localStorage.setItem('attendance',JSON.stringify(attendanceRecords));}
     function updateAttendanceUI(){ if(!currentEmployee){ document.getElementById('statusDisplay').innerHTML='❌ NOT CLOCKED IN'; return; } let today=getTodayDate(); let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===today); let isIn=rec&&rec.clockIn&&!rec.clockOut; let onBreak=isIn&&rec.breakStart&&!rec.breakEnd; let sd=document.getElementById('statusDisplay'); if(isIn){if(onBreak){sd.innerHTML=`☕ ON BREAK`;sd.className='status-badge status-break';}else{sd.innerHTML=`✅ CLOCKED IN`;sd.className='status-badge status-active';}}else{sd.innerHTML='❌ NOT CLOCKED IN';sd.className='status-badge status-off';} }
-    function clockIn(){ let today=getTodayDate(); let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===today); if(rec&&rec.clockIn&&!rec.clockOut){showMessage('Already in','error','attendanceMsg');return;} if(rec){rec.clockIn=getCurrentTime();rec.clockOut=null;rec.breakStart=null;rec.breakEnd=null;}else{attendanceRecords.push({name:currentEmployee,date:today,clockIn:getCurrentTime(),clockOut:null,breakStart:null,breakEnd:null});} saveAttendance(); updateAttendanceUI(); showMessage('Clocked in','success','attendanceMsg'); }
-    function clockOut(){ let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===getTodayDate()); if(rec&&rec.clockIn&&!rec.clockOut){rec.clockOut=getCurrentTime(); saveAttendance(); updateAttendanceUI(); showMessage('Clocked out','success','attendanceMsg');}else showMessage('Error','error','attendanceMsg');}
+    function clockIn(){ let today=getTodayDate(); let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===today); if(rec&&rec.clockIn&&!rec.clockOut){showMessage('Already clocked in','error','attendanceMsg');return;} if(rec){rec.clockIn=getCurrentTime();rec.clockOut=null;rec.breakStart=null;rec.breakEnd=null;}else{attendanceRecords.push({name:currentEmployee,date:today,clockIn:getCurrentTime(),clockOut:null,breakStart:null,breakEnd:null});} saveAttendance(); updateAttendanceUI(); showMessage(`Clocked in at ${getCurrentTime()}`,'success','attendanceMsg'); }
+    function clockOut(){ let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===getTodayDate()); if(rec&&rec.clockIn&&!rec.clockOut){rec.clockOut=getCurrentTime(); saveAttendance(); updateAttendanceUI(); showMessage(`Clocked out at ${getCurrentTime()}`,'success','attendanceMsg');}else showMessage('Cannot clock out','error','attendanceMsg');}
     function breakStart(){ let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===getTodayDate()); if(rec&&rec.clockIn&&!rec.breakStart){rec.breakStart=getCurrentTime(); saveAttendance(); updateAttendanceUI(); showMessage('Break started','success','attendanceMsg');}}
     function breakEnd(){ let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===getTodayDate()); if(rec&&rec.breakStart&&!rec.breakEnd){rec.breakEnd=getCurrentTime(); saveAttendance(); updateAttendanceUI(); showMessage('Break ended','success','attendanceMsg');}}
-    function updateTodayHistory(){ let cont=document.getElementById('todayHistory'); if(!currentEmployee){cont.innerHTML='Select employee';return;} cont.innerHTML='<div>Activity logged</div>'; }
-    function updateWeekHistory(){ let cont=document.getElementById('weekHistory'); if(!currentEmployee){cont.innerHTML='Select employee';return;} cont.innerHTML='<div>History shown in console</div>'; }
-    function updateAdminDashboard(){ document.getElementById('statsGrid').innerHTML='<div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Clocked In</div></div><div class="stat-card"><div class="stat-value">0</div><div class="stat-label">On Break</div></div>'; document.getElementById('clockedInList').innerHTML='<p>No data</p>'; }
-    function exportToCSV(){ alert('Export feature'); }
-    function showMessage(msg,type,id){ let el=document.getElementById(id); el.className=type==='error'?'error-msg':'success-msg'; el.innerHTML=msg; el.style.display='flex'; setTimeout(()=>el.style.display='none',2500); }
+    function updateTodayHistory(){ let cont=document.getElementById('todayHistory'); if(!currentEmployee){cont.innerHTML='Select an employee to view activity';return;} cont.innerHTML='<div>Activity logged for today</div>'; }
+    function updateWeekHistory(){ let cont=document.getElementById('weekHistory'); if(!currentEmployee){cont.innerHTML='Select an employee to view history';return;} cont.innerHTML='<div>Weekly history available</div>'; }
+    function updateAdminDashboard(){ document.getElementById('statsGrid').innerHTML='<div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Clocked In</div></div><div class="stat-card"><div class="stat-value">0</div><div class="stat-label">On Break</div></div><div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Completed</div></div><div class="stat-card"><div class="stat-value">3</div><div class="stat-label">Employees</div></div>'; document.getElementById('clockedInList').innerHTML='<p>No employees currently clocked in</p>'; }
+    function exportToCSV(){ alert('Export to CSV feature would download attendance data'); }
+    function showMessage(msg,type,id){ let el=document.getElementById(id); el.className=type==='error'?'error-msg':'success-msg'; el.innerHTML=`<i class="fas ${type==='error'?'fa-exclamation-circle':'fa-check-circle'}"></i> ${msg}`; el.style.display='flex'; setTimeout(()=>el.style.display='none',3000); }
     
+    // TAB SWITCHING
+    document.getElementById('jobTabBtn').onclick = () => {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('jobTab').classList.add('active');
+        document.getElementById('jobTabBtn').classList.add('active');
+    };
+    document.getElementById('statementsTabBtn').onclick = () => {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('statementsTab').classList.add('active');
+        document.getElementById('statementsTabBtn').classList.add('active');
+        document.getElementById('financeResult').style.display = 'none';
+    };
+    document.getElementById('attendanceTabBtn').onclick = () => {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('attendanceTab').classList.add('active');
+        document.getElementById('attendanceTabBtn').classList.add('active');
+        if(employeeListUnlocked) loadAttendanceData();
+    };
+    document.getElementById('shopTabBtn').onclick = () => {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('shopTab').classList.add('active');
+        document.getElementById('shopTabBtn').classList.add('active');
+        renderProducts();
+    };
+    document.getElementById('reportsTabBtn').onclick = () => {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('reportsTab').classList.add('active');
+        document.getElementById('reportsTabBtn').classList.add('active');
+    };
+    
+    // BUTTON EVENT LISTENERS
     document.getElementById('modernStatementBtn').onclick = showModernNamePopup;
     document.getElementById('adminEditStatementBtn').onclick = ()=> showAdminPinModal('statement');
     document.getElementById('editJobBtn').onclick = ()=> showAdminPinModal('jobs');
     document.getElementById('cashReportBtn').onclick = ()=> showAdminPinModal('cashreport');
+    document.getElementById('sageBtn').onclick = openSage;
+    document.getElementById('salesplayBtn').onclick = openSalesPlay;
     document.getElementById('verifyAdminEditPinBtn').onclick = verifyAdminEditPin;
     document.getElementById('closePopupBtn').onclick = closeModernPopup;
     document.getElementById('submitNameBtn').onclick = submitNameAndFetch;
     document.getElementById('searchJobBtn').onclick = searchJob;
-    document.getElementById('payNowBtn').onclick = ()=> window.open(PAYMENT_URL,'_blank');
+    document.getElementById('payNowBtnJob').onclick = openPaymentPage;
+    document.getElementById('payNowBtnFinance').onclick = openPaymentPage;
     document.getElementById('clearCartBtn').onclick = clearCart;
     document.getElementById('checkoutBtn').onclick = checkout;
     document.getElementById('productSearch').addEventListener('input',(e)=>{searchTerm=e.target.value.toLowerCase();renderProducts();});
     document.getElementById('unlockEmployeeBtn').onclick = ()=>{employeeListUnlocked=true; document.getElementById('employeeSection').style.display='block'; document.getElementById('unlockEmployeeBtn').style.display='none'; loadAttendanceData();};
     document.getElementById('employeeSelect').onchange=(e)=>{currentEmployee=e.target.value; if(currentEmployee&&employeeListUnlocked)updateAttendanceUI();};
     document.getElementById('clockInBtn').onclick=clockIn; document.getElementById('clockOutBtn').onclick=clockOut; document.getElementById('breakStartBtn').onclick=breakStart; document.getElementById('breakEndBtn').onclick=breakEnd;
-    document.getElementById('verifyAdminBtn').onclick=()=>{ if(document.getElementById('adminPin').value===ADMIN_PIN){ adminVerified=true; document.getElementById('adminDashboard').style.display='block'; updateAdminDashboard(); showMessage('Admin access','success','attendanceMsg');}else showMessage('Invalid PIN','error','attendanceMsg');};
+    document.getElementById('verifyAdminBtn').onclick=()=>{ if(document.getElementById('adminPin').value===ADMIN_PIN){ adminVerified=true; document.getElementById('adminDashboard').style.display='block'; updateAdminDashboard(); showMessage('Admin access granted','success','attendanceMsg');}else showMessage('Invalid PIN','error','attendanceMsg');};
     document.getElementById('adminHeader').onclick=()=>{ let c=document.getElementById('adminContent'); c.style.display=c.style.display==='none'?'block':'none';};
     document.getElementById('exportCsvBtn').onclick=exportToCSV;
-    document.getElementById('jobTabBtn').onclick=()=>{ document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById('jobTab').classList.add('active'); document.getElementById('jobTabBtn').classList.add('active'); };
-    document.getElementById('attendanceTabBtn').onclick=()=>{ document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById('attendanceTab').classList.add('active'); document.getElementById('attendanceTabBtn').classList.add('active'); if(employeeListUnlocked) loadAttendanceData(); };
-    document.getElementById('shopTabBtn').onclick=()=>{ document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); document.getElementById('shopTab').classList.add('active'); document.getElementById('shopTabBtn').classList.add('active'); renderProducts(); };
     document.getElementById('adminEditPinInput').addEventListener('keypress',e=>{if(e.key==='Enter')verifyAdminEditPin();});
     document.getElementById('popupCustomerName').addEventListener('keypress',e=>{if(e.key==='Enter')submitNameAndFetch();});
     document.getElementById('adminPinModal').addEventListener('click',e=>{if(e.target===e.currentTarget) e.currentTarget.style.display='none';});
