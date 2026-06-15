@@ -16,9 +16,9 @@
         .logo-text { font-size: 28px; font-weight: 800; color: white; }
         .tagline { color: rgba(255,255,255,0.95); font-size: 14px; margin-top: 8px; }
         .content { padding: 24px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 24px; background: #f1f5f9; padding: 6px; border-radius: 60px; flex-wrap: wrap; justify-content: center; }
-        .tab-btn { padding: 10px 14px; border: none; background: transparent; font-weight: 600; font-size: 12px; cursor: pointer; border-radius: 40px; color: #64748b; transition: all 0.2s ease; white-space: nowrap; }
-        .tab-btn i { margin-right: 6px; }
+        .tabs { display: flex; gap: 6px; margin-bottom: 24px; background: #f1f5f9; padding: 6px; border-radius: 60px; flex-wrap: wrap; justify-content: center; }
+        .tab-btn { padding: 8px 12px; border: none; background: transparent; font-weight: 600; font-size: 11px; cursor: pointer; border-radius: 40px; color: #64748b; transition: all 0.2s ease; white-space: nowrap; }
+        .tab-btn i { margin-right: 5px; }
         .tab-btn.active { background: white; color: #65a30d; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         .tab-content { display: none; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
@@ -38,6 +38,9 @@
         .btn-green { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
         .btn-sage { background: linear-gradient(135deg, #1a5d9c, #0d3b61); color: white; }
         .btn-salesplay { background: linear-gradient(135deg, #e85d04, #dc2f02); color: white; }
+        .btn-whatsapp { background: linear-gradient(135deg, #25D366, #128C7E); color: white; }
+        .btn-email { background: linear-gradient(135deg, #ea4335, #c5221f); color: white; }
+        .btn-phone { background: linear-gradient(135deg, #34B7F1, #128C7E); color: white; }
         .product-grid { display: flex; flex-direction: column; gap: 12px; max-height: 500px; overflow-y: auto; padding-right: 4px; }
         .product-grid::-webkit-scrollbar { width: 6px; }
         .product-grid::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
@@ -113,8 +116,10 @@
         .pin-input-field { width: 100%; padding: 16px; text-align: center; font-size: 24px; letter-spacing: 8px; border: 2px solid #e2e8f0; border-radius: 60px; margin-bottom: 20px; font-weight: bold; }
         .pin-error { color: #ef4444; font-size: 13px; margin-top: 12px; display: none; }
         .report-card { background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 24px; border: 2px solid #f59e0b; padding: 20px; text-align: center; margin-bottom: 16px; }
-        .report-icon { font-size: 40px; margin-bottom: 12px; }
-        @media (max-width: 550px) { .tab-btn { font-size: 11px; padding: 8px 10px; } }
+        .contact-card { background: linear-gradient(135deg, #e0f2fe, #bae6fd); border-radius: 24px; border: 2px solid #0284c7; padding: 20px; text-align: center; margin-bottom: 16px; }
+        .contact-icon { font-size: 40px; margin-bottom: 12px; }
+        .system-card { background: linear-gradient(135deg, #f3e8ff, #e9d5ff); border-radius: 24px; border: 2px solid #9333ea; padding: 20px; text-align: center; margin-bottom: 16px; }
+        @media (max-width: 600px) { .tab-btn { font-size: 10px; padding: 6px 8px; } }
         @media (max-width: 480px) { body { padding: 16px; } .content { padding: 16px; } .finance-details { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -128,7 +133,9 @@
                 <button class="tab-btn" id="statementsTabBtn"><i class="fas fa-file-invoice-dollar"></i> Statements</button>
                 <button class="tab-btn" id="attendanceTabBtn"><i class="fas fa-clock"></i> Attendance</button>
                 <button class="tab-btn" id="shopTabBtn"><i class="fas fa-shopping-cart"></i> Shop</button>
+                <button class="tab-btn" id="businessTabBtn"><i class="fas fa-building"></i> Business</button>
                 <button class="tab-btn" id="reportsTabBtn"><i class="fas fa-chart-bar"></i> Reports</button>
+                <button class="tab-btn" id="contactTabBtn"><i class="fas fa-phone-alt"></i> Contact</button>
             </div>
             
             <!-- TAB 1: JOB STATUS -->
@@ -177,40 +184,80 @@
             <!-- TAB 4: SHOP - ALL 768 PRODUCTS FULLY INTACT -->
             <div id="shopTab" class="tab-content"><div id="shopMsg" class="success-msg"></div><div class="modern-card"><div class="card-title"><i class="fas fa-store"></i> Products & Parts</div><div class="search-input"><i class="fas fa-search"></i><input type="text" id="productSearch" placeholder="Search by name or code..."></div><div id="productsContainer" class="product-grid"></div></div><div class="modern-card"><div class="card-title"><i class="fas fa-shopping-cart"></i> Cart</div><div id="cartContainer"><div style="text-align:center; padding:20px;">Cart empty</div></div><div id="cartTotal" style="display:none;" class="cart-total"></div><button id="checkoutBtn" class="checkout-btn" style="display:none;"><i class="fas fa-credit-card"></i> Checkout</button><button id="clearCartBtn" class="clear-cart-btn" style="display:none;"><i class="fas fa-trash"></i> Clear</button></div></div>
             
-            <!-- TAB 5: REPORTS - UPDATED WITH SAGE AND SALESPLAY BUTTONS -->
-            <div id="reportsTab" class="tab-content">
+            <!-- TAB 5: BUSINESS SYSTEMS (Sage & SalesPlay) -->
+            <div id="businessTab" class="tab-content">
                 <div class="modern-card">
-                    <div class="card-title"><i class="fas fa-chart-line"></i> Business Systems</div>
+                    <div class="card-title"><i class="fas fa-building"></i> Business Systems</div>
                     
                     <!-- Sage Financial Records Button -->
-                    <div class="report-card">
-                        <div class="report-icon"><i class="fas fa-book"></i></div>
-                        <h3 style="margin-bottom: 8px; color: #0d3b61;">Sage</h3>
-                        <p style="color: #0d3b61; font-size: 12px; margin-bottom: 16px;">Financial Records & Accounting</p>
+                    <div class="system-card">
+                        <div class="contact-icon"><i class="fas fa-book"></i></div>
+                        <h3 style="margin-bottom: 8px; color: #6b21a5;">Sage</h3>
+                        <p style="color: #6b21a5; font-size: 12px; margin-bottom: 16px;">Financial Records & Accounting</p>
                         <button class="btn btn-sage" id="sageBtn"><i class="fas fa-chart-line"></i> Open Sage</button>
                     </div>
                     
                     <!-- SalesPlay POS Button -->
-                    <div class="report-card">
-                        <div class="report-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="system-card">
+                        <div class="contact-icon"><i class="fas fa-shopping-cart"></i></div>
                         <h3 style="margin-bottom: 8px; color: #dc2f02;">SalesPlay</h3>
                         <p style="color: #dc2f02; font-size: 12px; margin-bottom: 16px;">Point of Sale System</p>
                         <button class="btn btn-salesplay" id="salesplayBtn"><i class="fas fa-cash-register"></i> Open SalesPlay</button>
                     </div>
                 </div>
-                
+            </div>
+            
+            <!-- TAB 6: REPORTS (Cash Report only) -->
+            <div id="reportsTab" class="tab-content">
                 <div class="modern-card">
-                    <div class="card-title"><i class="fas fa-chart-pie"></i> Cash Reports</div>
-                    <div class="report-card" style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-color: #f59e0b;">
-                        <div class="report-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="card-title"><i class="fas fa-chart-line"></i> Financial Reports</div>
+                    <div class="report-card">
+                        <div class="contact-icon"><i class="fas fa-money-bill-wave"></i></div>
                         <h3 style="margin-bottom: 8px; color: #92400e;">Cash Report</h3>
                         <p style="color: #92400e; font-size: 12px; margin-bottom: 16px;">View and manage daily cash transactions</p>
                         <button class="btn btn-orange" id="cashReportBtn"><i class="fas fa-download"></i> Generate Cash Report</button>
                     </div>
                 </div>
             </div>
+            
+            <!-- TAB 7: CONTACT US -->
+            <div id="contactTab" class="tab-content">
+                <div class="modern-card">
+                    <div class="card-title"><i class="fas fa-address-card"></i> Contact Us</div>
+                    
+                    <!-- Phone -->
+                    <div class="contact-card">
+                        <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                        <h3 style="margin-bottom: 8px; color: #0284c7;">Call Us</h3>
+                        <p style="color: #0284c7; font-size: 14px; margin-bottom: 16px; font-weight: 600;">043 065 0097</p>
+                        <a href="tel:0430650097" class="btn btn-phone" style="text-decoration: none;"><i class="fas fa-phone-alt"></i> Call Now</a>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="contact-card">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <h3 style="margin-bottom: 8px; color: #c5221f;">Email Us</h3>
+                        <p style="color: #c5221f; font-size: 12px; margin-bottom: 16px; word-break: break-all;">cutitright.info@gmail.com</p>
+                        <a href="mailto:cutitright.info@gmail.com" class="btn btn-email" style="text-decoration: none;"><i class="fas fa-envelope"></i> Send Email</a>
+                    </div>
+                    
+                    <!-- WhatsApp -->
+                    <div class="contact-card">
+                        <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+                        <h3 style="margin-bottom: 8px; color: #128C7E;">WhatsApp</h3>
+                        <p style="color: #128C7E; font-size: 14px; margin-bottom: 16px; font-weight: 600;">076 709 4033</p>
+                        <a href="https://wa.me/27767094033" target="_blank" class="btn btn-whatsapp" style="text-decoration: none;"><i class="fab fa-whatsapp"></i> WhatsApp Us</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="footer"><div class="contact-info"><a href="tel:0430650097" class="contact-item"><i class="fas fa-phone-alt"></i> 043 065 0097</a><a href="mailto:cutitright.info@gmail.com" class="contact-item"><i class="fas fa-envelope"></i> cutitright.info@gmail.com</a></div></div>
+        <div class="footer">
+            <div class="contact-info">
+                <a href="tel:0430650097" class="contact-item"><i class="fas fa-phone-alt"></i> 043 065 0097</a>
+                <a href="mailto:cutitright.info@gmail.com" class="contact-item"><i class="fas fa-envelope"></i> cutitright.info@gmail.com</a>
+                <a href="https://wa.me/27767094033" target="_blank" class="contact-item"><i class="fab fa-whatsapp"></i> 076 709 4033</a>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1159,11 +1206,23 @@
         document.getElementById('shopTabBtn').classList.add('active');
         renderProducts();
     };
+    document.getElementById('businessTabBtn').onclick = () => {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('businessTab').classList.add('active');
+        document.getElementById('businessTabBtn').classList.add('active');
+    };
     document.getElementById('reportsTabBtn').onclick = () => {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('reportsTab').classList.add('active');
         document.getElementById('reportsTabBtn').classList.add('active');
+    };
+    document.getElementById('contactTabBtn').onclick = () => {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('contactTab').classList.add('active');
+        document.getElementById('contactTabBtn').classList.add('active');
     };
     
     // BUTTON EVENT LISTENERS
