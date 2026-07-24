@@ -278,23 +278,30 @@
       return res;
     }
     
-    // FIXED: Parse number without adding extra zeros
+    // FIXED: Parse number correctly without adding extra zeros
     function parseNum(v) {
       if (v === undefined || v === null || v === '') return 0;
-      // If it's already a number, return it
       if (typeof v === 'number') return v;
-      // Clean the string - remove R, spaces, commas, and any non-numeric characters except decimal point
+      // Remove R, spaces, commas and any non-numeric characters except decimal point
       let cleaned = String(v).replace(/[R\s,]/g, '').trim();
+      // Handle percentage signs
+      cleaned = cleaned.replace(/%/g, '');
       let num = parseFloat(cleaned);
       return isNaN(num) ? 0 : num;
     }
     
-    // FIXED: Format price with proper decimal places
+    // FIXED: Format price with proper decimal places - NO EXTRA ZEROS
     function formatPrice(v) {
       let num = parseNum(v);
-      // Round to 2 decimal places and format with comma separator
+      // Round to 2 decimal places
       let rounded = Math.round(num * 100) / 100;
-      return 'R ' + rounded.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      // Format with 2 decimal places and comma separators
+      let parts = rounded.toFixed(2).split('.');
+      let whole = parts[0];
+      let decimal = parts[1] || '00';
+      // Add comma separators to whole number
+      let wholeWithCommas = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return 'R ' + wholeWithCommas + '.' + decimal;
     }
 
     // ---------- LOAD FINANCE DATA ----------
@@ -327,7 +334,7 @@
         }
         if(!Object.keys(allFinancialStatements).length) throw new Error();
       } catch(e){
-        // Fallback demo data with correct formatting
+        // Fallback demo data with correct formatting - NO EXTRA ZEROS
         allFinancialStatements['john doe']={
           customerName:'John Doe',
           loanAmount:'R 3,390.00',
@@ -349,6 +356,17 @@
           rawLoan:1500,
           rawTotal:1575,
           rawRate:5
+        };
+        allFinancialStatements['bob wilson']={
+          customerName:'Bob Wilson',
+          loanAmount:'R 5,250.00',
+          interest:'8%',
+          totalToPay:'R 5,670.00',
+          totalInterest:'R 420.00',
+          loanStatus:'Active',
+          rawLoan:5250,
+          rawTotal:5670,
+          rawRate:8
         };
       }
     }
@@ -458,7 +476,7 @@
     function checkoutFn(){ if(!cart.length) return; let total=cart.reduce((s,i)=>s+(i.price*i.qty),0); if(confirm(`Total: R${total.toFixed(2)}\nProceed to payment?`)){ window.open(YOCO_BASE_URL,'_blank'); showShopMsg('Redirecting...'); } }
     function showShopMsg(msg){ let el=document.getElementById('shopMsg'); el.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; el.style.display='flex'; setTimeout(()=>el.style.display='none',2500); }
 
-    // ---------- ATTENDANCE (stubs) ----------
+    // ---------- ATTENDANCE ----------
     let attendanceRecords=[],currentEmployee='',employeeListUnlocked=false;
     function loadAttendance(){ if(!employeeListUnlocked) return; let saved=localStorage.getItem('attendance'); attendanceRecords=saved?JSON.parse(saved):[]; updateAttendanceUI(); }
     function saveAttendance(){ localStorage.setItem('attendance',JSON.stringify(attendanceRecords)); }
