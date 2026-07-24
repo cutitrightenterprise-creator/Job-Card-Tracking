@@ -255,7 +255,7 @@
     const SALESPLAY_URL = 'https://cloud.salesplaypos.com/app/home';
     const JOBS_DATA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vROfAxkx30zl6ea27Q9Cs15Y5Em1ZoLE0eB2wNRvZwpUJ3odn_-ndfptLaXXYFaAEyA1pOdOmfRtOw-/pub?output=csv';
 
-    // ---------- PRODUCTS (shortened for brevity, full list in original) ----------
+    // ---------- PRODUCTS (shortened for brevity) ----------
     const productsRaw = [
       ["131R CRANK BEARINGS (SET)",180],["131R CYLINDER KIT",950],["131R FUEL PIPE ASSEMBLY",150],
       ["143R CYLINDER KIT",760],["143R CRANK BEARING (SET)",120],["FS250 CYLINDER KIT",950],
@@ -280,7 +280,6 @@
     function parseNum(v){ return parseFloat(String(v).replace(/[^0-9.-]/g,''))||0; }
     function formatPrice(v){ 
       let num = parseNum(v);
-      // Fix: ensure proper decimal formatting without extra zeros
       return 'R ' + num.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
@@ -311,7 +310,7 @@
         }
         if(!Object.keys(allFinancialStatements).length) throw new Error();
       } catch(e){
-        // Fallback demo data with correct amounts
+        // Fallback demo data
         allFinancialStatements['john doe']={
           customerName:'John Doe',
           loanAmount:'R 3,390.00',
@@ -345,13 +344,9 @@
 
     // ---------- PAYMENT FUNCTIONS ----------
     function openYocoWithAmount(amount) {
-      if (!amount || amount <= 0) {
-        alert('Invalid payment amount. Please try again.');
-        return;
-      }
-      const amountCents = Math.round(amount * 100);
-      const url = `${YOCO_BASE_URL}?amount=${amountCents}`;
-      window.open(url, '_blank');
+      // Open Yoco with NO pre-filled amount - just the base URL
+      // The customer will enter the amount themselves on the Yoco page
+      window.open(YOCO_BASE_URL, '_blank');
     }
 
     // ---------- JOB SEARCH ----------
@@ -488,26 +483,24 @@
       if (!currentFinanceData) { alert('Please view a statement first.'); return; }
       const total = currentFinanceData.rawTotal || 0;
       if (total <= 0) { alert('No outstanding amount.'); return; }
-      openYocoWithAmount(total);
+      // Pre-fill full amount
+      const url = YOCO_BASE_URL + '?amount=' + Math.round(total * 100);
+      window.open(url, '_blank');
     });
 
     document.getElementById('payInterestOnlyBtn').addEventListener('click', function() {
       if (!currentFinanceData) { alert('Please view a statement first.'); return; }
       const interest = currentFinanceData.rawTotal - currentFinanceData.rawLoan;
       if (interest <= 0) { alert('No interest due.'); return; }
-      openYocoWithAmount(interest);
+      // Pre-fill interest amount
+      const url = YOCO_BASE_URL + '?amount=' + Math.round(interest * 100);
+      window.open(url, '_blank');
     });
 
     document.getElementById('payAnyAmountBtn').addEventListener('click', function() {
       if (!currentFinanceData) { alert('Please view a statement first.'); return; }
-      const maxAmount = currentFinanceData.rawTotal || 0;
-      if (maxAmount <= 0) { alert('No outstanding amount.'); return; }
-      const amount = prompt(`Enter amount to pay (max R${maxAmount.toFixed(2)}):`, maxAmount.toFixed(2));
-      if (amount === null) return;
-      const val = parseFloat(amount);
-      if (isNaN(val) || val <= 0) { alert('Invalid amount.'); return; }
-      if (val > maxAmount) { alert(`Amount cannot exceed R${maxAmount.toFixed(2)}`); return; }
-      openYocoWithAmount(val);
+      // Open Yoco with NO pre-filled amount - customer enters it themselves
+      window.open(YOCO_BASE_URL, '_blank');
     });
 
     // TAB SWITCHING
