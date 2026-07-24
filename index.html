@@ -277,10 +277,17 @@
       res.push(cur);
       return res;
     }
-    function parseNum(v){ return parseFloat(String(v).replace(/[^0-9.-]/g,''))||0; }
+    function parseNum(v){ 
+      if (typeof v === 'string') {
+        // Remove any currency symbols, spaces, and commas
+        v = v.replace(/[R\s,]/g, '');
+      }
+      return parseFloat(v) || 0; 
+    }
     function formatPrice(v){ 
       let num = parseNum(v);
-      return 'R ' + num.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      // Fix: ensure proper decimal formatting without extra zeros
+      return 'R ' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
     // ---------- LOAD FINANCE DATA ----------
@@ -310,7 +317,7 @@
         }
         if(!Object.keys(allFinancialStatements).length) throw new Error();
       } catch(e){
-        // Fallback demo data
+        // Fallback demo data with correct formatting
         allFinancialStatements['john doe']={
           customerName:'John Doe',
           loanAmount:'R 3,390.00',
@@ -344,9 +351,14 @@
 
     // ---------- PAYMENT FUNCTIONS ----------
     function openYocoWithAmount(amount) {
-      // Open Yoco with NO pre-filled amount - just the base URL
-      // The customer will enter the amount themselves on the Yoco page
-      window.open(YOCO_BASE_URL, '_blank');
+      if (!amount || amount <= 0) {
+        alert('Invalid payment amount. Please try again.');
+        return;
+      }
+      // Send amount in cents (as integer)
+      const amountCents = Math.round(amount * 100);
+      const url = `${YOCO_BASE_URL}?amount=${amountCents}`;
+      window.open(url, '_blank');
     }
 
     // ---------- JOB SEARCH ----------
@@ -483,8 +495,9 @@
       if (!currentFinanceData) { alert('Please view a statement first.'); return; }
       const total = currentFinanceData.rawTotal || 0;
       if (total <= 0) { alert('No outstanding amount.'); return; }
-      // Pre-fill full amount
-      const url = YOCO_BASE_URL + '?amount=' + Math.round(total * 100);
+      // Pre-fill full amount - send in cents
+      const amountCents = Math.round(total * 100);
+      const url = `${YOCO_BASE_URL}?amount=${amountCents}`;
       window.open(url, '_blank');
     });
 
@@ -492,8 +505,9 @@
       if (!currentFinanceData) { alert('Please view a statement first.'); return; }
       const interest = currentFinanceData.rawTotal - currentFinanceData.rawLoan;
       if (interest <= 0) { alert('No interest due.'); return; }
-      // Pre-fill interest amount
-      const url = YOCO_BASE_URL + '?amount=' + Math.round(interest * 100);
+      // Pre-fill interest amount - send in cents
+      const amountCents = Math.round(interest * 100);
+      const url = `${YOCO_BASE_URL}?amount=${amountCents}`;
       window.open(url, '_blank');
     });
 
