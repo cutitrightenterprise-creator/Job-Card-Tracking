@@ -265,7 +265,7 @@
     let cart = [], searchTerm = "", allFinancialStatements = {};
     let currentFinanceData = null;
 
-    // ---------- HELPER FUNCTIONS - FIXED ----------
+    // ---------- SIMPLE HELPER FUNCTIONS ----------
     function parseCSVRow(row) {
       let res=[], cur='', inq=false;
       for(let ch of row) {
@@ -278,30 +278,32 @@
       return res;
     }
     
-    // FIXED: Parse number correctly without adding extra zeros
+    // Simple number parser - just get the number
     function parseNum(v) {
       if (v === undefined || v === null || v === '') return 0;
       if (typeof v === 'number') return v;
-      // Remove R, spaces, commas and any non-numeric characters except decimal point
-      let cleaned = String(v).replace(/[R\s,]/g, '').trim();
-      // Handle percentage signs
-      cleaned = cleaned.replace(/%/g, '');
+      // Remove everything except digits and decimal point
+      let cleaned = String(v).replace(/[^0-9.]/g, '');
       let num = parseFloat(cleaned);
       return isNaN(num) ? 0 : num;
     }
     
-    // FIXED: Format price with proper decimal places - NO EXTRA ZEROS
+    // Simple currency formatter - NO EXTRA ZEROS
     function formatPrice(v) {
       let num = parseNum(v);
       // Round to 2 decimal places
       let rounded = Math.round(num * 100) / 100;
-      // Format with 2 decimal places and comma separators
-      let parts = rounded.toFixed(2).split('.');
+      // Format with commas and 2 decimal places
+      let formatted = rounded.toFixed(2);
+      let parts = formatted.split('.');
       let whole = parts[0];
-      let decimal = parts[1] || '00';
-      // Add comma separators to whole number
-      let wholeWithCommas = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      return 'R ' + wholeWithCommas + '.' + decimal;
+      // Add commas
+      let wholeWithCommas = '';
+      for (let i = whole.length - 1, j = 0; i >= 0; i--, j++) {
+        if (j > 0 && j % 3 === 0) wholeWithCommas = ',' + wholeWithCommas;
+        wholeWithCommas = whole[i] + wholeWithCommas;
+      }
+      return 'R ' + wholeWithCommas + '.' + parts[1];
     }
 
     // ---------- LOAD FINANCE DATA ----------
@@ -334,7 +336,7 @@
         }
         if(!Object.keys(allFinancialStatements).length) throw new Error();
       } catch(e){
-        // Fallback demo data with correct formatting - NO EXTRA ZEROS
+        // Fallback demo data with CORRECT formatting
         allFinancialStatements['john doe']={
           customerName:'John Doe',
           loanAmount:'R 3,390.00',
@@ -357,17 +359,6 @@
           rawTotal:1575,
           rawRate:5
         };
-        allFinancialStatements['bob wilson']={
-          customerName:'Bob Wilson',
-          loanAmount:'R 5,250.00',
-          interest:'8%',
-          totalToPay:'R 5,670.00',
-          totalInterest:'R 420.00',
-          loanStatus:'Active',
-          rawLoan:5250,
-          rawTotal:5670,
-          rawRate:8
-        };
       }
     }
 
@@ -385,7 +376,7 @@
         document.getElementById('financeStatus').innerHTML=data.loanStatus;
         document.getElementById('financeResult').style.display='block';
       } else {
-        alert(`No statement found for "${name}". Please check the name or contact the office.`);
+        alert('No statement found for "' + name + '". Please check the name or contact the office.');
       }
     }
 
@@ -395,9 +386,8 @@
         alert('Invalid payment amount. Please try again.');
         return;
       }
-      // Send amount in cents (as integer)
       const amountCents = Math.round(amount * 100);
-      const url = `${YOCO_BASE_URL}?amount=${amountCents}`;
+      const url = YOCO_BASE_URL + '?amount=' + amountCents;
       window.open(url, '_blank');
     }
 
@@ -410,7 +400,7 @@
       resultDiv.innerHTML = '<p style="text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin"></i> Searching...</p>';
       try {
         const response = await fetch(JOBS_DATA_URL);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) throw new Error('HTTP error! status: ' + response.status);
         const csvText = await response.text();
         const rows = csvText.split('\n').filter(row => row.trim() !== '');
         if (rows.length < 2) throw new Error('Spreadsheet empty or malformed.');
@@ -429,26 +419,25 @@
             const price = (priceColIndex !== -1 && cols[priceColIndex]) ? parseNum(cols[priceColIndex]) : 0;
             const date = (dateColIndex !== -1 && cols[dateColIndex]) ? cols[dateColIndex].trim() : new Date().toLocaleDateString();
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `
-              <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                <span style="font-weight:800;" id="resultJobNumber">${currentJobNumber}</span>
-                <span id="statusBadge" style="background:#dcfce7; padding:4px 14px; border-radius:40px; font-size:12px;">${status}</span>
-              </div>
-              <div><div style="font-size:12px; color:#64748b;">Repair Status</div><div style="font-weight:700;" id="resultStatus">${status}</div></div>
-              <div><div style="font-size:12px; color:#64748b;">Quotation</div><div style="font-size:18px; font-weight:800; color:#65a30d;" id="resultPrice">${formatPrice(price)}</div></div>
-              <div><div style="font-size:12px; color:#64748b;">Last Updated</div><div id="resultDate">${date}</div></div>
-            `;
+            resultDiv.innerHTML = 
+              '<div style="display:flex; justify-content:space-between; margin-bottom:12px;">' +
+                '<span style="font-weight:800;" id="resultJobNumber">' + currentJobNumber + '</span>' +
+                '<span id="statusBadge" style="background:#dcfce7; padding:4px 14px; border-radius:40px; font-size:12px;">' + status + '</span>' +
+              '</div>' +
+              '<div><div style="font-size:12px; color:#64748b;">Repair Status</div><div style="font-weight:700;" id="resultStatus">' + status + '</div></div>' +
+              '<div><div style="font-size:12px; color:#64748b;">Quotation</div><div style="font-size:18px; font-weight:800; color:#65a30d;" id="resultPrice">' + formatPrice(price) + '</div></div>' +
+              '<div><div style="font-size:12px; color:#64748b;">Last Updated</div><div id="resultDate">' + date + '</div></div>';
             found = true;
             break;
           }
         }
         if (!found) {
           resultDiv.style.display = 'block';
-          resultDiv.innerHTML = `<p style="text-align:center; padding:20px; color:#ef4444;"><i class="fas fa-exclamation-circle"></i> Job number "${jobNumber}" not found.</p>`;
+          resultDiv.innerHTML = '<p style="text-align:center; padding:20px; color:#ef4444;"><i class="fas fa-exclamation-circle"></i> Job number "' + jobNumber + '" not found.</p>';
         }
       } catch (error) {
         resultDiv.style.display = 'block';
-        resultDiv.innerHTML = `<p style="text-align:center; padding:20px; color:#ef4444;"><i class="fas fa-exclamation-triangle"></i> Error loading job data. ${error.message}</p>`;
+        resultDiv.innerHTML = '<p style="text-align:center; padding:20px; color:#ef4444;"><i class="fas fa-exclamation-triangle"></i> Error loading job data. ' + error.message + '</p>';
       }
     }
 
@@ -457,35 +446,56 @@
       let container=document.getElementById('productsContainer');
       let filtered=products.filter(p=>p.name.toLowerCase().includes(searchTerm));
       if(!filtered.length){ container.innerHTML='<div style="padding:40px;text-align:center">No products found</div>'; return; }
-      container.innerHTML=filtered.map(p=>`<div class="product-item"><div class="product-header"><div class="product-name">${escapeHtml(p.name)}</div><div class="product-price">${p.price===0?'Call for price':'R '+p.price.toFixed(2)}</div></div><button class="add-to-cart-btn" data-id="${p.id}"><i class="fas fa-cart-plus"></i> Add to Cart</button></div>`).join('');
-      document.querySelectorAll('.add-to-cart-btn').forEach(btn=>btn.addEventListener('click',()=>{ let id=parseInt(btn.dataset.id); let p=products.find(pr=>pr.id===id); if(p) addToCart(p); }));
+      container.innerHTML=filtered.map(function(p){
+        return '<div class="product-item"><div class="product-header"><div class="product-name">' + escapeHtml(p.name) + '</div><div class="product-price">' + (p.price===0?'Call for price':'R '+p.price.toFixed(2)) + '</div></div><button class="add-to-cart-btn" data-id="' + p.id + '"><i class="fas fa-cart-plus"></i> Add to Cart</button></div>';
+      }).join('');
+      document.querySelectorAll('.add-to-cart-btn').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          let id=parseInt(btn.dataset.id);
+          let p=products.find(function(pr){ return pr.id===id; });
+          if(p) addToCart(p);
+        });
+      });
     }
     function escapeHtml(str){ return str.replace(/[&<>]/g,function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-    function addToCart(product){ let existing=cart.find(i=>i.id===product.id); if(existing) existing.qty++; else cart.push({id:product.id, name:product.name, price:product.price, qty:1}); renderCart(); showShopMsg(`${product.name} added`); }
+    function addToCart(product){ let existing=cart.find(function(i){ return i.id===product.id; }); if(existing) existing.qty++; else cart.push({id:product.id, name:product.name, price:product.price, qty:1}); renderCart(); showShopMsg(product.name + ' added'); }
     function renderCart(){
       let cont=document.getElementById('cartContainer'), totalDiv=document.getElementById('cartTotal'), checkoutBtn=document.getElementById('checkoutBtn'), clearBtn=document.getElementById('clearCartBtn');
       if(!cart.length){ cont.innerHTML='<div style="padding:20px;text-align:center">Cart empty</div>'; totalDiv.style.display='none'; checkoutBtn.style.display='none'; clearBtn.style.display='none'; return; }
       let html='', total=0;
-      cart.forEach((it,idx)=>{ let itt=it.price*it.qty; total+=itt; html+=`<div class="cart-item"><div class="cart-item-name">${escapeHtml(it.name)}</div><div class="cart-item-price">R ${it.price.toFixed(2)}</div><div class="cart-item-quantity"><button class="cart-qty-btn" data-idx="${idx}" data-delta="-1">-</button><span>${it.qty}</span><button class="cart-qty-btn" data-idx="${idx}" data-delta="1">+</button><i class="fas fa-trash cart-remove" data-idx="${idx}"></i></div></div>`; });
+      cart.forEach(function(it,idx){ let itt=it.price*it.qty; total+=itt; html+='<div class="cart-item"><div class="cart-item-name">' + escapeHtml(it.name) + '</div><div class="cart-item-price">R ' + it.price.toFixed(2) + '</div><div class="cart-item-quantity"><button class="cart-qty-btn" data-idx="' + idx + '" data-delta="-1">-</button><span>' + it.qty + '</span><button class="cart-qty-btn" data-idx="' + idx + '" data-delta="1">+</button><i class="fas fa-trash cart-remove" data-idx="' + idx + '"></i></div></div>'; });
       cont.innerHTML=html;
-      document.querySelectorAll('.cart-qty-btn').forEach(btn=>btn.addEventListener('click',()=>{ let idx=parseInt(btn.dataset.idx), delta=parseInt(btn.dataset.delta); if(cart[idx]){ let nq=cart[idx].qty+delta; if(nq<=0) cart.splice(idx,1); else cart[idx].qty=nq; renderCart(); } }));
-      document.querySelectorAll('.cart-remove').forEach(btn=>btn.addEventListener('click',()=>{ cart.splice(parseInt(btn.dataset.idx),1); renderCart(); }));
-      totalDiv.innerHTML=`Total: R ${total.toFixed(2)}`; totalDiv.style.display='block'; checkoutBtn.style.display='block'; clearBtn.style.display='block';
+      document.querySelectorAll('.cart-qty-btn').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          let idx=parseInt(btn.dataset.idx), delta=parseInt(btn.dataset.delta);
+          if(cart[idx]){ let nq=cart[idx].qty+delta; if(nq<=0) cart.splice(idx,1); else cart[idx].qty=nq; renderCart(); }
+        });
+      });
+      document.querySelectorAll('.cart-remove').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          cart.splice(parseInt(btn.dataset.idx),1);
+          renderCart();
+        });
+      });
+      totalDiv.innerHTML='Total: R ' + total.toFixed(2);
+      totalDiv.style.display='block';
+      checkoutBtn.style.display='block';
+      clearBtn.style.display='block';
     }
     function clearCart(){ if(confirm('Clear cart?')){ cart=[]; renderCart(); showShopMsg('Cart cleared'); } }
-    function checkoutFn(){ if(!cart.length) return; let total=cart.reduce((s,i)=>s+(i.price*i.qty),0); if(confirm(`Total: R${total.toFixed(2)}\nProceed to payment?`)){ window.open(YOCO_BASE_URL,'_blank'); showShopMsg('Redirecting...'); } }
-    function showShopMsg(msg){ let el=document.getElementById('shopMsg'); el.innerHTML=`<i class="fas fa-check-circle"></i> ${msg}`; el.style.display='flex'; setTimeout(()=>el.style.display='none',2500); }
+    function checkoutFn(){ if(!cart.length) return; let total=cart.reduce(function(s,i){ return s+(i.price*i.qty); },0); if(confirm('Total: R' + total.toFixed(2) + '\nProceed to payment?')){ window.open(YOCO_BASE_URL,'_blank'); showShopMsg('Redirecting...'); } }
+    function showShopMsg(msg){ let el=document.getElementById('shopMsg'); el.innerHTML='<i class="fas fa-check-circle"></i> ' + msg; el.style.display='flex'; setTimeout(function(){ el.style.display='none'; },2500); }
 
     // ---------- ATTENDANCE ----------
     let attendanceRecords=[],currentEmployee='',employeeListUnlocked=false;
     function loadAttendance(){ if(!employeeListUnlocked) return; let saved=localStorage.getItem('attendance'); attendanceRecords=saved?JSON.parse(saved):[]; updateAttendanceUI(); }
     function saveAttendance(){ localStorage.setItem('attendance',JSON.stringify(attendanceRecords)); }
-    function updateAttendanceUI(){ if(!currentEmployee) return; let today=new Date().toISOString().slice(0,10); let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===today); let isIn=rec&&rec.clockIn&&!rec.clockOut; let onBreak=isIn&&rec.breakStart&&!rec.breakEnd; let sd=document.getElementById('statusDisplay'); if(isIn){ sd.innerHTML=onBreak?'☕ ON BREAK':'✅ CLOCKED IN'; sd.className=onBreak?'status-badge status-break':'status-badge status-active'; }else{ sd.innerHTML='❌ NOT CLOCKED IN'; sd.className='status-badge status-off'; } }
-    function clockIn(){ let today=new Date().toISOString().slice(0,10); let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===today); if(rec&&rec.clockIn&&!rec.clockOut){ showMsgAtt('Already clocked in','error'); return; } if(rec){ rec.clockIn=new Date().toLocaleTimeString('en-ZA'); rec.clockOut=null; rec.breakStart=null; rec.breakEnd=null; }else attendanceRecords.push({name:currentEmployee,date:today,clockIn:new Date().toLocaleTimeString('en-ZA'),clockOut:null,breakStart:null,breakEnd:null}); saveAttendance(); updateAttendanceUI(); showMsgAtt('Clocked in','success'); }
-    function clockOut(){ let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===new Date().toISOString().slice(0,10)); if(rec&&rec.clockIn&&!rec.clockOut){ rec.clockOut=new Date().toLocaleTimeString('en-ZA'); saveAttendance(); updateAttendanceUI(); showMsgAtt('Clocked out','success'); }else showMsgAtt('Cannot clock out','error'); }
-    function breakStart(){ let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===new Date().toISOString().slice(0,10)); if(rec&&rec.clockIn&&!rec.breakStart){ rec.breakStart=new Date().toLocaleTimeString('en-ZA'); saveAttendance(); updateAttendanceUI(); showMsgAtt('Break started','success'); } }
-    function breakEnd(){ let rec=attendanceRecords.find(r=>r.name===currentEmployee&&r.date===new Date().toISOString().slice(0,10)); if(rec&&rec.breakStart&&!rec.breakEnd){ rec.breakEnd=new Date().toLocaleTimeString('en-ZA'); saveAttendance(); updateAttendanceUI(); showMsgAtt('Break ended','success'); } }
-    function showMsgAtt(msg,type){ let el=document.getElementById('attendanceMsg'); el.className=type==='error'?'error-msg':'success-msg'; el.innerHTML=msg; el.style.display='flex'; setTimeout(()=>el.style.display='none',2500); }
+    function updateAttendanceUI(){ if(!currentEmployee) return; let today=new Date().toISOString().slice(0,10); let rec=attendanceRecords.find(function(r){ return r.name===currentEmployee && r.date===today; }); let isIn=rec&&rec.clockIn&&!rec.clockOut; let onBreak=isIn&&rec.breakStart&&!rec.breakEnd; let sd=document.getElementById('statusDisplay'); if(isIn){ sd.innerHTML=onBreak?'☕ ON BREAK':'✅ CLOCKED IN'; sd.className=onBreak?'status-badge status-break':'status-badge status-active'; }else{ sd.innerHTML='❌ NOT CLOCKED IN'; sd.className='status-badge status-off'; } }
+    function clockIn(){ let today=new Date().toISOString().slice(0,10); let rec=attendanceRecords.find(function(r){ return r.name===currentEmployee && r.date===today; }); if(rec&&rec.clockIn&&!rec.clockOut){ showMsgAtt('Already clocked in','error'); return; } if(rec){ rec.clockIn=new Date().toLocaleTimeString('en-ZA'); rec.clockOut=null; rec.breakStart=null; rec.breakEnd=null; }else attendanceRecords.push({name:currentEmployee,date:today,clockIn:new Date().toLocaleTimeString('en-ZA'),clockOut:null,breakStart:null,breakEnd:null}); saveAttendance(); updateAttendanceUI(); showMsgAtt('Clocked in','success'); }
+    function clockOut(){ let rec=attendanceRecords.find(function(r){ return r.name===currentEmployee && r.date===new Date().toISOString().slice(0,10); }); if(rec&&rec.clockIn&&!rec.clockOut){ rec.clockOut=new Date().toLocaleTimeString('en-ZA'); saveAttendance(); updateAttendanceUI(); showMsgAtt('Clocked out','success'); }else showMsgAtt('Cannot clock out','error'); }
+    function breakStart(){ let rec=attendanceRecords.find(function(r){ return r.name===currentEmployee && r.date===new Date().toISOString().slice(0,10); }); if(rec&&rec.clockIn&&!rec.breakStart){ rec.breakStart=new Date().toLocaleTimeString('en-ZA'); saveAttendance(); updateAttendanceUI(); showMsgAtt('Break started','success'); } }
+    function breakEnd(){ let rec=attendanceRecords.find(function(r){ return r.name===currentEmployee && r.date===new Date().toISOString().slice(0,10); }); if(rec&&rec.breakStart&&!rec.breakEnd){ rec.breakEnd=new Date().toLocaleTimeString('en-ZA'); saveAttendance(); updateAttendanceUI(); showMsgAtt('Break ended','success'); } }
+    function showMsgAtt(msg,type){ let el=document.getElementById('attendanceMsg'); el.className=type==='error'?'error-msg':'success-msg'; el.innerHTML=msg; el.style.display='flex'; setTimeout(function(){ el.style.display='none'; },2500); }
     function updateAdminDashboard(){ document.getElementById('statsGrid').innerHTML='<div class="stat-card"><div class="stat-value">0</div><div class="stat-label">Clocked In</div></div><div class="stat-card"><div class="stat-value">0</div><div class="stat-label">On Break</div></div>'; document.getElementById('clockedInList').innerHTML='<p>No data</p>'; }
     function exportCSV(){ alert('Export CSV'); }
 
@@ -511,50 +521,62 @@
     // ---------- EVENT LISTENERS ----------
     document.getElementById('searchJobBtn').onclick = searchJob;
     document.getElementById('jobNumber').addEventListener('keypress', function(e) { if (e.key === 'Enter') { e.preventDefault(); searchJob(); } });
-    document.getElementById('editJobBtn').onclick=()=>showPinModal('jobs');
-    document.getElementById('adminEditStatementBtn').onclick=()=>showPinModal('statement');
-    document.getElementById('cashReportBtn').onclick=()=>showPinModal('cashreport');
-    document.getElementById('unlockEmployeeBtn').onclick=()=>showPinModal('unlockEmployee');
+    document.getElementById('editJobBtn').onclick=function(){ showPinModal('jobs'); };
+    document.getElementById('adminEditStatementBtn').onclick=function(){ showPinModal('statement'); };
+    document.getElementById('cashReportBtn').onclick=function(){ showPinModal('cashreport'); };
+    document.getElementById('unlockEmployeeBtn').onclick=function(){ showPinModal('unlockEmployee'); };
     document.getElementById('modernStatementBtn').onclick=showNamePopup;
     document.getElementById('closePopupBtn').onclick=closeNamePopup;
     document.getElementById('submitNameBtn').onclick=submitName;
     document.getElementById('verifyAdminEditPinBtn').onclick=verifyPin;
     document.getElementById('clearCartBtn').onclick=clearCart;
     document.getElementById('checkoutBtn').onclick=checkoutFn;
-    document.getElementById('productSearch').addEventListener('input',(e)=>{ searchTerm=e.target.value.toLowerCase(); renderProducts(); });
-    document.getElementById('sageBtn').onclick=()=>window.open(SAGE_URL,'_blank');
-    document.getElementById('salesplayBtn').onclick=()=>window.open(SALESPLAY_URL,'_blank');
-    document.getElementById('verifyAdminBtn').onclick=()=>{ if(document.getElementById('adminPin').value===ADMIN_PANEL_PIN){ document.getElementById('adminDashboard').style.display='block'; updateAdminDashboard(); showMsgAtt('Admin access','success'); }else showMsgAtt('Invalid PIN','error'); };
-    document.getElementById('adminHeader').onclick=()=>{ let c=document.getElementById('adminContent'); c.style.display=c.style.display==='none'?'block':'none'; };
+    document.getElementById('productSearch').addEventListener('input',function(e){ searchTerm=e.target.value.toLowerCase(); renderProducts(); });
+    document.getElementById('sageBtn').onclick=function(){ window.open(SAGE_URL,'_blank'); };
+    document.getElementById('salesplayBtn').onclick=function(){ window.open(SALESPLAY_URL,'_blank'); };
+    document.getElementById('verifyAdminBtn').onclick=function(){ if(document.getElementById('adminPin').value===ADMIN_PANEL_PIN){ document.getElementById('adminDashboard').style.display='block'; updateAdminDashboard(); showMsgAtt('Admin access','success'); }else showMsgAtt('Invalid PIN','error'); };
+    document.getElementById('adminHeader').onclick=function(){ let c=document.getElementById('adminContent'); c.style.display=c.style.display==='none'?'block':'none'; };
     document.getElementById('exportCsvBtn').onclick=exportCSV;
-    document.getElementById('employeeSelect').onchange=e=>{ currentEmployee=e.target.value; if(currentEmployee&&employeeListUnlocked) updateAttendanceUI(); };
-    document.getElementById('clockInBtn').onclick=clockIn; document.getElementById('clockOutBtn').onclick=clockOut; document.getElementById('breakStartBtn').onclick=breakStart; document.getElementById('breakEndBtn').onclick=breakEnd;
+    document.getElementById('employeeSelect').onchange=function(e){ currentEmployee=e.target.value; if(currentEmployee&&employeeListUnlocked) updateAttendanceUI(); };
+    document.getElementById('clockInBtn').onclick=clockIn;
+    document.getElementById('clockOutBtn').onclick=clockOut;
+    document.getElementById('breakStartBtn').onclick=breakStart;
+    document.getElementById('breakEndBtn').onclick=breakEnd;
 
     // PAYMENT BUTTONS
     document.getElementById('payFullAmountBtn').addEventListener('click', function() {
       if (!currentFinanceData) { alert('Please view a statement first.'); return; }
-      const total = currentFinanceData.rawTotal || 0;
+      var total = currentFinanceData.rawTotal || 0;
       if (total <= 0) { alert('No outstanding amount.'); return; }
       openYocoWithAmount(total);
     });
 
     document.getElementById('payInterestOnlyBtn').addEventListener('click', function() {
       if (!currentFinanceData) { alert('Please view a statement first.'); return; }
-      const interest = currentFinanceData.rawTotal - currentFinanceData.rawLoan;
+      var interest = currentFinanceData.rawTotal - currentFinanceData.rawLoan;
       if (interest <= 0) { alert('No interest due.'); return; }
       openYocoWithAmount(interest);
     });
 
     document.getElementById('payAnyAmountBtn').addEventListener('click', function() {
       if (!currentFinanceData) { alert('Please view a statement first.'); return; }
-      // Open Yoco with NO pre-filled amount - customer enters it themselves
       window.open(YOCO_BASE_URL, '_blank');
     });
 
     // TAB SWITCHING
-    const tabs=['jobTab','statementsTab','attendanceTab','shopTab','businessTab','reportsTab','contactTab'];
-    const btns=['jobTabBtn','statementsTabBtn','attendanceTabBtn','shopTabBtn','businessTabBtn','reportsTabBtn','contactTabBtn'];
-    btns.forEach((btn,idx)=>{ document.getElementById(btn).onclick=()=>{ tabs.forEach(t=>document.getElementById(t).classList.remove('active')); btns.forEach(b=>document.getElementById(b).classList.remove('active')); document.getElementById(tabs[idx]).classList.add('active'); document.getElementById(btns[idx]).classList.add('active'); if(tabs[idx]==='shopTab') renderProducts(); if(tabs[idx]==='attendanceTab'&&employeeListUnlocked) loadAttendance(); if(tabs[idx]==='statementsTab') document.getElementById('financeResult').style.display='none'; }; });
+    var tabs=['jobTab','statementsTab','attendanceTab','shopTab','businessTab','reportsTab','contactTab'];
+    var btns=['jobTabBtn','statementsTabBtn','attendanceTabBtn','shopTabBtn','businessTabBtn','reportsTabBtn','contactTabBtn'];
+    btns.forEach(function(btn,idx){
+      document.getElementById(btn).onclick=function(){
+        tabs.forEach(function(t){ document.getElementById(t).classList.remove('active'); });
+        btns.forEach(function(b){ document.getElementById(b).classList.remove('active'); });
+        document.getElementById(tabs[idx]).classList.add('active');
+        document.getElementById(btns[idx]).classList.add('active');
+        if(tabs[idx]==='shopTab') renderProducts();
+        if(tabs[idx]==='attendanceTab'&&employeeListUnlocked) loadAttendance();
+        if(tabs[idx]==='statementsTab') document.getElementById('financeResult').style.display='none';
+      };
+    });
 
     // INIT
     loadFinance();
