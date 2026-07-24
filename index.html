@@ -255,7 +255,7 @@
     const SALESPLAY_URL = 'https://cloud.salesplaypos.com/app/home';
     const JOBS_DATA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vROfAxkx30zl6ea27Q9Cs15Y5Em1ZoLE0eB2wNRvZwpUJ3odn_-ndfptLaXXYFaAEyA1pOdOmfRtOw-/pub?output=csv';
 
-    // ---------- PRODUCTS (shortened for brevity) ----------
+    // ---------- PRODUCTS ----------
     const productsRaw = [
       ["131R CRANK BEARINGS (SET)",180],["131R CYLINDER KIT",950],["131R FUEL PIPE ASSEMBLY",150],
       ["143R CYLINDER KIT",760],["143R CRANK BEARING (SET)",120],["FS250 CYLINDER KIT",950],
@@ -265,7 +265,7 @@
     let cart = [], searchTerm = "", allFinancialStatements = {};
     let currentFinanceData = null;
 
-    // ---------- HELPER FUNCTIONS ----------
+    // ---------- HELPER FUNCTIONS - FIXED ----------
     function parseCSVRow(row) {
       let res=[], cur='', inq=false;
       for(let ch of row) {
@@ -277,17 +277,24 @@
       res.push(cur);
       return res;
     }
-    function parseNum(v){ 
-      if (typeof v === 'string') {
-        // Remove any currency symbols, spaces, and commas
-        v = v.replace(/[R\s,]/g, '');
-      }
-      return parseFloat(v) || 0; 
+    
+    // FIXED: Parse number without adding extra zeros
+    function parseNum(v) {
+      if (v === undefined || v === null || v === '') return 0;
+      // If it's already a number, return it
+      if (typeof v === 'number') return v;
+      // Clean the string - remove R, spaces, commas, and any non-numeric characters except decimal point
+      let cleaned = String(v).replace(/[R\s,]/g, '').trim();
+      let num = parseFloat(cleaned);
+      return isNaN(num) ? 0 : num;
     }
-    function formatPrice(v){ 
+    
+    // FIXED: Format price with proper decimal places
+    function formatPrice(v) {
       let num = parseNum(v);
-      // Fix: ensure proper decimal formatting without extra zeros
-      return 'R ' + num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      // Round to 2 decimal places and format with comma separator
+      let rounded = Math.round(num * 100) / 100;
+      return 'R ' + rounded.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
     // ---------- LOAD FINANCE DATA ----------
@@ -300,7 +307,10 @@
           let col=parseCSVRow(rows[i]);
           if(col[0]){
             let key=col[0].trim().toLowerCase();
-            let loan=parseNum(col[1]), rate=col[2]||'0', totalPay=parseNum(col[3]||col[1]), status=col[4]||'Active';
+            let loan=parseNum(col[1]);
+            let rate=col[2]||'0';
+            let totalPay=parseNum(col[3] || col[1]);
+            let status=col[4]||'Active';
             let interestDisplay=String(rate).replace(/%/g,'')+'%';
             allFinancialStatements[key]={
               customerName:col[0],
@@ -329,12 +339,24 @@
           rawTotal:3729,
           rawRate:10
         };
+        allFinancialStatements['jane smith']={
+          customerName:'Jane Smith',
+          loanAmount:'R 1,500.00',
+          interest:'5%',
+          totalToPay:'R 1,575.00',
+          totalInterest:'R 75.00',
+          loanStatus:'Active',
+          rawLoan:1500,
+          rawTotal:1575,
+          rawRate:5
+        };
       }
     }
 
     function showStatement(name){
       let search=name.trim().toLowerCase();
-      let data=allFinancialStatements[search]||allFinancialStatements[Object.keys(allFinancialStatements).find(k=>k.includes(search)||search.includes(k))];
+      let data=allFinancialStatements[search] || 
+               allFinancialStatements[Object.keys(allFinancialStatements).find(k => k.includes(search) || search.includes(k))];
       if(data){
         currentFinanceData = data;
         document.getElementById('financeName').innerHTML=data.customerName;
@@ -345,7 +367,7 @@
         document.getElementById('financeStatus').innerHTML=data.loanStatus;
         document.getElementById('financeResult').style.display='block';
       } else {
-        alert(`No statement for "${name}". Contact office.`);
+        alert(`No statement found for "${name}". Please check the name or contact the office.`);
       }
     }
 
@@ -495,20 +517,14 @@
       if (!currentFinanceData) { alert('Please view a statement first.'); return; }
       const total = currentFinanceData.rawTotal || 0;
       if (total <= 0) { alert('No outstanding amount.'); return; }
-      // Pre-fill full amount - send in cents
-      const amountCents = Math.round(total * 100);
-      const url = `${YOCO_BASE_URL}?amount=${amountCents}`;
-      window.open(url, '_blank');
+      openYocoWithAmount(total);
     });
 
     document.getElementById('payInterestOnlyBtn').addEventListener('click', function() {
       if (!currentFinanceData) { alert('Please view a statement first.'); return; }
       const interest = currentFinanceData.rawTotal - currentFinanceData.rawLoan;
       if (interest <= 0) { alert('No interest due.'); return; }
-      // Pre-fill interest amount - send in cents
-      const amountCents = Math.round(interest * 100);
-      const url = `${YOCO_BASE_URL}?amount=${amountCents}`;
-      window.open(url, '_blank');
+      openYocoWithAmount(interest);
     });
 
     document.getElementById('payAnyAmountBtn').addEventListener('click', function() {
